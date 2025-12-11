@@ -47,13 +47,11 @@
 
 | Membre | Login 42 | Rôle(s) | Responsabilités |
 |--------|----------|---------|-----------------|
-| [Nom 1] | [login1] | **Product Owner (PO)** | Définit la vision du produit, priorise les fonctionnalités, maintient le backlog, valide le travail accompli |
-| [Nom 2] | [login2] | **Chef de Projet (PM) / Scrum Master** | Organise les réunions, suit les progrès, assure la communication, gère les risques et blocages |
-| [Nom 3] | [login3] | **Responsable Technique / Architecte** | Définit l'architecture technique, décisions sur la stack, assure la qualité du code |
-| [Nom 4] | [login4] | **Développeur** | Implémente les fonctionnalités, participe aux revues de code, teste et documente |
-| [Nom 5] | [login5] | **Développeur** | Implémente les fonctionnalités, participe aux revues de code, teste et documente |
-
-> 📝 **Note :** Pour une équipe de 4 personnes, certains membres peuvent avoir plusieurs rôles (ex: PM + Développeur).
+| Diary | rdiary | **Product Owner (PO)** & **Développeur** | Définit la vision du produit, priorise les fonctionnalités, maintient le backlog, valide le travail accompli |
+| Mamisedra | mranaivo | **Chef de Projet (PM)** & **Développeur** | Organise les réunions, suit les progrès, assure la communication, gère les risques et blocages |
+| Anja | [arazafin | **Responsable Technique (RT)**  & **Développeur** | Définit l'architecture technique, décisions sur la stack, assure la qualité du code |
+| Kanto | tambinin | **Développeur** | Implémente les fonctionnalités, participe aux revues de code, teste et documente |
+| Juvence | candriam | **Développeur** | Implémente les fonctionnalités, participe aux revues de code, teste et documente |
 
 ---
 
@@ -71,9 +69,9 @@
 |-------|-------|
 | **GitHub Projects** | Kanban board, suivi des tâches, backlog |
 | **GitHub Issues** | Tickets de bugs, features, tâches |
-| **[Discord/Slack]** | Communication d'équipe en temps réel |
-| **[Google Meet/Zoom]** | Réunions d'équipe |
-| **[Notion/Google Docs]** | Documentation partagée |
+| **[Slack]** | Communication d'équipe en temps réel |
+| **[Slack]** | Réunions d'équipe |
+| **[GitHub Markup]** | Documentation partagée |
 
 #### Répartition des Tâches
 - Les tâches sont créées sous forme d'issues GitHub
