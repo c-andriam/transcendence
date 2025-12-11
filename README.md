@@ -2,8 +2,6 @@
 
 *Ce projet a été créé dans le cadre du cursus 42 par rdiary, mranaivo, arazafin, tambinin, candriam.*
 
-> ⚠️ **Note :** Ce README est un template à compléter par l'équipe. Remplacez les sections entre crochets `[...]` par vos informations.
-
 ---
 
 ## 📋 Table des matières
