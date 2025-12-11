@@ -382,8 +382,3 @@ Les pages suivantes sont accessibles depuis l'application :
 - [Autres remerciements]
 
 ---
-
-> 💡 **Rappel pour l'évaluation :**
-> - Chaque membre doit pouvoir expliquer le projet et ses contributions
-> - Tous les modules doivent être fonctionnels pour être validés
-> - Une modification de code peut être demandée lors de l'évaluation
