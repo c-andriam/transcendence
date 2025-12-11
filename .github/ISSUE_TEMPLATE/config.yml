@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 📖 Documentation ft_transcendence
+    url: https://github.com/c-andriam/transcendence/blob/main/ft_transcendence.md
+    about: Consultez le sujet du projet pour plus d'informations sur les modules et exigences
+  - name: 📋 GitHub Project Board
+    url: https://github.com/c-andriam/transcendence/projects
+    about: Voir le tableau Kanban du projet pour le suivi des tâches
