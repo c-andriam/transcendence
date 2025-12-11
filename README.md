@@ -49,9 +49,9 @@
 |--------|----------|---------|-----------------|
 | Diary | rdiary | **Product Owner (PO)** & **Développeur** | Définit la vision du produit, priorise les fonctionnalités, maintient le backlog, valide le travail accompli |
 | Mamisedra | mranaivo | **Chef de Projet (PM)** & **Développeur** | Organise les réunions, suit les progrès, assure la communication, gère les risques et blocages |
-| Anja | [arazafin | **Responsable Technique (RT)**  & **Développeur** | Définit l'architecture technique, décisions sur la stack, assure la qualité du code |
+| Juvence | candriam | **Responsable Technique (RT)**  & **Développeur** | Définit l'architecture technique, décisions sur la stack, assure la qualité du code |
 | Kanto | tambinin | **Développeur** | Implémente les fonctionnalités, participe aux revues de code, teste et documente |
-| Juvence | candriam | **Développeur** | Implémente les fonctionnalités, participe aux revues de code, teste et documente |
+| Anja | arazafin | **Développeur** | Implémente les fonctionnalités, participe aux revues de code, teste et documente |
 
 ---
 
