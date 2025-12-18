@@ -1,0 +1,14 @@
+{
+  "name": "fastify-app",
+  "version": "1.0.0",
+  "description": "Fastify service for Transcendence",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node --watch app.js"
+  },
+  "dependencies": {
+    "fastify": "^5.0.0",
+    "pg": "^8.11.0"
+  }
+}

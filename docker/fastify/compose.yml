@@ -1,0 +1,16 @@
+services:
+  fastify:
+    image: node:23-alpine
+    container_name: fastify
+    working_dir: /usr/src/app
+    volumes:
+      - .:/usr/src/app:rw
+      - ./script/entrypoint.sh:/entrypoint.sh:z
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgres://admin:postgres@postgres:5432/postgres
+      - NODE_ENV=development
+    networks:
+      - ft
+    entrypoint: ["/bin/sh", "/entrypoint.sh"]
