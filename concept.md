@@ -135,7 +135,44 @@ En Fastify, on ne réinvente pas la roue. On utilise des "plugins" officiels.
 [Réponse JSON]
 ```
 
-## Utils
+---
 
-* npm init -y
-* npm install typescript fastify @types/node @fastify/swagger @fastify/swagger-ui @fastify/rate-limit
+### 3. Plan d'Implémentation Technique (Détail Étape 1)
+
+Voici la feuille de route précise pour la mise en place du "Gardien", traduite et détaillée.
+
+#### A. Configuration & Environnement
+Nous devons d'abord nous assurer que le serveur peut lire les secrets.
+*   **[NOUVEAU] .env** : Ce fichier contiendra `API_GATEWAY_KEY=s3cr3t_k3y`.
+*   **[MODIF] package.json** : Installation de `dotenv` (déjà fait).
+
+#### B. Cœur du Serveur (`[MODIFY] src/index.ts`)
+*Mission : Initialiser Fastify et charger la configuration.*
+
+1.  **Chargement des Secrets (`dotenv`)** :
+    *   **Détail** : Il faut appeler `dotenv.config()` tout en haut du fichier.
+    *   **Pourquoi** : Cela force Node.js à lire le fichier `.env` immédiatement. Si on ne le fait pas ici, `process.env.API_GATEWAY_KEY` sera vide plus tard.
+2.  **Initialisation de l'App** :
+    *   **Détail** : Création de l'instance `Fastify({ logger: true })`. Le logger est crucial pour voir les erreurs.
+3.  **Préparation du Hook** :
+    *   C'est dans ce fichier que nous importerons et enregistrerons notre futur middleware.
+
+#### C. La Logique du Middleware (`[MODIFY] src/middleware/auth.middleware.ts`)
+*Mission : Le Hook de Sécurité (PreHandler).*
+
+1.  **Fonction d'Interception** :
+    *   **Détail** : On crée une fonction asynchrone qui prend `request` et `reply`.
+2.  **Vérification (`x-api-key`)** :
+    *   **Détail** : On lit `request.headers['x-api-key']`.
+3.  **Comparaison via `process.env`** :
+    *   **Détail** : On vérifie : `apiKey !== process.env.API_GATEWAY_KEY`.
+    *   **Logique** : Si la clé est manquante OU si elle est différente de celle du `.env`, c'est un échec.
+4.  **Verdict (403 vs Allow)** :
+    *   **Refus** : On appelle `reply.code(403).send(...)`. Cela envoie une réponse d'erreur au client et coupe la connexion.
+    *   **Succès** : On ne fait rien (ou on fait simplement `return`). Dans Fastify, ne pas lever d'erreur signifie que le passage est autorisé.
+
+#### D. Plan de Vérification
+Nous testerons "Le Gardien" avec 3 scénarios :
+1.  **L'Intrus (Pas de clé)** -> Doit recevoir une erreur 403.
+2.  **L'Intrus (Mauvaise clé)** -> Doit recevoir une erreur 403.
+3.  **Le Visiteur (Bonne clé)** -> Doit recevoir un succès (200).
