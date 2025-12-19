@@ -134,3 +134,8 @@ En Fastify, on ne réinvente pas la roue. On utilise des "plugins" officiels.
    ⬇️
 [Réponse JSON]
 ```
+
+## Utils
+
+* npm init -y
+* npm install typescript fastify @types/node @fastify/swagger @fastify/swagger-ui @fastify/rate-limit
