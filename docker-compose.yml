@@ -44,4 +44,4 @@ include:
   - docker/monitoring/compose.yml
   - docker/nginx/compose.yml
   - docker/postgres/compose.yml
-  # - docker/fastify/compose.yml
+  - docker/nodjs/compose.yml
