@@ -16,9 +16,5 @@ export async function authMiddleware(request: FastifyRequest, reply: FastifyRepl
             message: "Invalid API Key"
         });
     }
-    return reply.status(200).send({
-        success: "Success",
-        message: "valid API Key",
-        API_KEY: apiKey
-    });
+    return ;
 }
