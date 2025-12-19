@@ -1,0 +1,14 @@
+services:
+  nginx:
+      image: quay.io/nginx/nginx-unprivileged:alpine3.22
+      container_name: nginx
+      ports:
+          - "8080"
+      networks:
+          - ft
+          - proxy_net
+      volumes:
+          - ./conf/default.conf:/etc/nginx/conf.d/default.conf:z
+          - ./html:/usr/share/nginx/html:z
+          - logs:/var/log:rw
+      restart: on-failure

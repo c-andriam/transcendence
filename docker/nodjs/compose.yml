@@ -1,0 +1,19 @@
+services:
+  node:
+    image: node:23-alpine
+    container_name: node
+    working_dir: /usr/src/app
+    volumes:
+      - ../../backend/api-gateway:/usr/src/app:rw,z
+      - ./script/entrypoint.sh:/entrypoint.sh:z
+    ports:
+      - "3001:3000"
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgres://admin:postgres@postgres:5432/postgres
+      - NODE_ENV=development
+      - API_GATEWAY_KEY=${API_GATEWAY_KEY}
+    networks:
+      - ft
+    entrypoint: ["/bin/sh", "/entrypoint.sh"]
