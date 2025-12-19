@@ -18,7 +18,7 @@ export async function authMiddleware(request: FastifyRequest, reply: FastifyRepl
     }
     return reply.status(200).send({
         success: "Success",
-        message: "API Key is valid",
+        message: "valid API Key",
         API_KEY: apiKey
     });
 }
