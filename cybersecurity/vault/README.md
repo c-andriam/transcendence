@@ -22,17 +22,17 @@ Bienvenue dans le coffre-fort de secrets du projet **ft_transcendence**.
 
 Pour éviter de compromettre des informations sensibles, merci de lire le guide correspondant à votre rôle :
 
-- **Équipe Backend / IA** : [Guide d'utilisation et Token](docs/security/onboarding-team.md)  
+- **Équipe Backend / IA** : [Guide d'utilisation et Token](../../docs/security/onboarding-team.md)  
   *(Pour mranaivo, candriam, rdiary)*
-- **Équipe DevOps** : [Notes d'intégration infra](docs/security/devops-notes.md)  
+- **Équipe DevOps** : [Notes d'intégration infra](../../docs/security/devops-notes.md)  
   *(Pour arazafin)*
-- **Responsable Sécurité** : [Administration avancée](docs/security/admin-vault.md)  
+- **Responsable Sécurité** : [Administration avancée](../../docs/security/admin-vault.md)  
   *(Privé)*
 
 ## 🎓 Ressources d'Apprentissage (Savoir-faire)
 
 Pour tout comprendre sur Vault (Concepts, Vocabulaire, Dev vs Prod) :
-- **[Base de Connaissances Globales](docs/security/learning/vault-knowledge-base.md)**
+- **[Base de Connaissances Globales](../../docs/security/learning-vault/vault-knowledge-base.md)**
 
 ---
 
