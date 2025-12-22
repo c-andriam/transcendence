@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "CRUD recipes",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
