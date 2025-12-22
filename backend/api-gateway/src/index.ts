@@ -56,8 +56,13 @@ const start = async () => {
               name: "x-api-key",
               in: "header"
             }
-          },
-        }
+          }
+        },
+        security: [
+          {
+            apiKeyAuth: []
+          }
+        ]
       }
     });
     await app.register(swaggerUi, { routePrefix: "/documentation" });
