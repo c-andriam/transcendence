@@ -1,5 +1,4 @@
 import { FastifyInstance } from "fastify";
-import { request } from "node:http";
 
 export function slugify(text: string): string {
     return text.toLowerCase()
@@ -106,7 +105,7 @@ export async function getRecipeById(app: FastifyInstance, id: string) {
         where: { id },
         include: {
             ingredients: true,
-            instructions: { orderBy: { stepNumber: 'asc' } },
+            instructions: true,
             author: {
                 select: { id: true, username: true, avatarUrl: true },
             },
@@ -147,7 +146,7 @@ export async function updateRecipe(app: FastifyInstance, id: string,
         isPublished?: boolean;
         categoryId?: string;
         ingredients?: { id?: string; name: string; quantityText: string; isOptional?: boolean }[];
-        instructions?: { stepNumber: number; description: string }[];
+        instructions?: { id?: string; stepNumber: number; description: string }[];
     }) {
 
     const existing = await app.db.recipe.findUnique({
@@ -179,13 +178,13 @@ export async function updateRecipe(app: FastifyInstance, id: string,
         updateData.difficulty = data.difficulty;
     }
     if (data.isPublished !== undefined && data.isPublished !== existing.isPublished) {
-        updateData.isPubished = data.isPublished;
+        updateData.isPublished = data.isPublished;
     }
     if (data.categoryId && data.categoryId !== existing.categoryId) {
-        updateData.caetgoryId = data.categoryId;
+        updateData.categoryId = data.categoryId;
     }
 
-    const ingredientsUpdate = data.ingredients?.map((ing) => ({
+    const ingredientsUpdate = data.ingredients?.filter(ing => ing.id).map((ing) => ({
         where: { id: ing.id },
         data: {
             name: ing.name,
@@ -198,31 +197,32 @@ export async function updateRecipe(app: FastifyInstance, id: string,
         name: ing.name,
         quantityText: ing.quantityText,
         isOptional: ing.isOptional ?? false,
-        recipeId: id,
+        // recipeId: id,
     })) || [];
 
-    const instructionsUpdate = data.instructions?.map((ins) => ({
-        where: { stepNumber: ins.stepNumber },
+    const instructionsUpdate = data.instructions?.filter(ins => ins.id).map((ins => ({
+        where: { id: ins.id },
         data: {
+            stepNumber: ins.stepNumber,
             description: ins.description,
         }
-    })) || [];
+    }))) || [];
 
-    const instructionsCreate = data.instructions?.filter(ins => !ins.stepNumber).map((ins) => ({
+    const instructionsCreate = data.instructions?.filter(ins => !ins.id).map((ins => ({
         stepNumber: ins.stepNumber,
-        description: ins.description,
-    })) || [];
+        description: ins.description
+    }))) || [];
 
     const updatedRecipe = await app.db.recipe.update({
         where: { id },
         data: {
             ...updateData,
             ingredients: {
-                updateMany: ingredientsUpdate,
+                update: ingredientsUpdate,
                 create: ingredientsCreate,
             },
             instructions: {
-                updateMany: instructionsUpdate,
+                update: instructionsUpdate,
                 create: instructionsCreate,
             },
         },
@@ -287,7 +287,7 @@ export async function rateRecipe(
     recipeId: string,
     userId: string,
     score: number) {
-    const ratind = await app.db.rating.upsert({
+    const rating = await app.db.rating.upsert({
         where: {
             userId_recipeId: {
                 recipeId,
@@ -303,7 +303,7 @@ export async function rateRecipe(
             score
         }
     });
-    return ratind;
+    return rating;
 }
 
 export async function getRecipeRatings(app: FastifyInstance, recipeId: string) {
@@ -344,9 +344,9 @@ export async function removeRecipeRating(app: FastifyInstance, recipeId: string,
     if (!rating) {
         throw new Error("Rating not Found");
     }
-    await app.db.rating.delete({
-        where: { id: rating.id }
-    });
+    // await app.db.rating.delete({
+    //     where: { id: rating.id }
+    // });
 
     const ratings = await app.db.rating.findMany({
         where: { recipeId },
@@ -383,7 +383,11 @@ export async function getAllRecipesBySearch(
             { description: { contains: search, mode: 'insensitive' } },
         ];
     }
-    where.isPublished = true;
+    if (isPublished !== undefined) {
+        where.isPublished = isPublished;
+    }
+    else
+        where.isPublished = true;
     const recipes = await app.db.recipe.findMany({
         where: where,
         skip: (page - 1) * limit,
@@ -723,6 +727,7 @@ export async function recipesRoutes(app: FastifyInstance) {
                                     items: {
                                         type: "object",
                                         properties: {
+                                            id: { "type": "string" },
                                             name: { "type": "string" },
                                             quantityText: { "type": "string" },
                                             isOptional: { "type": "boolean" }
@@ -734,6 +739,7 @@ export async function recipesRoutes(app: FastifyInstance) {
                                     items: {
                                         type: "object",
                                         properties: {
+                                            id: { "type": "string" },
                                             stepNumber: { "type": "number" },
                                             description: { "type": "string" }
                                         }
@@ -802,13 +808,7 @@ export async function recipesRoutes(app: FastifyInstance) {
             description: "Update an existing recipe",
             body: {
                 type: "object",
-                required: [
-                    "title",
-                    "description",
-                    "categoryId",
-                    "ingredients",
-                    "instructions"
-                ],
+                minProperties: 1,
                 properties: {
                     title: { type: "string" },
                     description: { type: "string" },
@@ -835,6 +835,7 @@ export async function recipesRoutes(app: FastifyInstance) {
                         items: {
                             type: "object",
                             properties: {
+                                id: { type: "string" },
                                 stepNumber: { type: "number" },
                                 description: { type: "string" }
                             }
@@ -879,6 +880,14 @@ export async function recipesRoutes(app: FastifyInstance) {
                 },
                 400: {
                     description: "Bad Request",
+                    type: "object",
+                    properties: {
+                        error: { "type": "string" },
+                        message: { "type": "string" }
+                    }
+                },
+                403: {
+                    description: "Forbidden",
                     type: "object",
                     properties: {
                         error: { "type": "string" },
@@ -1158,6 +1167,14 @@ export async function recipesRoutes(app: FastifyInstance) {
                         message: { "type": "string" }
                     }
                 },
+                403: {
+                    description: "Forbidden",
+                    type: "object",
+                    properties: {
+                        error: { "type": "string" },
+                        message: { "type": "string" }
+                    }
+                },
                 404: {
                     description: "Recipe Not found",
                     type: "object",
@@ -1235,6 +1252,14 @@ export async function recipesRoutes(app: FastifyInstance) {
                         }
                     }
                 },
+                403: {
+                    description: "Forbidden",
+                    type: "object",
+                    properties: {
+                        error: { "type": "string" },
+                        message: { "type": "string" }
+                    }
+                },
                 500: {
                     description: "Internal Server Error",
                     type: "object",
@@ -1278,6 +1303,13 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Recipes"],
             summary: "Delete a recipe rate by its ID",
             description: "Delete a recipe rate by its ID",
+            body: {
+                type: "object",
+                required: ["userId"],
+                properties: {
+                    userId: { type: "string" },
+                },
+            },
             response: {
                 200: {
                     description: "success",
@@ -1297,6 +1329,14 @@ export async function recipesRoutes(app: FastifyInstance) {
                 },
                 400: {
                     description: "Bad Request",
+                    type: "object",
+                    properties: {
+                        error: { "type": "string" },
+                        message: { "type": "string" }
+                    }
+                },
+                403: {
+                    description: "Forbidden",
                     type: "object",
                     properties: {
                         error: { "type": "string" },
