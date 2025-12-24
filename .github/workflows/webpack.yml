@@ -55,14 +55,18 @@ jobs:
         node-version: '20.x'
 
     - name: Install Redoc CLI
-      run: npm install -g @redocly/cli
+      run: npm install @redocly/cli
 
     - name: Create documentation directory
       run: mkdir -p public
 
     - name: Generate API documentation from OpenAPI spec
       run: |
-        npx @redocly/cli build-docs docs/api/apiGateway.json -o public/api-reference.html
+        if [ -f docs/api/apiGateway.json ]; then
+          npx @redocly/cli build-docs docs/api/apiGateway.json -o public/api-reference.html
+        else
+          echo "Warning: OpenAPI spec not found at docs/api/apiGateway.json"
+        fi
 
     - name: Copy markdown documentation
       run: |
@@ -204,7 +208,10 @@ jobs:
         EOF
 
     - name: Copy CNAME file
-      run: cp CNAME public/CNAME
+      run: |
+        if [ -f CNAME ]; then
+          cp CNAME public/CNAME
+        fi
 
     - name: Setup Pages
       uses: actions/configure-pages@v4
