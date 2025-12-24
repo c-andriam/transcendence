@@ -1,0 +1,401 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "API GATEWAY",
+        "version": "1.0.0",
+        "description": "API Gateway for Transcendence application"
+    },
+    "servers": [
+        {
+            "url": "http://{environment}:{port}/api/{version}",
+            "description": "Local development server",
+            "variables": {
+                "environment": {
+                    "default": "localhost"
+                },
+                "port": {
+                    "default": "3000"
+                },
+                "version": {
+                    "default": "v1"
+                }
+            }
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "apiKeyAuth": {
+                "type": "apiKey",
+                "name": "x-api-key",
+                "in": "header"
+            }
+        },
+        "schemas": {
+            "ErrorResponse": {
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "type": "string",
+                        "example": "Forbidden",
+                        "description": "State of a server response"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "API Key not found or Invalid API Key",
+                        "description": "Describe the state of a server response"
+                    }
+                }
+            },
+            "Ingredient": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "cmjgz8b8f0004olsonqcni58x",
+                        "description": "ID of an ingredient"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Poulet",
+                        "description": "Name of an ingredient"
+                    },
+                    "quantityText": {
+                        "type": "string",
+                        "example": "500g",
+                        "description": "Quantity of an ingredient for a recipe"
+                    },
+                    "sortOrder": {
+                        "type": "number",
+                        "example": 1,
+                        "description": "Order of an ingredient"
+                    },
+                    "isOptional": {
+                        "type": "boolean",
+                        "example": false,
+                        "description": "Usage of the ingredient"
+                    },
+                    "recipeId": {
+                        "type": "string",
+                        "example": "cmjgz8b8b0003olsoqe146nch",
+                        "description": "ID of the recipe that attach or use this ingredient"
+                    }
+                }
+            },
+            "Instruction": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "cmjgz8b8g000eolso7m1853a4",
+                        "description": "ID of an instruction"
+                    },
+                    "stepNumber": {
+                        "type": "number",
+                        "example": 1,
+                        "description": "Step of an ingredient usage"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Couper le poulet en morceaux",
+                        "description": "Describe a step of an instruction"
+                    },
+                    "recipeId": {
+                        "type": "string",
+                        "example": "cmjgz8b8b0003olsoqe146nch",
+                        "description": "ID of the recipe that attach or use this instruction"
+                    }
+                }
+            },
+            "Author": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "cmjgz73gl0001olsotb8aoy9q",
+                        "description": "ID of the recipe author"
+                    },
+                    "username": {
+                        "type": "string",
+                        "example": "chef_marie",
+                        "description": "Username of the recipe author"
+                    },
+                    "avatarUrl": {
+                        "type": "string",
+                        "example": "/default-avatar.png",
+                        "description": "Avatar picture of an author"
+                    }
+                }
+            },
+            "Category": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "cmjgz6zhv0000olsou8gfej33",
+                        "description": "ID of a recipe category"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Plats principaux",
+                        "description": "Name of a recipe category"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "plats-principaux",
+                        "description": "Slug of a recipe catergory"
+                    },
+                    "sortOrder": {
+                        "type": "number",
+                        "example": 1,
+                        "description": "Sort order of a recipe category"
+                    }
+                }
+            },
+            "Rating": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "cmjgzb9sq000molsod8pp3tp7",
+                        "description": "ID of rate"
+                    },
+                    "score": {
+                        "type": "number",
+                        "example": 5,
+                        "description": "A score of a recipe rated by userID"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-12-22T09:54:05.786Z",
+                        "description": "Rating time"
+                    },
+                    "userId": {
+                        "type": "string",
+                        "example": "cmjgz75420002olsock4yhnvm",
+                        "description": "ID of a recipe rater"
+                    },
+                    "recipeId": {
+                        "type": "string",
+                        "example": "cmjgz8b8b0003olsoqe146nch",
+                        "description": "ID of the recipe that attach or use this rate"
+                    }
+                }
+            },
+            "Comment": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "cmjgz8b8b0003olsoqe436nch",
+                        "description": "ID of the comment"
+                    },
+                    "content": {
+                        "type": "string",
+                        "example": "Nice recipe!",
+                        "description": "Text content of the comment"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-12-22T09:54:05.786Z",
+                        "description": "Comment time creation"
+                    },
+                    "userId": {
+                        "type": "string",
+                        "example": "cmjgz75420002olsock4yhnvm",
+                        "description": "ID of a recipe commenter"
+                    },
+                    "recipeId": {
+                        "type": "string",
+                        "example": "cmjgz8b8b0003olsoqe146nch",
+                        "description": "ID of the recipe that attach or use this comment"
+                    }
+                }
+            },
+            "Recipe": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "example": "cmjgz8b8b0003olsoqe146nch",
+                        "description": "ID of the recipe"
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Poulet au curry",
+                        "description": "Title of the recipe"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "poulet-au-curry",
+                        "description": "Slug of the recipe"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Description of the recipe",
+                        "description": "Description of the recipe"
+                    },
+                    "prepTime": {
+                        "type": "number",
+                        "example": 30,
+                        "description": "Preparation time in minutes"
+                    },
+                    "cookTime": {
+                        "type": "number",
+                        "example": 45,
+                        "description": "Cooking time in minutes"
+                    },
+                    "servings": {
+                        "type": "number",
+                        "example": 4,
+                        "description": "Number of servings"
+                    },
+                    "difficulty": {
+                        "type": "string",
+                        "example": "MEDIUM",
+                        "enum": [
+                            "EASY",
+                            "MEDIUM",
+                            "HARD"
+                        ],
+                        "description": "Difficulty of making a recipe"
+                    },
+                    "isPublished": {
+                        "type": "boolean",
+                        "example": true,
+                        "description": "State of the recipe (published)"
+                    },
+                    "viewCount": {
+                        "type": "number",
+                        "example": 2,
+                        "description": "Number of view of a recipe"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-12-22T09:51:47.671Z",
+                        "description": "Show the time of creation of a recipe"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-12-22T09:51:47.671Z",
+                        "description": "Show the last time of update"
+                    },
+                    "authorId": {
+                        "type": "string",
+                        "example": "cmjgz73gl0001olsotb8aoy9q",
+                        "description": "ID of the recipe Author"
+                    },
+                    "categoryId": {
+                        "type": "string",
+                        "example": "cmjgz6zhv0000olsou8gfej33",
+                        "description": "ID of the recipe category"
+                    },
+                    "ingredients": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Ingredient"
+                        }
+                    },
+                    "instructions": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Instruction"
+                        }
+                    },
+                    "author": {
+                        "$ref": "#/components/schemas/Author"
+                    },
+                    "category": {
+                        "$ref": "#/components/schemas/Category"
+                    },
+                    "ratings": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Rating"
+                        }
+                    },
+                    "comments": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Comment"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Recipes",
+            "description": "All endpoints related to recipes"
+        }
+    ],
+    "paths": {
+        "/recipes": {
+            "get": {
+                "tags": [
+                    "Recipes"
+                ],
+                "summary": "Get all available recipes",
+                "description": "Get all available recipes",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success",
+                                            "description": "Status of the response"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Recipes found successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Recipe"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "apiKeyAuth": []
+                    }
+                ]
+            }
+        }
+    }
+}
