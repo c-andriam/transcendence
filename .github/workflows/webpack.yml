@@ -302,8 +302,8 @@ jobs:
                 </div>
 
                 <div class="card">
-                    <h2>📚 Référence API (Redocly)</h2>
-                    <p>Documentation interactive de l'API Gateway avec tous les endpoints, schémas et exemples de requêtes.</p>
+                    <h2>📚 Référence API</h2>
+                    <p>Documentation interactive de l'API Gateway avec tous les endpoints, schémas et exemples de requêtes (générée avec Redocly).</p>
                     <a href="api-reference.html">Voir la référence</a>
                 </div>
 
