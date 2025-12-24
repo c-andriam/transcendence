@@ -1,0 +1,299 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Difficulty {
+	EASY
+	MEDIUM
+	HARD
+}
+
+enum MediaType {
+	VIDEO
+	PHOTO
+}
+
+enum OwnerType {
+	POST
+	USER
+	MESSAGE
+}
+
+enum NotificationType {
+	MESSAGE
+	FOLLOWING
+	COMMENT
+	LIKE
+}
+
+/// Utilisateurs du reseau social
+model	User {
+	id				BigInt @id @default(autoincrement())
+	firstName		String @map("first_name") @db.VarChar()
+	lastName		String @map("last_name") @db.VarChar()
+	userName		String @unique @db.VarChar()
+	email			String @unique @db.VarChar()
+	password		String @db.VarChar()
+	profilPictureId BigInt? @map("profil_picture_id")
+	bio				String? @db.VarChar()
+	createdAt		DateTime @default(now())
+
+	//relation
+	profilePicture		Media? 			@relation("UserProfilPicture", fields: [profilPictureId], references: [id])
+	posts				Post[]
+	comments			Comment[]
+	likes				Like[]
+	sentMessages		Message[]		@relation("SentMessages")
+	receivedMessages	Message[]		@relation("ReceivedMessages")
+	following			Follow[]		@relation("Follower")
+	followers			Follow[]		@relation("Followed")
+	aiConversations		AiConversation[]
+	notifications		Notification[]	@relation("NotificationReceiver")
+	sentNotifications	Notification[]	@relation("NotificationSender")
+
+	@@map("users")
+}
+
+/// Stockage des fichiers (images, videos).
+model	Media {
+	id					BigInt			@id @default(autoincrement())
+	ownerId				BigInt			@map("owner_id")
+	ownerType			OwnerType		@default(POST)
+	fileName			String			@map("file_name") @db.VarChar()
+	fileType			MediaType		@map("file_type") @default(PHOTO)
+	fileSize			BigInt			@map("file_size")
+	storagePath			String			@map("storage_path") @db.VarChar()
+	bucketName			String?			@map("bucket_name") @db.VarChar()
+	createdAt			DateTime		@default(now())
+
+	// Relations
+	userProfilPicture	User[]		@relation("UserProfilPicture")
+
+	@@map("medias")
+}
+
+/// Publications des utilisateurs (recettes)
+model	Post {
+	id			BigInt @id @default(autoincrement())
+	userId		BigInt @map("user_id")
+	title		String	@db.VarChar()
+	createdAt	DateTime @default(now())
+
+	// Relations
+	user		User		@relation(fields: [userId], references: [id], onDelete: Cascade)
+	recipe		Recipe?
+	comments	Comment[]
+	likes		Like[]
+	postTags	PostTag[]
+
+	@@map("posts")
+}
+
+///Systeme de suivi entre utilisateurs. Follower_id = celui qui suit, followed_id = celui qui est suivi
+model	Follow {
+	id			BigInt @id @default(autoincrement())
+	followerId	BigInt @map("follower_id")
+	followedId	BigInt @map("followed_id")
+	createdAt	DateTime @default(now())
+
+	// Relations
+	follower	User	@relation("Follower", fields: [followerId], references: [id], onDelete: Cascade)
+	followed	User	@relation("Followed", fields: [followedId], references: [id], onDelete: Cascade)
+
+	@@unique([followerId, followedId])
+	@@map("follows")
+}
+
+/// Messages prives entre utilisateurs
+model	Message {
+	id			BigInt		@id @default(autoincrement())
+	senderId	BigInt		@map("sender_id")
+	receiverId	BigInt		@map("receiver_id")
+	content		String		@db.VarChar()
+	isRead		Boolean 	@default(false) @map("is_read")
+	readAt		DateTime?	@map("read_at")
+	createdAt	DateTime 	@default(now())
+
+	//Relations
+	sender		User		@relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+	receiver	User		@relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+
+	@@map("messages")
+}
+
+
+///Conversation avec l'IA pour chaque utilisateur
+model	AiConversation {
+	id			BigInt			@id @default(autoincrement())
+	userId		BigInt			@map("user_id")
+	title		String?		@db.VarChar()
+	createdAt	DateTime	@default(now())
+	updatedAt	DateTime	@updatedAt
+	
+	//Relations
+	user		User		@relation(fields: [userId], references: [id], onDelete: Cascade)
+	aiMessages	AiMessage[]
+
+	@@map("ai_conversations")
+}
+
+
+/// Notifications pour les utilisateurs, types: likes, comment, follow, message
+model	Notification {
+	id			BigInt			@id @default(autoincrement())
+	userId		BigInt			@map("user_id")
+	type		NotificationType
+	relatedId	BigInt?		@map("related_id")
+	senderId	BigInt			@map("sender_id")
+	message		String		@db.VarChar()
+	isRead		Boolean 	@default(false)
+	createdAt	DateTime	@default(now())
+
+	// Relations
+	user	User			@relation("NotificationReceiver", fields: [userId], references: [id], onDelete: Cascade)
+	sender	User			@relation("NotificationSender", fields: [senderId], references: [id], onDelete: Cascade)
+
+	@@map("notifications")
+}
+
+/// Tag pour les categorie des recettes
+model	Tag {
+	id			BigInt @id @default(autoincrement())
+	name		String @db.VarChar() @unique
+	createdAt	DateTime @default(now())
+
+	// Relations
+	postTags	PostTag[]
+
+	@@map("Tags")
+}
+
+/// Liaisn entre posts et tags (N-N)
+model	PostTag {
+	postId	BigInt	@map("post_id")
+	tagId	BigInt	@map("tag_id")
+
+	// Relations
+	post	Post	@relation(fields: [postId], references: [id], onDelete: Cascade)
+	tag		Tag		@relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+	@@id([postId, tagId])
+	@@map("post_tags")
+}
+
+
+/// Details des recettes. Temps en minutes. Difficulte: facile, moyen, difficile
+model	Recipe {
+	id					BigInt	@id @default(autoincrement())
+	postId				BigInt	@unique @map("post_id")
+	servings			BigInt
+	prepTime			BigInt	@map("prep_time")
+	cookTime			BigInt	@map("cook_time")
+	difficulty			Difficulty
+
+	// Relations
+	post				Post	@relation(fields: [postId], references: [id], onDelete: Cascade)
+	steps				RecipeStep[]
+	recipeIngredients	RecipeIngredient[]
+
+	@@map("recipes")
+}
+
+/// Systeme de likes, un likes par post pour chaque utilisateur
+model	Like {
+	id			BigInt		@id @default(autoincrement())
+	postId		BigInt		@map("post_id")
+	userId		BigInt		@map("user_id")
+	createdAt	DateTime	@default(now())
+
+	// Relations
+	post		Post		@relation(fields: [postId], references: [id], onDelete: Cascade)
+	user		User		@relation(fields: [userId], references: [id], onDelete: Cascade)
+
+	@@unique([postId, userId])
+	@@map("likes")
+}
+
+
+/// Commentaire sur les posts
+model	Comment {
+	id			BigInt		@id @default(autoincrement())
+	postId		BigInt		@map("post_id")
+	userId		BigInt		@map("user_id")
+	content		String		@db.VarChar()
+	createdAt	DateTime	@default(now())
+
+	// Relations
+	post		Post		@relation(fields: [postId], references: [id], onDelete: Cascade)
+	user		User		@relation(fields: [userId], references: [id], onDelete: Cascade)
+	
+	@@map("comments")
+}
+
+
+/// Messages dans les conversations IA
+model	AiMessage {
+	id				BigInt			@id @default(autoincrement())
+	conversationId	BigInt			@map("conversation_id")
+	content			String			@db.VarChar()
+	createdAt		DateTime		@default(now())
+
+	// Relations
+	conversation	AiConversation	@relation(fields: [conversationId], references: [id], onDelete: Cascade)
+	@@map("ai_messages")
+}
+
+
+/// Ingredients utiliser dans chaque recette avec quantites
+model	RecipeIngredient {
+	recipeId		BigInt		@map("recipe_id")
+	ingredientId	BigInt		@map("ingredient_id")
+	quantity		String		@db.VarChar()
+	unit			String		@db.VarChar()
+
+	// Relations
+	recipe			Recipe		@relation(fields: [recipeId], references: [id], onDelete: Cascade)
+	ingredient		ingredient	@relation(fields: [ingredientId], references: [id], onDelete: Restrict)
+	
+	@@id([recipeId, ingredientId])
+	@@map("recipe_ingredients")
+}
+
+
+/// Etap de preparations ordonnes
+model	RecipeStep {
+	id			BigInt		@id @default(autoincrement())
+	recipeId	BigInt		@map("recipe_id")
+	stepOrder	BigInt		@map("step_order")
+	instruction	String		@db.VarChar()
+	createdAt	DateTime	@default(now())
+
+	// Relations
+	recipe		Recipe		@relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+	@@map("recipe_steps")
+}
+
+
+/// Listes des ingredient utilisables
+model	ingredient {
+	id					BigInt		@id @default(autoincrement())
+	name				String		@db.VarChar() @unique
+	createdAt			DateTime	@default(now())
+
+	// Relations
+	recipeIngredients	RecipeIngredient[]
+
+	@@map("ingredients")
+}
