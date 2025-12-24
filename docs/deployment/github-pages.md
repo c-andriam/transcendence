@@ -34,6 +34,7 @@ Le workflow `NodeJS with Webpack` (`.github/workflows/webpack.yml`) est configur
 La documentation déployée comprend :
 
 - **Page d'accueil** (`index.html`) : Interface moderne avec cartes pour naviguer dans la documentation
+- **Swagger UI Interactive** (`documentation/index.html`) : Interface Swagger UI complète permettant de tester les endpoints directement depuis le navigateur
 - **Référence API** (`api-reference.html`) : Documentation interactive générée à partir de la spécification OpenAPI avec Redocly
 - **Guide API** (`api.md`) : Introduction aux concepts des APIs
 - **Documentation spécifique** :
@@ -48,6 +49,7 @@ La documentation déployée comprend :
 La documentation est accessible sur :
 - **URL GitHub Pages** : `https://<username>.github.io/<repository>/`
 - **Domaine personnalisé** : `https://cookshare.me` (configuré via le fichier `CNAME`)
+- **Swagger UI** : `https://cookshare.me/documentation` - Interface interactive complète
 
 ## Outils Utilisés
 
@@ -63,6 +65,16 @@ Outil utilisé pour générer la documentation HTML interactive à partir de la 
 ```bash
 npx @redocly/cli build-docs openapi-spec.json -o public/api-reference.html
 ```
+
+### Swagger UI
+Une page Swagger UI autonome est créée pour fournir une interface interactive complète. Le workflow génère un fichier HTML qui charge Swagger UI depuis un CDN et référence la spécification OpenAPI extraite du serveur en direct.
+
+La page Swagger UI est créée avec :
+- Les assets Swagger UI chargés depuis `unpkg.com` (version 5.11.0)
+- La spécification OpenAPI copiée dans `public/documentation/openapi-spec.json`
+- Une page HTML autonome générée dans `public/documentation/index.html`
+
+Cela permet d'avoir une interface Swagger UI complètement fonctionnelle accessible à `cookshare.me/documentation`.
 
 ### Actions GitHub utilisées
 - `actions/checkout@v4` : Clone le repository
