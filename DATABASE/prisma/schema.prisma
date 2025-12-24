@@ -50,7 +50,7 @@ model	User {
 	createdAt		DateTime @default(now())
 
 	//relation
-	profilePicture		Media? 			@relation("UserProfilPicture", fields: [profilPictureId], references: [id])
+	profilePicture		Media? 			@relation("UserProfilPicture", fields: [profilPictureId], references: [id], onDelete: SetNull)
 	posts				Post[]
 	comments			Comment[]
 	likes				Like[]
