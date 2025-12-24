@@ -21,7 +21,10 @@ Le workflow `NodeJS with Webpack` (`.github/workflows/webpack.yml`) est configur
 
 ### Job 2 : Build-docs
 - S'exécute uniquement sur la branche `main` lors d'un push
-- Génère la documentation interactive de l'API à partir du fichier OpenAPI (`docs/api/apiGateway.json`)
+- **Démarre l'API Gateway** (`backend/api-gateway/index.ts`) pour récupérer la spécification OpenAPI en direct
+- Configure une base de données PostgreSQL temporaire pour le démarrage du serveur
+- Récupère la documentation depuis `http://localhost:3000/documentation/json`
+- Génère la documentation interactive avec Redocly CLI
 - Copie les fichiers markdown de documentation
 - Crée une page d'accueil élégante avec liens vers toutes les ressources
 - Déploie automatiquement sur GitHub Pages
@@ -48,11 +51,17 @@ La documentation est accessible sur :
 
 ## Outils Utilisés
 
+### API Gateway en direct
+Le workflow démarre réellement l'API Gateway (`backend/api-gateway/index.ts`) pour extraire la spécification OpenAPI à jour avec toutes les routes et schémas définis dans le code.
+
+### PostgreSQL temporaire
+Une instance PostgreSQL est configurée automatiquement via `ikalnytskyi/action-setup-postgres@v6` pour permettre au serveur de démarrer.
+
 ### Redocly CLI
 Outil utilisé pour générer la documentation HTML interactive à partir de la spécification OpenAPI.
 
 ```bash
-npx @redocly/cli build-docs docs/api/apiGateway.json -o public/api-reference.html
+npx @redocly/cli build-docs openapi-spec.json -o public/api-reference.html
 ```
 
 ### Actions GitHub utilisées
@@ -89,9 +98,24 @@ Le workflow se déclenche automatiquement :
 ## Modification de la Documentation
 
 ### Mettre à jour la spécification OpenAPI
-1. Modifier le fichier `docs/api/apiGateway.json`
-2. Commit et push sur `main`
-3. Le workflow génère automatiquement la nouvelle documentation
+1. Modifier les routes dans `backend/api-gateway/src/routes/` ou les schémas dans `backend/api-gateway/src/index.ts`
+2. Les routes utilisent les schémas Fastify Swagger pour documenter les endpoints :
+```typescript
+app.get("/recipes", {
+  schema: {
+    tags: ["Recipes"],
+    summary: "Get all available recipes",
+    description: "Get all available recipes",
+    response: {
+      200: {
+        // Schema definition
+      }
+    }
+  }
+});
+```
+3. Commit et push sur `main`
+4. Le workflow démarre automatiquement l'API Gateway et génère la nouvelle documentation
 
 ### Ajouter du contenu markdown
 1. Créer ou modifier les fichiers `.md` dans `docs/api/`

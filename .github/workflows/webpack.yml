@@ -54,18 +54,85 @@ jobs:
       with:
         node-version: '20.x'
 
+    - name: Install dependencies for API Gateway
+      run: |
+        cd backend/api-gateway
+        npm install
+        npx prisma generate
+
+    - name: Setup PostgreSQL
+      uses: ikalnytskyi/action-setup-postgres@v6
+      with:
+        username: postgres
+        password: postgres
+        database: ft_transcendence
+        port: 5432
+      id: postgres
+
     - name: Install Redoc CLI
       run: npm install @redocly/cli
 
     - name: Create documentation directory
       run: mkdir -p public
 
+    - name: Start API Gateway and fetch OpenAPI spec
+      run: |
+        cd backend/api-gateway
+        
+        # Set environment variables
+        export API_GATEWAY_KEY="github-actions-doc-generation"
+        export DATABASE_URL="${{ steps.postgres.outputs.connection-uri }}"
+        
+        # Run Prisma migrations to set up database schema
+        npx prisma migrate deploy || npx prisma db push || true
+        
+        # Start the server in background
+        npm run dev > /tmp/api-gateway.log 2>&1 &
+        SERVER_PID=$!
+        
+        # Wait for server to be ready (max 60 seconds)
+        echo "Waiting for API Gateway to start..."
+        for i in {1..60}; do
+          if curl -s http://localhost:3000/documentation/json > /dev/null 2>&1; then
+            echo "API Gateway is ready!"
+            break
+          fi
+          if [ $i -eq 60 ]; then
+            echo "Timeout waiting for API Gateway"
+            cat /tmp/api-gateway.log
+            kill $SERVER_PID 2>/dev/null || true
+            exit 1
+          fi
+          echo "Waiting... ($i/60)"
+          sleep 1
+        done
+        
+        # Fetch the OpenAPI spec
+        if curl -s http://localhost:3000/documentation/json -o ../../openapi-spec.json; then
+          echo "OpenAPI spec fetched successfully"
+          echo "First 20 lines of spec:"
+          cat ../../openapi-spec.json | head -20
+        else
+          echo "Failed to fetch OpenAPI spec"
+          echo "Server logs:"
+          cat /tmp/api-gateway.log
+          kill $SERVER_PID 2>/dev/null || true
+          exit 1
+        fi
+        
+        # Stop the server
+        kill $SERVER_PID 2>/dev/null || true
+
     - name: Generate API documentation from OpenAPI spec
       run: |
-        if [ -f docs/api/apiGateway.json ]; then
+        if [ -f openapi-spec.json ]; then
+          npx @redocly/cli build-docs openapi-spec.json -o public/api-reference.html
+          echo "Documentation generated from live API Gateway"
+        elif [ -f docs/api/apiGateway.json ]; then
           npx @redocly/cli build-docs docs/api/apiGateway.json -o public/api-reference.html
+          echo "Documentation generated from static file (fallback)"
         else
-          echo "Warning: OpenAPI spec not found at docs/api/apiGateway.json"
+          echo "Warning: No OpenAPI spec found"
         fi
 
     - name: Copy markdown documentation
