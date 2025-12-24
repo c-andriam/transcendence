@@ -128,6 +128,69 @@ jobs:
         # Stop the server
         kill $SERVER_PID 2>/dev/null || true
 
+    - name: Create Swagger UI documentation page
+      run: |
+        # Create documentation directory
+        mkdir -p public/documentation
+        
+        # Copy OpenAPI spec to documentation directory
+        cp openapi-spec.json public/documentation/openapi-spec.json
+        
+        # Create standalone Swagger UI HTML page
+        cat > public/documentation/index.html << 'SWAGGEREOF'
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <title>API Gateway Documentation - Swagger UI</title>
+          <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui.css" />
+          <link rel="icon" type="image/png" href="https://unpkg.com/swagger-ui-dist@5.11.0/favicon-32x32.png" sizes="32x32" />
+          <link rel="icon" type="image/png" href="https://unpkg.com/swagger-ui-dist@5.11.0/favicon-16x16.png" sizes="16x16" />
+          <style>
+            html {
+              box-sizing: border-box;
+              overflow: -moz-scrollbars-vertical;
+              overflow-y: scroll;
+            }
+            *, *:before, *:after {
+              box-sizing: inherit;
+            }
+            body {
+              margin: 0;
+              padding: 0;
+            }
+            .topbar {
+              display: none;
+            }
+          </style>
+        </head>
+        <body>
+          <div id="swagger-ui"></div>
+          <script src="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-bundle.js" charset="UTF-8"></script>
+          <script src="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-standalone-preset.js" charset="UTF-8"></script>
+          <script>
+            window.onload = function() {
+              window.ui = SwaggerUIBundle({
+                url: "./openapi-spec.json",
+                dom_id: '#swagger-ui',
+                deepLinking: true,
+                presets: [
+                  SwaggerUIBundle.presets.apis,
+                  SwaggerUIStandalonePreset
+                ],
+                plugins: [
+                  SwaggerUIBundle.plugins.DownloadUrl
+                ],
+                layout: "StandaloneLayout"
+              });
+            };
+          </script>
+        </body>
+        </html>
+        SWAGGEREOF
+        
+        echo "Standalone Swagger UI page created successfully"
+
     - name: Generate API documentation from OpenAPI spec
       run: |
         if [ -f openapi-spec.json ]; then
@@ -230,7 +293,13 @@ jobs:
 
             <div class="cards">
                 <div class="card">
-                    <h2>📚 Référence API</h2>
+                    <h2>🚀 Swagger UI - Documentation Interactive</h2>
+                    <p>Interface Swagger UI complète avec possibilité de tester les endpoints directement depuis votre navigateur.</p>
+                    <a href="documentation/">Accéder à Swagger UI</a>
+                </div>
+
+                <div class="card">
+                    <h2>📚 Référence API (Redocly)</h2>
                     <p>Documentation interactive de l'API Gateway avec tous les endpoints, schémas et exemples de requêtes.</p>
                     <a href="api-reference.html">Voir la référence</a>
                 </div>
