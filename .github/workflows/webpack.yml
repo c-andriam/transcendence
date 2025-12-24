@@ -137,6 +137,9 @@ jobs:
         cp openapi-spec.json public/documentation/openapi-spec.json
         
         # Create standalone Swagger UI HTML page
+        # Note: Using unpkg.com CDN with crossorigin attributes for security.
+        # Consider adding integrity (SRI) hashes for production use to ensure
+        # resources haven't been tampered with.
         cat > public/documentation/index.html << 'SWAGGEREOF'
         <!DOCTYPE html>
         <html lang="en">
@@ -144,8 +147,8 @@ jobs:
           <meta charset="UTF-8">
           <title>API Gateway Documentation - Swagger UI</title>
           <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui.css" crossorigin="anonymous" />
-          <link rel="icon" type="image/png" href="https://unpkg.com/swagger-ui-dist@5.11.0/favicon-32x32.png" sizes="32x32" />
-          <link rel="icon" type="image/png" href="https://unpkg.com/swagger-ui-dist@5.11.0/favicon-16x16.png" sizes="16x16" />
+          <link rel="icon" type="image/png" href="https://unpkg.com/swagger-ui-dist@5.11.0/favicon-32x32.png" sizes="32x32" crossorigin="anonymous" />
+          <link rel="icon" type="image/png" href="https://unpkg.com/swagger-ui-dist@5.11.0/favicon-16x16.png" sizes="16x16" crossorigin="anonymous" />
           <style>
             html {
               box-sizing: border-box;
