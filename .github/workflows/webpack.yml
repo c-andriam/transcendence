@@ -93,7 +93,8 @@ jobs:
         # Wait for server to be ready (max 60 seconds)
         echo "Waiting for API Gateway to start..."
         for i in {1..60}; do
-          if curl -s http://localhost:3000/documentation/json > /dev/null 2>&1; then
+          # Try to access the documentation endpoint (should be public)
+          if curl -s http://localhost:3000/documentation > /dev/null 2>&1; then
             echo "API Gateway is ready!"
             break
           fi
@@ -107,9 +108,13 @@ jobs:
           sleep 1
         done
         
-        # Fetch the OpenAPI spec
+        # Fetch the OpenAPI spec (try without auth first, then with auth if needed)
         if curl -s http://localhost:3000/documentation/json -o ../../openapi-spec.json; then
           echo "OpenAPI spec fetched successfully"
+          echo "First 20 lines of spec:"
+          cat ../../openapi-spec.json | head -20
+        elif curl -s -H "x-api-key: github-actions-doc-generation" http://localhost:3000/documentation/json -o ../../openapi-spec.json; then
+          echo "OpenAPI spec fetched successfully (with auth)"
           echo "First 20 lines of spec:"
           cat ../../openapi-spec.json | head -20
         else
