@@ -4,6 +4,8 @@ import { authMiddleware } from "./middleware/auth.middleware";
 import fastify from "fastify";
 import { registerRateLimiter } from "./middleware/rateLimiter.middleware";
 import { recipesRoutes } from "./routes/recipes.routes";
+import { authRoutes } from "./routes/auth.routes";
+import { healthRoutes } from "./routes/health.routes";
 import dbPlugin from "./utils/dbPlugin";
 import swagger from "@fastify/swagger";
 import swaggerUi from "@fastify/swagger-ui";
@@ -69,6 +71,8 @@ const start = async () => {
     app.register(async (api) => {
       api.addHook("preHandler", authMiddleware);
       api.register(recipesRoutes, { prefix: '/api/v1' });
+      api.register(authRoutes, { prefix: '/api/v1' });
+      api.register(healthRoutes, { prefix: '/api/v1' });
     })
     // console.log("Database connected");
     // app.addHook("preHandler", authMiddleware);
