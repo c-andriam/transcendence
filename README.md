@@ -1,7 +1,0 @@
-- Commits : utiliser les préfixes :
-  - `feat:` nouvelle fonctionnalité
-  - `fix:` correction de bug
-  - `docs:` documentation
-  - `style:` formatage
-  - `refactor:` refactoring
-  - `test:` tests
