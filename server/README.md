@@ -4,7 +4,7 @@
 
 ## Part 0 : Schéma de la Base de Données (Model de la Base de Données)
 
-![Database schema](./MLD/DB design.png)
+![Database schema](./MLD/DB_design.png)
 
 ---
 
