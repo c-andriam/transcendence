@@ -1,7 +1,7 @@
 services:
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch-wolfi:9.2.2
-    container_name: elasticsearch
+    container_name: es01
     env_file:
       - .env
     environment:
@@ -12,13 +12,14 @@ services:
       - "9300:9300"
     volumes:
       - elasticsearch_data:/usr/share/elasticsearch/data
+      - elasticsearch_certs:/usr/share/elasticsearch/config/certs
     networks:
-      - elk
+      - elastic
     healthcheck:
       test:
         [
           "CMD-SHELL",
-          "curl -s -u elastic:${ELASTIC_PASSWORD} http://localhost:9200/_cluster/health | grep -vq '\"status\":\"red\"'"
+          'curl -s -u elastic:${ELASTIC_PASSWORD} http://localhost:9200/_cluster/health | grep -vq ''"status":"red"''',
         ]
       interval: 10s
       timeout: 5s
@@ -35,23 +36,8 @@ services:
     depends_on:
       - logstash
     networks:
-      - elk
+      - elastic
       - ft
-
-  logstash:
-    image: docker.elastic.co/logstash/logstash-wolfi:9.2.2
-    container_name: logstash
-    env_file:
-      - .env
-    volumes:
-      - ./logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:z
-    ports:
-      - "5044:5044"
-    depends_on:
-      elasticsearch:
-        condition: service_healthy
-    networks:
-      - elk
 
   kibana:
     image: docker.elastic.co/kibana/kibana-wolfi:9.2.2
@@ -61,11 +47,38 @@ services:
     env_file:
       - .env
     environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - ELASTICSEARCH_HOSTS=http://es01:9200
       - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
     depends_on:
       elasticsearch:
         condition: service_healthy
     networks:
-      - elk
+      - elastic
 
+  logstash:
+    image: docker.elastic.co/logstash/logstash-wolfi:9.2.2
+    container_name: logstash
+    env_file:
+      - .env
+    volumes:
+      - ./logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:z
+      - elasticsearch_certs:/usr/share/logstash/config/certs:ro
+    ports:
+      - "5044:5044"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - elastic
+
+volumes:
+  elasticsearch_data:
+  elasticsearch_certs:
+  logs:
+    external: true
+
+networks:
+  elastic:
+    name: elastic
+  ft:
+    external: true

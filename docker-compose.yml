@@ -15,28 +15,12 @@ networks:
 volumes:
   logs:
     name: logs-volume
-  elasticsearch_data:
-    name: elastic-volume
   prometheus_data:
     name: prom-data
   grafana_data:
     name: graf-data
   db_data:
     name: db-data
-
-services:
-  nginx-proxy-manager:
-    image: "jc21/nginx-proxy-manager:latest"
-    container_name: nginx-proxy-manager
-    environment:
-      TZ: "Australia/Brisbane"
-    ports:
-      - "8080:8080"
-      - "1024:81"
-      # - '443:443'
-    networks:
-      - proxy_net
-    restart: unless-stopped
 
 include:
   - docker/elk/compose.yml

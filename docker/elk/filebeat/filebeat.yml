@@ -1,9 +1,12 @@
 filebeat.inputs:
-- type: filestream
-  enabled: true
-  paths:
-    - /var/log/*.log
-    - /var/log/*/*.log
+  - type: filestream
+    id: ft-logs
+    enabled: true
+    paths:
+      - /var/log/app/*.log
+
+output.elasticsearch:
+  enabled: false
 
 output.logstash:
   hosts: ["logstash:5044"]
