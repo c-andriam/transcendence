@@ -329,6 +329,22 @@ jobs:
             // Configuration
             const ERROR_DISPLAY_DURATION = 3000; // milliseconds
 
+            function showError(message, temporary = true) {
+              // Remove any existing error messages
+              const existingErrors = document.querySelectorAll('.json-container .error');
+              existingErrors.forEach(err => err.remove());
+              
+              // Show new error message
+              const errorDiv = document.createElement('div');
+              errorDiv.className = 'error';
+              errorDiv.textContent = message;
+              document.querySelector('.json-container').insertBefore(errorDiv, document.getElementById('json-content'));
+              
+              if (temporary) {
+                setTimeout(() => errorDiv.remove(), ERROR_DISPLAY_DURATION);
+              }
+            }
+
             async function loadJSON() {
               try {
                 const response = await fetch('./documentation/openapi-spec.json');
@@ -349,35 +365,17 @@ jobs:
                 // Enable copy button once content is loaded
                 document.getElementById('copy-button').disabled = false;
               } catch (error) {
-                const loadingEl = document.getElementById('loading');
-                loadingEl.textContent = '';
-                const errorDiv = document.createElement('div');
-                errorDiv.className = 'error';
+                document.getElementById('loading').style.display = 'none';
                 
-                // Provide specific error messages
+                // Provide specific error messages using the same showError function
                 if (error instanceof SyntaxError) {
-                  errorDiv.textContent = 'Erreur: Le fichier JSON est malformé';
+                  showError('Erreur: Le fichier JSON est malformé', false);
                 } else if (error.name === 'TypeError') {
-                  errorDiv.textContent = 'Erreur réseau: Impossible de charger le fichier';
+                  showError('Erreur réseau: Impossible de charger le fichier', false);
                 } else {
-                  errorDiv.textContent = 'Erreur: ' + error.message;
+                  showError('Erreur: ' + error.message, false);
                 }
-                
-                loadingEl.appendChild(errorDiv);
               }
-            }
-
-            function showError(message) {
-              // Remove any existing error messages
-              const existingErrors = document.querySelectorAll('.json-container .error');
-              existingErrors.forEach(err => err.remove());
-              
-              // Show new error message
-              const errorDiv = document.createElement('div');
-              errorDiv.className = 'error';
-              errorDiv.textContent = message;
-              document.querySelector('.json-container').insertBefore(errorDiv, document.getElementById('json-content'));
-              setTimeout(() => errorDiv.remove(), ERROR_DISPLAY_DURATION);
             }
 
             function copyToClipboard(event) {
