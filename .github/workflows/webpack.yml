@@ -312,8 +312,8 @@ jobs:
 
           <div class="controls">
             <button id="copy-button" disabled>📋 Copier le JSON</button>
-            <a href="./documentation/openapi-spec.json" download="openapi-spec.json">💾 Télécharger le fichier</a>
-            <a href="./">🏠 Retour à l'accueil</a>
+            <a href="documentation/openapi-spec.json" download="openapi-spec.json">💾 Télécharger le fichier</a>
+            <a href="index.html">🏠 Retour à l'accueil</a>
           </div>
 
           <div class="json-container">
@@ -347,7 +347,7 @@ jobs:
 
             async function loadJSON() {
               try {
-                const response = await fetch('./documentation/openapi-spec.json');
+                const response = await fetch('documentation/openapi-spec.json');
                 
                 if (!response.ok) {
                   if (response.status === 404) {
