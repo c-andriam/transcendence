@@ -2,6 +2,8 @@ import fastify from "fastify";
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
+import swagger from "@fastify/swagger";
+import swaggerUi from "@fastify/swagger-ui";
 
 const app = fastify({
     logger: true
@@ -17,6 +19,19 @@ const start = async () => {
         app.log.info('Database connection...');
         await prisma.$connect();
         app.log.info('Database connected');
+
+        await app.register(swagger, {
+            openapi: {
+                info: {
+                    title: "Auth Service API",
+                    version: "1.0.0"
+                }
+            }
+        });
+        await app.register(swaggerUi, {
+            routePrefix: "/documentation",
+        });
+
         app.register(require('./routes/auth.routes').authRoutes, {
             prefix: '/api/v1'
         });
