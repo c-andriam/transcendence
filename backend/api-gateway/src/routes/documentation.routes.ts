@@ -70,6 +70,8 @@ export async function documentationRoutes(app: FastifyInstance) {
                             // Strip /api/v1 and ensure it starts with /
                             let newPath = path.startsWith('/api/v1') ? path.replace('/api/v1', '') : path;
                             if (!newPath.startsWith('/')) newPath = '/' + newPath;
+                            // Remove any double slashes
+                            newPath = newPath.replace(/\/+/g, '/');
                             rootDoc.paths[newPath] = methods;
                         }
                     }
