@@ -248,8 +248,13 @@ jobs:
               font-size: 0.9rem;
               transition: background 0.2s;
             }
-            .controls button:hover {
+            .controls button:hover:not(:disabled) {
               background: #1d4ed8;
+            }
+            .controls button:disabled {
+              background: #9ca3af;
+              cursor: not-allowed;
+              opacity: 0.6;
             }
             .controls a {
               padding: 0.5rem 1rem;
@@ -306,7 +311,7 @@ jobs:
           </header>
 
           <div class="controls">
-            <button onclick="copyToClipboard(event)">📋 Copier le JSON</button>
+            <button id="copy-button" onclick="copyToClipboard(event)" disabled>📋 Copier le JSON</button>
             <a href="./documentation/openapi-spec.json" download="openapi-spec.json">💾 Télécharger le fichier</a>
             <a href="./">🏠 Retour à l'accueil</a>
           </div>
@@ -331,10 +336,26 @@ jobs:
                 const formatted = JSON.stringify(data, null, 2);
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('json-content').textContent = formatted;
+                
+                // Enable copy button once content is loaded
+                document.getElementById('copy-button').disabled = false;
               } catch (error) {
                 document.getElementById('loading').innerHTML = 
                   '<div class="error">Erreur: ' + error.message + '</div>';
               }
+            }
+
+            function showError(message) {
+              // Remove any existing error messages
+              const existingErrors = document.querySelectorAll('.json-container .error');
+              existingErrors.forEach(err => err.remove());
+              
+              // Show new error message
+              const errorDiv = document.createElement('div');
+              errorDiv.className = 'error';
+              errorDiv.textContent = message;
+              document.querySelector('.json-container').insertBefore(errorDiv, document.getElementById('json-content'));
+              setTimeout(() => errorDiv.remove(), 3000);
             }
 
             function copyToClipboard(event) {
@@ -342,11 +363,7 @@ jobs:
               
               // Check if content exists and is not empty
               if (!content || content.trim() === '') {
-                const errorDiv = document.createElement('div');
-                errorDiv.className = 'error';
-                errorDiv.textContent = 'Aucun contenu JSON à copier. Veuillez attendre le chargement.';
-                document.querySelector('.json-container').insertBefore(errorDiv, document.getElementById('json-content'));
-                setTimeout(() => errorDiv.remove(), 3000);
+                showError('Aucun contenu JSON à copier. Veuillez attendre le chargement.');
                 return;
               }
               
@@ -358,11 +375,7 @@ jobs:
                   button.textContent = originalText;
                 }, 2000);
               }).catch(err => {
-                const errorDiv = document.createElement('div');
-                errorDiv.className = 'error';
-                errorDiv.textContent = 'Erreur lors de la copie dans le presse-papiers.';
-                document.querySelector('.json-container').insertBefore(errorDiv, document.getElementById('json-content'));
-                setTimeout(() => errorDiv.remove(), 3000);
+                showError('Erreur lors de la copie dans le presse-papiers.');
               });
             }
 
