@@ -34,7 +34,7 @@ const start = async () => {
 
         app.decorate('prisma', prisma);
         app.register(require('./routes/recipe.routes').recipesRoutes, {
-            prefix: '/api/v1/'
+            prefix: '/api/v1'
         });
         await app.listen({
             port: 3003,
