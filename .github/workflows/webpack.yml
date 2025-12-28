@@ -311,7 +311,7 @@ jobs:
           </header>
 
           <div class="controls">
-            <button id="copy-button" onclick="copyToClipboard(event)" disabled>📋 Copier le JSON</button>
+            <button id="copy-button" disabled>📋 Copier le JSON</button>
             <a href="./documentation/openapi-spec.json" download="openapi-spec.json">💾 Télécharger le fichier</a>
             <a href="./">🏠 Retour à l'accueil</a>
           </div>
@@ -340,8 +340,12 @@ jobs:
                 // Enable copy button once content is loaded
                 document.getElementById('copy-button').disabled = false;
               } catch (error) {
-                document.getElementById('loading').innerHTML = 
-                  '<div class="error">Erreur: ' + error.message + '</div>';
+                const loadingEl = document.getElementById('loading');
+                loadingEl.textContent = '';
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error';
+                errorDiv.textContent = 'Erreur: ' + error.message;
+                loadingEl.appendChild(errorDiv);
               }
             }
 
@@ -379,8 +383,11 @@ jobs:
               });
             }
 
-            // Load JSON when page loads
-            window.addEventListener('DOMContentLoaded', loadJSON);
+            // Setup event listeners when page loads
+            window.addEventListener('DOMContentLoaded', () => {
+              loadJSON();
+              document.getElementById('copy-button').addEventListener('click', copyToClipboard);
+            });
           </script>
         </body>
         </html>
