@@ -302,11 +302,11 @@ jobs:
         <body>
           <header>
             <h1>OpenAPI JSON Viewer</h1>
-            <p class="subtitle">Contenu brut du endpoint http://localhost:3000/api/v1/json</p>
+            <p class="subtitle">Contenu brut de la spécification OpenAPI</p>
           </header>
 
           <div class="controls">
-            <button onclick="copyToClipboard()">📋 Copier le JSON</button>
+            <button onclick="copyToClipboard(event)">📋 Copier le JSON</button>
             <a href="./documentation/openapi-spec.json" download="openapi-spec.json">💾 Télécharger le fichier</a>
             <a href="./">🏠 Retour à l'accueil</a>
           </div>
@@ -337,7 +337,7 @@ jobs:
               }
             }
 
-            function copyToClipboard() {
+            function copyToClipboard(event) {
               const content = document.getElementById('json-content').textContent;
               navigator.clipboard.writeText(content).then(() => {
                 const button = event.target;
@@ -475,7 +475,7 @@ jobs:
 
                 <div class="card">
                     <h2>📄 OpenAPI JSON</h2>
-                    <p>Visualisez le contenu brut du endpoint http://localhost:3000/api/v1/json - Spécification OpenAPI complète au format JSON.</p>
+                    <p>Visualisez la spécification OpenAPI complète au format JSON brut avec possibilité de copier ou télécharger.</p>
                     <a href="openapi-json.html">Voir le JSON</a>
                 </div>
 
