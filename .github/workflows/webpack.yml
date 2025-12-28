@@ -339,6 +339,17 @@ jobs:
 
             function copyToClipboard(event) {
               const content = document.getElementById('json-content').textContent;
+              
+              // Check if content exists and is not empty
+              if (!content || content.trim() === '') {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error';
+                errorDiv.textContent = 'Aucun contenu JSON à copier. Veuillez attendre le chargement.';
+                document.querySelector('.json-container').insertBefore(errorDiv, document.getElementById('json-content'));
+                setTimeout(() => errorDiv.remove(), 3000);
+                return;
+              }
+              
               navigator.clipboard.writeText(content).then(() => {
                 const button = event.target;
                 const originalText = button.textContent;
@@ -347,7 +358,11 @@ jobs:
                   button.textContent = originalText;
                 }, 2000);
               }).catch(err => {
-                alert('Erreur lors de la copie: ' + err);
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error';
+                errorDiv.textContent = 'Erreur lors de la copie dans le presse-papiers.';
+                document.querySelector('.json-container').insertBefore(errorDiv, document.getElementById('json-content'));
+                setTimeout(() => errorDiv.remove(), 3000);
               });
             }
 
