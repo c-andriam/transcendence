@@ -94,7 +94,7 @@ jobs:
         echo "Waiting for API Gateway to start..."
         for i in {1..60}; do
           # Try to access the documentation endpoint (should be public)
-          if curl -s http://localhost:3000/documentation > /dev/null 2>&1; then
+          if curl -s http://localhost:3000/api/v1/json > /dev/null 2>&1; then
             echo "API Gateway is ready!"
             break
           fi
