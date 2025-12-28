@@ -114,11 +114,48 @@ export async function recipesRoutes(app: FastifyInstance) {
                 required: [
                     "title",
                     "description",
+                    "prepTime",
+                    "cookTime",
+                    "servings",
                     "authorId",
                     "categoryId",
                     "ingredients",
                     "instructions"
-                ]
+                ],
+                properties: {
+                    title: { type: "string" },
+                    description: { type: "string" },
+                    prepTime: { type: "number" },
+                    cookTime: { type: "number" },
+                    servings: { type: "number" },
+                    difficulty: { type: "string", enum: ["EASY", "MEDIUM", "HARD"] },
+                    isPublished: { type: "boolean" },
+                    authorId: { type: "string" },
+                    categoryId: { type: "string" },
+                    ingredients: {
+                        type: "array",
+                        items: {
+                            type: "object",
+                            properties: {
+                                name: { type: "string" },
+                                quantityText: { type: "string" },
+                                isOptional: { type: "boolean" }
+                            },
+                            required: ["name", "quantityText"]
+                        }
+                    },
+                    instructions: {
+                        type: "array",
+                        items: {
+                            type: "object",
+                            properties: {
+                                stepNumber: { type: "number" },
+                                description: { type: "string" }
+                            },
+                            required: ["stepNumber", "description"]
+                        }
+                    }
+                }
             },
             response: {
                 201: {

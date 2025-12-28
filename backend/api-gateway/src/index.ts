@@ -5,10 +5,12 @@ import fastify from "fastify";
 import { registerRateLimiter } from "./middleware/rateLimiter.middleware";
 import { recipesRoutes } from "./routes/recipes.routes";
 import { authRoutes } from "./routes/auth.routes";
+import { otherServicesRoutes } from "./routes/services.routes";
 import { healthRoutes } from "./routes/health.routes";
 import dbPlugin from "./utils/dbPlugin";
 import swagger from "@fastify/swagger";
 import swaggerUi from "@fastify/swagger-ui";
+import { documentationRoutes } from "./routes/documentation.routes";
 // import fs from 'fs';
 
 dotenv.config();
@@ -27,53 +29,34 @@ const start = async () => {
     await registerRateLimiter(app);
     app.register(dbPlugin);
     await app.register(swagger, {
-      openapi:
-      {
-        info: {
-          title: "API GATEWAY",
-          version: "1.0.0",
-          description: "API Gateway for Transcendence application"
-        },
-        servers: [
-          {
-            url: "http://{environment}:{port}/api/{version}",
-            description: "Local development server",
-            variables: {
-              environment: {
-                default: "localhost"
-              },
-              port: {
-                default: "3000"
-              },
-              version: {
-                default: "v1"
-              }
-            }
-          }
-        ],
-        components: {
-          securitySchemes: {
-            apiKeyAuth: {
-              type: "apiKey",
-              name: "x-api-key",
-              in: "header"
-            }
-          }
-        },
-        security: [
-          {
-            apiKeyAuth: []
-          }
-        ]
+      mode: 'static',
+      specification: {
+        document: {
+          openapi: '3.0.0',
+          info: { title: 'Transcendence API', version: '1.0.0' },
+          paths: {}
+        }
       }
     });
-    await app.register(swaggerUi, { routePrefix: "/documentation" });
+
+    await app.register(swaggerUi, {
+      routePrefix: "/documentation",
+      uiConfig: {
+        url: "/api/v1/json",
+        deepLinking: true,
+        displayOperationId: false,
+        defaultModelsExpandDepth: -1,
+      }
+    });
+    app.register(healthRoutes, { prefix: '/api/v1' });
+    app.register(documentationRoutes, { prefix: '/api/v1' });
+
     app.register(async (api) => {
       api.addHook("preHandler", authMiddleware);
       api.register(recipesRoutes, { prefix: '/api/v1' });
       api.register(authRoutes, { prefix: '/api/v1' });
-      api.register(healthRoutes, { prefix: '/api/v1' });
-    })
+      api.register(otherServicesRoutes, { prefix: '/api/v1' });
+    });
     // console.log("Database connected");
     // app.addHook("preHandler", authMiddleware);
     // console.log("Auth middleware registered");
