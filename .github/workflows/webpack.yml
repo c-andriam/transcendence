@@ -326,7 +326,7 @@ jobs:
           </footer>
 
           <script>
-            // Configuration
+            // Configuration - Duration for auto-dismissing temporary error messages
             const ERROR_DISPLAY_DURATION = 3000; // milliseconds
 
             function showError(message, temporary = true) {
@@ -370,7 +370,7 @@ jobs:
                 // Provide specific error messages using the same showError function
                 if (error instanceof SyntaxError) {
                   showError('Erreur: Le fichier JSON est malformé', false);
-                } else if (error.name === 'TypeError') {
+                } else if (error.message && (error.message.includes('Failed to fetch') || error.message.includes('NetworkError'))) {
                   showError('Erreur réseau: Impossible de charger le fichier', false);
                 } else {
                   showError('Erreur: ' + error.message, false);
