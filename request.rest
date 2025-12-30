@@ -1,9 +1,7 @@
-### 1. Seeding Data (Executer ceci en premier)
-
-# Créer un User "Chef" (ID: chef-123-uuid)
+### create user
 POST http://localhost:3000/api/v1/users
 Content-Type: application/json
-x-api-key: e8da816aae0c82791756063d45ece6a9561b9b91aff993ce07b2e732f95640e8
+x-api-key: 707658358141d2ef07ef6e180eba4349da74dd9059f6ff0a08bbf724a99114a994db9c376b1103ef37a967f20b4ec5de1d10104dfd048e5ff8cb774cf68d2c9e4285f68f636c5039d971a94f584a75c054e27a52e4dd03cee202fc0439464070b816f748f32f9250ef5cdd78d43f4db53d9e777f718462195c4adee94dd79509f2849ae203ebda81326e0b518c6b1c1358e098282f53d0cbe0550e46592c51e5b00480203c0191539d41ba5c9a0311d92d8bef94e5dcdc617d88940c7e8e76225cf56b4abe4873cd1850f6b7b9fa66bd8da80bd8322dd7c3b930af44c6117c20b726af8c32845a8d5b3f6ab3f8f854136ed66edcbe939246a8042b3c8b28adbb
 
 {
     "email": "user@example.com",
@@ -13,75 +11,22 @@ x-api-key: e8da816aae0c82791756063d45ece6a9561b9b91aff993ce07b2e732f95640e8
     "lastName": "User"
 }
 
-###
+### read user
+GET http://localhost:3000/api/v1/users
+x-api-key: 707658358141d2ef07ef6e180eba4349da74dd9059f6ff0a08bbf724a99114a994db9c376b1103ef37a967f20b4ec5de1d10104dfd048e5ff8cb774cf68d2c9e4285f68f636c5039d971a94f584a75c054e27a52e4dd03cee202fc0439464070b816f748f32f9250ef5cdd78d43f4db53d9e777f718462195c4adee94dd79509f2849ae203ebda81326e0b518c6b1c1358e098282f53d0cbe0550e46592c51e5b00480203c0191539d41ba5c9a0311d92d8bef94e5dcdc617d88940c7e8e76225cf56b4abe4873cd1850f6b7b9fa66bd8da80bd8322dd7c3b930af44c6117c20b726af8c32845a8d5b3f6ab3f8f854136ed66edcbe939246a8042b3c8b28adbb
 
-
-# Créer une Catégorie (ID: category-main-uuid)
-POST http://localhost:3000/api/v1/seed/category
-# Content-Type: application/json
-x-api-key: e8da816aae0c82791756063d45ece6a9561b9b91aff993ce07b2e732f95640e8
-
-###
-POST http://localhost:3000/api/v1/seed/user
-# Content-Type: application/json
-x-api-key: e8da816aae0c82791756063d45ece6a9561b9b91aff993ce07b2e732f95640e8
-
-###
-
-### 2. Créer une Recette (Utilisez les IDs obtenus ci-dessus)
-
-POST http://localhost:3000/api/v1/recipes
+### update user
+PUT http://localhost:3000/api/v1/users/{id}
 Content-Type: application/json
-x-api-key: e8da816aae0c82791756063d45ece6a9561b9b91aff993ce07b2e732f95640e8
+x-api-key: 707658358141d2ef07ef6e180eba4349da74dd9059f6ff0a08bbf724a99114a994db9c376b1103ef37a967f20b4ec5de1d10104dfd048e5ff8cb774cf68d2c9e4285f68f636c5039d971a94f584a75c054e27a52e4dd03cee202fc0439464070b816f748f32f9250ef5cdd78d43f4db53d9e777f718462195c4adee94dd79509f2849ae203ebda81326e0b518c6b1c1358e098282f53d0cbe0550e46592c51e5b00480203c0191539d41ba5c9a0311d92d8bef94e5dcdc617d88940c7e8e76225cf56b4abe4873cd1850f6b7b9fa66bd8da80bd8322dd7c3b930af44c6117c20b726af8c32845a8d5b3f6ab3f8f854136ed66edcbe939246a8042b3c8b28adbb
 
 {
-    "title": " Masala",
-    "description": "Un délicieux plat indien crémeux et épicé, parfait pour un dîner en famille. Le poulet est mariné dans des épices et du yaourt, puis cuit dans une sauce tomate onctueuse.",
-    "prepTime": 30,
-    "cookTime": 45,
-    "servings": 4,
-    "difficulty": "MEDIUM",
-    "isPublished": true,
-    "authorId": "cmjqvb7yo0001wwsogthyk9t0", 
-    "categoryId": "cmjqthyi9000n2osoq76xuby6",
-    "ingredients": [
-        { "name": "Poulet", "quantityText": "500g", "isOptional": false },
-        { "name": "Yaourt nature", "quantityText": "200g", "isOptional": false },
-        { "name": "Crème fraîche", "quantityText": "200ml", "isOptional": false },
-        { "name": "Tomates concassées", "quantityText": "400g", "isOptional": false },
-        { "name": "Oignon", "quantityText": "1 gros", "isOptional": false },
-        { "name": "Ail", "quantityText": "3 gousses", "isOptional": false },
-        { "name": "Gingembre", "quantityText": "2 cm", "isOptional": false },
-        { "name": "Épices tikka masala", "quantityText": "2 c.s", "isOptional": false },
-        { "name": "Curcuma", "quantityText": "1 c.c", "isOptional": false },
-        { "name": "Coriandre fraîche", "quantityText": "1 bouquet", "isOptional": true }
-    ],
-    "instructions": [
-        { "stepNumber": 1, "description": "Couper le poulet en morceaux et le faire mariner dans le yaourt avec les épices pendant 2 heures minimum." },
-        { "stepNumber": 2, "description": "Émincer l'oignon, hacher l'ail et le gingembre." },
-        { "stepNumber": 3, "description": "Dans une poêle, faire revenir l'oignon jusqu'à ce qu'il soit doré." },
-        { "stepNumber": 4, "description": "Ajouter l'ail et le gingembre, cuire 1 minute." },
-        { "stepNumber": 5, "description": "Ajouter le poulet mariné et le faire dorer de tous les côtés." },
-        { "stepNumber": 6, "description": "Incorporer les tomates concassées et les épices restantes. Laisser mijoter 20 minutes." },
-        { "stepNumber": 7, "description": "Ajouter la crème fraîche, mélanger et cuire encore 5 minutes." },
-        { "stepNumber": 8, "description": "Servir chaud avec du riz basmati, garni de coriandre fraîche." }
-    ]
+    "email": "user@example.com",
+    "username": "user",
+    "firstName": "User",
+    "lastName": "User"
 }
 
-### 3. Obtenir toutes les Recettes
-GET http://localhost:3000/api/v1/recipes
-x-api-key: e8da816aae0c82791756063d45ece6a9561b9b91aff993ce07b2e732f95640e8
-
-### 4. Obtenir une Recette par ID (Remplacez l'ID)
-GET http://localhost:3000/api/v1/recipes/cmjqvbwot0000l4so3fm406f8
-x-api-key: e8da816aae0c82791756063d45ece6a9561b9b91aff993ce07b2e732f95640e8
-
-###
-POST http://localhost:3000/api/v1/recipes/cmjqvbwot0000l4so3fm406f8/rate
-Content-Type: application/json
-x-api-key: e8da816aae0c82791756063d45ece6a9561b9b91aff993ce07b2e732f95640e8
-
-{
-    "userId": "cmjqzjlvz00015xsoaes13s2e",
-    "score": 5
-}
+### delete user
+DELETE http://localhost:3000/api/v1/users/{id}
+x-api-key: 707658358141d2ef07ef6e180eba4349da74dd9059f6ff0a08bbf724a99114a994db9c376b1103ef37a967f20b4ec5de1d10104dfd048e5ff8cb774cf68d2c9e4285f68f636c5039d971a94f584a75c054e27a52e4dd03cee202fc0439464070b816f748f32f9250ef5cdd78d43f4db53d9e777f718462195c4adee94dd79509f2849ae203ebda81326e0b518c6b1c1358e098282f53d0cbe0550e46592c51e5b00480203c0191539d41ba5c9a0311d92d8bef94e5dcdc617d88940c7e8e76225cf56b4abe4873cd1850f6b7b9fa66bd8da80bd8322dd7c3b930af44c6117c20b726af8c32845a8d5b3f6ab3f8f854136ed66edcbe939246a8042b3c8b28adbb
