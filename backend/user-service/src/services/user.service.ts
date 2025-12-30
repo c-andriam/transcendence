@@ -56,3 +56,15 @@ export async function getUsersByIds(ids: string[]) {
     });
     return users;
 }
+
+export async function getUserByIdentifier(identifier: string) {
+    const user = await db.user.findFirst({
+        where: {
+            OR: [
+                { email: identifier },
+                { username: identifier }
+            ]
+        }
+    });
+    return user;
+}
