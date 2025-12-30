@@ -12,3 +12,6 @@ services:
     cap_add:
       - IPC_LOCK
     command: server -dev
+    networks:
+      - ft
+    

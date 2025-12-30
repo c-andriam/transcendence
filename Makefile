@@ -20,18 +20,10 @@ clean: stop
 	$(DC) rm -f
 
 fclean: clean down
+	podman volume prune -f
 
 re: clean all
 
 rebuild: fclean all
 
-status:
-	$(DC) ps
-
-logs:
-	$(DC) logs -f
-
-nginx:
-	$(DC) logs nginx
-
-.PHONY: all up status start down clean fclean re rebuild logs nginx stop
+.PHONY: all up start down clean fclean re rebuild

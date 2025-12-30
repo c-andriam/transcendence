@@ -23,9 +23,9 @@ volumes:
     name: db-data
 
 include:
+  - docker/vault/docker-compose.yml
   - docker/elk/compose.yml
   - docker/monitoring/compose.yml
   - docker/nginx/compose.yml
   - docker/postgres/compose.yml
   - docker/nodjs/compose.yml
-  - docker/cybersecurity/vault/docker-compose.yml

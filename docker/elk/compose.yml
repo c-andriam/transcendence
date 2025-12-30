@@ -1,5 +1,117 @@
 services:
+  setup:
+    image: docker.elastic.co/elasticsearch/elasticsearch-wolfi:9.2.2
+    container_name: elk-setup
+    volumes:
+      - elasticsearch_certs:/usr/share/elasticsearch/config/certs
+    user: "0"
+    command: >
+      bash -c '
+        if [ x${ELASTIC_PASSWORD} == x ]; then
+          echo "Set the ELASTIC_PASSWORD environment variable in the .env file";
+          exit 1;
+        elif [ x${KIBANA_PASSWORD} == x ]; then
+          echo "Set the KIBANA_PASSWORD environment variable in the .env file";
+          exit 1;
+        fi;
+        if [ ! -f config/certs/ca.zip ]; then
+          echo "Creating CA";
+          bin/elasticsearch-certutil ca --silent --pem -out config/certs/ca.zip;
+          unzip config/certs/ca.zip -d config/certs;
+        fi;
+        if [ ! -f config/certs/certs.zip ]; then
+          echo "Creating certs";
+          echo -ne \
+          "instances:\n"\
+          "  - name: es01\n"\
+          "    dns:\n"\
+          "      - es01\n"\
+          "      - localhost\n"\
+          "    ip:\n"\
+          "      - 127.0.0.1\n"\
+          "  - name: kibana\n"\
+          "    dns:\n"\
+          "      - kibana\n"\
+          "      - localhost\n"\
+          "  - name: logstash\n"\
+          "    dns:\n"\
+          "      - logstash\n"\
+          "      - localhost\n"\
+          > config/certs/instances.yml;
+          bin/elasticsearch-certutil cert --silent --pem -out config/certs/certs.zip --in config/certs/instances.yml --ca-cert config/certs/ca/ca.crt --ca-key config/certs/ca/ca.key;
+          unzip config/certs/certs.zip -d config/certs;
+        fi;
+        echo "Setting file permissions"
+        chown -R root:root config/certs;
+        find . -type d -exec chmod 750 \{\} \;;
+        find . -type f -exec chmod 640 \{\} \;;
+        echo "Waiting for Elasticsearch availability";
+        until curl -s --cacert config/certs/ca/ca.crt https://es01:9200 | grep -q "missing authentication credentials"; do sleep 30; done;
+        echo "Setting kibana_system password";
+        until curl -s -X POST --cacert config/certs/ca/ca.crt -u "elastic:${ELASTIC_PASSWORD}" -H "Content-Type: application/json" https://es01:9200/_security/user/kibana_system/_password -d "{\"password\":\"${KIBANA_PASSWORD}\"}" | grep -q "^{}"; do sleep 10; done;
+        echo "Creating ILM policy for log retention (30 days)";
+        curl -s -X PUT --cacert config/certs/ca/ca.crt -u "elastic:${ELASTIC_PASSWORD}" -H "Content-Type: application/json" https://es01:9200/_ilm/policy/logs-retention-policy -d "{
+          \"policy\": {
+            \"phases\": {
+              \"hot\": {
+                \"min_age\": \"0ms\",
+                \"actions\": {
+                  \"rollover\": {
+                    \"max_age\": \"7d\",
+                    \"max_size\": \"50gb\"
+                  }
+                }
+              },
+              \"warm\": {
+                \"min_age\": \"7d\",
+                \"actions\": {
+                  \"shrink\": {
+                    \"number_of_shards\": 1
+                  },
+                  \"forcemerge\": {
+                    \"max_num_segments\": 1
+                  }
+                }
+              },
+              \"delete\": {
+                \"min_age\": \"30d\",
+                \"actions\": {
+                  \"delete\": {}
+                }
+              }
+            }
+          }
+        }";
+        echo "";
+        echo "Creating index template with ILM policy";
+        curl -s -X PUT --cacert config/certs/ca/ca.crt -u "elastic:${ELASTIC_PASSWORD}" -H "Content-Type: application/json" https://es01:9200/_index_template/logstash-template -d "{
+          \"index_patterns\": [\"logstash-*\"],
+          \"template\": {
+            \"settings\": {
+              \"index.lifecycle.name\": \"logs-retention-policy\",
+              \"index.lifecycle.rollover_alias\": \"logstash\"
+            }
+          }
+        }";
+        echo "";
+        echo "All done!";
+      '
+    env_file:
+      - .env
+    networks:
+      - elastic
+    healthcheck:
+      test: ["CMD-SHELL", "[ -f config/certs/es01/es01.crt ]"]
+      interval: 1s
+      timeout: 5s
+      retries: 120
+
   elasticsearch:
+    depends_on:
+      setup:
+        condition: service_healthy
+      vault:
+        condition: service_started
     image: docker.elastic.co/elasticsearch/elasticsearch-wolfi:9.2.2
     container_name: es01
     env_file:
@@ -7,6 +119,15 @@ services:
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=certs/es01/es01.key
+      - xpack.security.http.ssl.certificate=certs/es01/es01.crt
+      - xpack.security.http.ssl.certificate_authorities=certs/ca/ca.crt
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.key=certs/es01/es01.key
+      - xpack.security.transport.ssl.certificate=certs/es01/es01.crt
+      - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
+      - xpack.security.transport.ssl.verification_mode=certificate
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -19,7 +140,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          'curl -s -u elastic:${ELASTIC_PASSWORD} http://localhost:9200/_cluster/health | grep -vq ''"status":"red"''',
+          'curl -s --cacert config/certs/ca/ca.crt -u elastic:${ELASTIC_PASSWORD} https://localhost:9200/_cluster/health | grep -vq ''"status":"red"''',
         ]
       interval: 10s
       timeout: 5s
@@ -30,14 +151,42 @@ services:
     image: docker.elastic.co/beats/filebeat-wolfi:9.2.2
     container_name: filebeat
     user: root
+    privileged: true
+    env_file:
+      - .env
     volumes:
       - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:z
       - logs:/var/log/:ro
+      - elasticsearch_certs:/usr/share/filebeat/config/certs:ro
+      - /run/user/1000/podman/podman.sock:/var/run/podman.sock:ro,z
+      - /home/admin/.local/share/containers/storage:/var/lib/containers/storage:ro,z
     depends_on:
-      - logstash
+      logstash:
+        condition: service_started
+      elasticsearch:
+        condition: service_healthy
+      kibana:
+        condition: service_healthy
     networks:
       - elastic
       - ft
+    command: >
+      bash -c '
+        echo "Running Filebeat setup...";
+        filebeat setup -e \
+          -E setup.kibana.host=https://kibana:5601 \
+          -E setup.kibana.ssl.enabled=true \
+          -E setup.kibana.ssl.certificate_authorities=["config/certs/ca/ca.crt"] \
+          -E setup.kibana.ssl.verification_mode=full \
+          -E output.logstash.enabled=false \
+          -E output.elasticsearch.enabled=true \
+          -E output.elasticsearch.hosts=["https://es01:9200"] \
+          -E output.elasticsearch.username=elastic \
+          -E output.elasticsearch.password=$${ELASTIC_PASSWORD} \
+          -E output.elasticsearch.ssl.certificate_authorities=["config/certs/ca/ca.crt"];
+        echo "Setup complete. Starting Filebeat...";
+        filebeat -e
+      '
 
   kibana:
     image: docker.elastic.co/kibana/kibana-wolfi:9.2.2
@@ -46,23 +195,40 @@ services:
       - "5601:5601"
     env_file:
       - .env
+    volumes:
+      - elasticsearch_certs:/usr/share/kibana/config/certs
     environment:
-      - ELASTICSEARCH_HOSTS=http://es01:9200
+      - ELASTICSEARCH_HOSTS=https://es01:9200
+      - ELASTICSEARCH_USERNAME=kibana_system
       - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
+      - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
+      - SERVER_SSL_ENABLED=true
+      - SERVER_SSL_CERTIFICATE=config/certs/kibana/kibana.crt
+      - SERVER_SSL_KEY=config/certs/kibana/kibana.key
     depends_on:
-      elasticsearch:
+      setup:
         condition: service_healthy
     networks:
       - elastic
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s -I -k https://localhost:5601/api/status | grep 200",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
 
   logstash:
     image: docker.elastic.co/logstash/logstash-wolfi:9.2.2
     container_name: logstash
+    user: "1000:0"
     env_file:
       - .env
     volumes:
       - ./logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:z
-      - elasticsearch_certs:/usr/share/logstash/config/certs:ro
+      - elasticsearch_certs:/usr/share/logstash/config/certs:ro,z
     ports:
       - "5044:5044"
     depends_on:
@@ -74,11 +240,7 @@ services:
 volumes:
   elasticsearch_data:
   elasticsearch_certs:
-  logs:
-    external: true
 
 networks:
   elastic:
     name: elastic
-  ft:
-    external: true

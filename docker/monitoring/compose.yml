@@ -38,6 +38,7 @@ services:
             - ./grafana/dashboards:/var/lib/grafana/dashboards:z
         networks:
             - monitor_net
+            - ft
         restart: unless-stopped
 
     node-exporter:
