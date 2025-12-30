@@ -11,6 +11,29 @@ x-api-key: 707658358141d2ef07ef6e180eba4349da74dd9059f6ff0a08bbf724a99114a994db9
     "lastName": "User"
 }
 
+### register user
+POST http://localhost:3000/api/v1/register
+Content-Type: application/json
+x-api-key: 707658358141d2ef07ef6e180eba4349da74dd9059f6ff0a08bbf724a99114a994db9c376b1103ef37a967f20b4ec5de1d10104dfd048e5ff8cb774cf68d2c9e4285f68f636c5039d971a94f584a75c054e27a52e4dd03cee202fc0439464070b816f748f32f9250ef5cdd78d43f4db53d9e777f718462195c4adee94dd79509f2849ae203ebda81326e0b518c6b1c1358e098282f53d0cbe0550e46592c51e5b00480203c0191539d41ba5c9a0311d92d8bef94e5dcdc617d88940c7e8e76225cf56b4abe4873cd1850f6b7b9fa66bd8da80bd8322dd7c3b930af44c6117c20b726af8c32845a8d5b3f6ab3f8f854136ed66edcbe939246a8042b3c8b28adbb
+
+{
+    "email": "test@example.com",
+    "username": "testuser",
+    "password": "password123",
+    "firstName": "Test",
+    "lastName": "User"
+}
+
+### login user
+POST http://localhost:3000/api/v1/login
+Content-Type: application/json
+x-api-key: 707658358141d2ef07ef6e180eba4349da74dd9059f6ff0a08bbf724a99114a994db9c376b1103ef37a967f20b4ec5de1d10104dfd048e5ff8cb774cf68d2c9e4285f68f636c5039d971a94f584a75c054e27a52e4dd03cee202fc0439464070b816f748f32f9250ef5cdd78d43f4db53d9e777f718462195c4adee94dd79509f2849ae203ebda81326e0b518c6b1c1358e098282f53d0cbe0550e46592c51e5b00480203c0191539d41ba5c9a0311d92d8bef94e5dcdc617d88940c7e8e76225cf56b4abe4873cd1850f6b7b9fa66bd8da80bd8322dd7c3b930af44c6117c20b726af8c32845a8d5b3f6ab3f8f854136ed66edcbe939246a8042b3c8b28adbb
+
+{
+    "identifier": "marie@test.com",
+    "password": "password123"
+}
+
 ### read user
 GET http://localhost:3000/api/v1/users
 x-api-key: 707658358141d2ef07ef6e180eba4349da74dd9059f6ff0a08bbf724a99114a994db9c376b1103ef37a967f20b4ec5de1d10104dfd048e5ff8cb774cf68d2c9e4285f68f636c5039d971a94f584a75c054e27a52e4dd03cee202fc0439464070b816f748f32f9250ef5cdd78d43f4db53d9e777f718462195c4adee94dd79509f2849ae203ebda81326e0b518c6b1c1358e098282f53d0cbe0550e46592c51e5b00480203c0191539d41ba5c9a0311d92d8bef94e5dcdc617d88940c7e8e76225cf56b4abe4873cd1850f6b7b9fa66bd8da80bd8322dd7c3b930af44c6117c20b726af8c32845a8d5b3f6ab3f8f854136ed66edcbe939246a8042b3c8b28adbb
@@ -32,7 +55,7 @@ x-api-key: 707658358141d2ef07ef6e180eba4349da74dd9059f6ff0a08bbf724a99114a994db9
 }
 
 ### delete user
-DELETE http://localhost:3000/api/v1/users/cmjsjxchc000192sotlmmf7e0
+DELETE http://localhost:3000/api/v1/users/cmjsfysjt00006ssok61ntyy0
 x-api-key: 707658358141d2ef07ef6e180eba4349da74dd9059f6ff0a08bbf724a99114a994db9c376b1103ef37a967f20b4ec5de1d10104dfd048e5ff8cb774cf68d2c9e4285f68f636c5039d971a94f584a75c054e27a52e4dd03cee202fc0439464070b816f748f32f9250ef5cdd78d43f4db53d9e777f718462195c4adee94dd79509f2849ae203ebda81326e0b518c6b1c1358e098282f53d0cbe0550e46592c51e5b00480203c0191539d41ba5c9a0311d92d8bef94e5dcdc617d88940c7e8e76225cf56b4abe4873cd1850f6b7b9fa66bd8da80bd8322dd7c3b930af44c6117c20b726af8c32845a8d5b3f6ab3f8f854136ed66edcbe939246a8042b3c8b28adbb
 
 
@@ -203,7 +226,7 @@ x-api-key: 707658358141d2ef07ef6e180eba4349da74dd9059f6ff0a08bbf724a99114a994db9
     "servings": 4,
     "difficulty": "MEDIUM",
     "isPublished": true,
-    "authorId": "cmjsfysjt00006ssok61ntyy0",
+    "authorId": "cmjsz9roe0000gosbdk82ahkw",
     "categoryId": "cmjsndf9h00026dsog3ffvpcd",
     "ingredients": [
         { "name": "Poulet", "quantityText": "500g", "isOptional": false },
@@ -234,7 +257,7 @@ GET http://localhost:3000/api/v1/recipes
 x-api-key: 707658358141d2ef07ef6e180eba4349da74dd9059f6ff0a08bbf724a99114a994db9c376b1103ef37a967f20b4ec5de1d10104dfd048e5ff8cb774cf68d2c9e4285f68f636c5039d971a94f584a75c054e27a52e4dd03cee202fc0439464070b816f748f32f9250ef5cdd78d43f4db53d9e777f718462195c4adee94dd79509f2849ae203ebda81326e0b518c6b1c1358e098282f53d0cbe0550e46592c51e5b00480203c0191539d41ba5c9a0311d92d8bef94e5dcdc617d88940c7e8e76225cf56b4abe4873cd1850f6b7b9fa66bd8da80bd8322dd7c3b930af44c6117c20b726af8c32845a8d5b3f6ab3f8f854136ed66edcbe939246a8042b3c8b28adbb
 
 ### Read recipe by id
-GET http://localhost:3000/api/v1/recipes/cmjsnicdb000a6dsol4imv1qf
+GET http://localhost:3000/api/v1/recipes/cmjszimle0000basb038vuo92
 x-api-key: 707658358141d2ef07ef6e180eba4349da74dd9059f6ff0a08bbf724a99114a994db9c376b1103ef37a967f20b4ec5de1d10104dfd048e5ff8cb774cf68d2c9e4285f68f636c5039d971a94f584a75c054e27a52e4dd03cee202fc0439464070b816f748f32f9250ef5cdd78d43f4db53d9e777f718462195c4adee94dd79509f2849ae203ebda81326e0b518c6b1c1358e098282f53d0cbe0550e46592c51e5b00480203c0191539d41ba5c9a0311d92d8bef94e5dcdc617d88940c7e8e76225cf56b4abe4873cd1850f6b7b9fa66bd8da80bd8322dd7c3b930af44c6117c20b726af8c32845a8d5b3f6ab3f8f854136ed66edcbe939246a8042b3c8b28adbb
 
 ### Read recipe by slug
@@ -248,7 +271,7 @@ x-api-key: 707658358141d2ef07ef6e180eba4349da74dd9059f6ff0a08bbf724a99114a994db9
 
 
 ### Update recipe
-PUT http://localhost:3000/api/v1/recipes/cmjsnicdb000a6dsol4imv1qf
+PUT http://localhost:3000/api/v1/recipes/cmjszimle0000basb038vuo92
 Content-Type: application/json
 x-api-key: 707658358141d2ef07ef6e180eba4349da74dd9059f6ff0a08bbf724a99114a994db9c376b1103ef37a967f20b4ec5de1d10104dfd048e5ff8cb774cf68d2c9e4285f68f636c5039d971a94f584a75c054e27a52e4dd03cee202fc0439464070b816f748f32f9250ef5cdd78d43f4db53d9e777f718462195c4adee94dd79509f2849ae203ebda81326e0b518c6b1c1358e098282f53d0cbe0550e46592c51e5b00480203c0191539d41ba5c9a0311d92d8bef94e5dcdc617d88940c7e8e76225cf56b4abe4873cd1850f6b7b9fa66bd8da80bd8322dd7c3b930af44c6117c20b726af8c32845a8d5b3f6ab3f8f854136ed66edcbe939246a8042b3c8b28adbb
 
@@ -281,18 +304,19 @@ x-api-key: 707658358141d2ef07ef6e180eba4349da74dd9059f6ff0a08bbf724a99114a994db9
         { "stepNumber": 5, "description": "Ajouter le poulet mariné et le faire dorer de tous les côtés." },
         { "stepNumber": 6, "description": "Incorporer les tomates concassées et les épices restantes. Laisser mijoter 20 minutes." },
         { "stepNumber": 7, "description": "Ajouter la crème fraîche, mélanger et cuire encore 5 minutes." },
-        { "id": "cmjsnxgzf000hudsodgkb4zqt", "stepNumber": 8, "description": "Servir chaud avec du riz, garni de coriandre fraîche." }
+        { "id": "cmjszinic000ibasbnaftgkqc", "stepNumber": 8, "description": "Servir chaud avec du riz, garni de coriandre fraîche." }
     ]
 }
 
 
 ### Create recipe rate by id
-POST http://localhost:3000/api/v1/recipes/:id/rate
+POST http://localhost:3000/api/v1/recipes/cmjszimle0000basb038vuo92/rate
+Content-Type: application/json
 x-api-key: 707658358141d2ef07ef6e180eba4349da74dd9059f6ff0a08bbf724a99114a994db9c376b1103ef37a967f20b4ec5de1d10104dfd048e5ff8cb774cf68d2c9e4285f68f636c5039d971a94f584a75c054e27a52e4dd03cee202fc0439464070b816f748f32f9250ef5cdd78d43f4db53d9e777f718462195c4adee94dd79509f2849ae203ebda81326e0b518c6b1c1358e098282f53d0cbe0550e46592c51e5b00480203c0191539d41ba5c9a0311d92d8bef94e5dcdc617d88940c7e8e76225cf56b4abe4873cd1850f6b7b9fa66bd8da80bd8322dd7c3b930af44c6117c20b726af8c32845a8d5b3f6ab3f8f854136ed66edcbe939246a8042b3c8b28adbb
 
 {
-    "userId": "",
-    "score": 5
+    "userId": "cmjsz9roe0000gosbdk82ahkw",
+    "score": 4
 }
 
 

@@ -9,6 +9,7 @@ import { recipesRoutes } from "./routes/recipes.routes";
 import { usersRoutes } from "./routes/users.routes";
 import swagger from "@fastify/swagger";
 import swaggerUi from "@fastify/swagger-ui";
+import { authRoutes } from "./routes/auth.routes";
 // import fs from 'fs';
 
 const key = process.env.API_GATEWAY_KEY;
@@ -65,6 +66,7 @@ const start = async () => {
       }
     });
     await app.register(swaggerUi, { routePrefix: "/documentation" });
+    app.register(authRoutes, { prefix: '/api/v1' });
     app.register(async (api) => {
       api.addHook("preHandler", authMiddleware);
       api.register(recipesRoutes, { prefix: '/api/v1' });

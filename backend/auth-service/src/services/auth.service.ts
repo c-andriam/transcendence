@@ -25,10 +25,13 @@ export async function registerUser(userData: any) {
     };
 
     const url = process.env.USER_SERVICE_URL;
-    const path = "/users";
+    const path = "/api/v1/users";
     const response = await fetch(`${url}${path}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+            'Content-Type': 'application/json',
+            'x-internal-api-key': process.env.INTERNAL_API_KEY || ''
+        },
         body: JSON.stringify(userToCreate)
     });
     return await response.json();
@@ -37,11 +40,17 @@ export async function registerUser(userData: any) {
 export async function loginUser(credentials: any) {
     const { identifier, password } = credentials;
     const url = process.env.USER_SERVICE_URL;
-    const response = await fetch(`${url}/internal/users/by-identifier/${identifier}`);
+    const response = await fetch(`${url}/api/v1/internal/users/by-identifier/${identifier}`, {
+        headers: {
+            'x-internal-api-key': process.env.INTERNAL_API_KEY || ''
+        }
+    });
     const result = await response.json();
+
     if (result.status === 'error') {
-        return result;
+        throw new Error(result.message || "User not found");
     }
+
     const user = result.data;
     await verifyPassword(password, user.password);
     return user;

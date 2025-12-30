@@ -158,4 +158,27 @@ export async function userRoutes(app: FastifyInstance) {
             });
         }
     });
+
+    app.get("/internal/users/by-identifier/:identifier", async (request, reply) => {
+        const { identifier } = request.params as { identifier: string };
+        try {
+            const user = await getUserByIdentifier(identifier);
+            if (!user) {
+                reply.status(404).send({
+                    status: "error",
+                    message: "User not found"
+                });
+                return;
+            }
+            reply.status(200).send({
+                status: "success",
+                data: user
+            });
+        } catch (error) {
+            reply.status(500).send({
+                status: "error",
+                message: "Internal server error"
+            });
+        }
+    });
 }
