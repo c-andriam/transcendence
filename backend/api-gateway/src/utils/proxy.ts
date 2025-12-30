@@ -20,12 +20,13 @@ export async function proxyRequest(
     const options: RequestInit = {
         method: request.method,
         headers: {
-            "x-internal-api-key": process.env.INTERNAL_API_KEY || "",
-            "content-type": request.headers["content-type"] || "application/json"
+            "x-internal-api-key": process.env.INTERNAL_API_KEY,
+            // "content-type": request.headers["content-type"] || "application/json"
         }
     };
 
-    if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(request.method) && request.body) {
+    if (['POST', 'PUT'].includes(request.method) && request.body) {
+        options.headers["content-type"] = "application/json";
         options.body = JSON.stringify(request.body);
     }
 
