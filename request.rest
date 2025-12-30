@@ -281,7 +281,7 @@ x-api-key: 707658358141d2ef07ef6e180eba4349da74dd9059f6ff0a08bbf724a99114a994db9
         { "stepNumber": 5, "description": "Ajouter le poulet mariné et le faire dorer de tous les côtés." },
         { "stepNumber": 6, "description": "Incorporer les tomates concassées et les épices restantes. Laisser mijoter 20 minutes." },
         { "stepNumber": 7, "description": "Ajouter la crème fraîche, mélanger et cuire encore 5 minutes." },
-        { "id": "cmjsnicr7000s6dso07hdvl3b", "stepNumber": 8, "description": "Servir chaud avec du riz cantonnais, garni de coriandre fraîche." }
+        { "id": "cmjsnxgzf000hudsodgkb4zqt", "stepNumber": 8, "description": "Servir chaud avec du riz, garni de coriandre fraîche." }
     ]
 }
 
