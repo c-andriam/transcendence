@@ -27,7 +27,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         return proxyHydrate(app, request, reply, `/api/v1/recipes/${id}`, RECIPE_SERVICE_URL);
     });
 
-    app.get("/recipes/slug/:slug", async (request, reply) => {
+    app.get("/recipes/by-slug/:slug", async (request, reply) => {
         const { slug } = request.params as { slug: string };
         return proxyHydrate(app, request, reply, `/api/v1/recipes/by-slug/${slug}`, RECIPE_SERVICE_URL);
     });
