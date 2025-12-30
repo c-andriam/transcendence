@@ -1,0 +1,599 @@
+name: NodeJS with Webpack
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Build
+      run: |
+        npm install
+        npx webpack
+      continue-on-error: true
+
+  # Build and deploy API documentation
+  build-docs:
+    runs-on: ubuntu-latest
+    # Only run this job on the main branch (to avoid duplicate deployments)
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+
+    - name: Install dependencies for API Gateway
+      run: |
+        cd backend/api-gateway
+        npm install
+        npx prisma generate
+
+    - name: Setup PostgreSQL
+      uses: ikalnytskyi/action-setup-postgres@v6
+      with:
+        username: postgres
+        password: postgres
+        database: ft_transcendence
+        port: 5432
+      id: postgres
+
+    - name: Install Redoc CLI
+      run: npm install @redocly/cli
+
+    - name: Create documentation directory
+      run: mkdir -p public
+
+    - name: Start API Gateway and fetch OpenAPI spec
+      run: |
+        cd backend/api-gateway
+        
+        # Set environment variables
+        export API_GATEWAY_KEY="github-actions-doc-generation"
+        export DATABASE_URL="${{ steps.postgres.outputs.connection-uri }}"
+        
+        # Run Prisma migrations to set up database schema
+        npx prisma migrate deploy || npx prisma db push || true
+        
+        # Start the server in background
+        npm run dev > /tmp/api-gateway.log 2>&1 &
+        SERVER_PID=$!
+        
+        # Wait for server to be ready (max 60 seconds)
+        echo "Waiting for API Gateway to start..."
+        for i in {1..60}; do
+          # Try to access the documentation endpoint (should be public)
+          if curl -s http://localhost:3000/documentation > /dev/null 2>&1; then
+            echo "API Gateway is ready!"
+            break
+          fi
+          if [ $i -eq 60 ]; then
+            echo "Timeout waiting for API Gateway"
+            cat /tmp/api-gateway.log
+            kill $SERVER_PID 2>/dev/null || true
+            exit 1
+          fi
+          echo "Waiting... ($i/60)"
+          sleep 1
+        done
+        
+        # Fetch the OpenAPI spec (try without auth first, then with auth if needed)
+        if curl -s http://localhost:3000/api/v1/json -o ../../openapi-spec.json; then
+          echo "OpenAPI spec fetched successfully"
+          echo "First 20 lines of spec:"
+          cat ../../openapi-spec.json | head -20
+        elif curl -s -H "x-api-key: github-actions-doc-generation" http://localhost:3000/api/v1/json -o ../../openapi-spec.json; then
+          echo "OpenAPI spec fetched successfully (with auth)"
+          echo "First 20 lines of spec:"
+          cat ../../openapi-spec.json | head -20
+        else
+          echo "Failed to fetch OpenAPI spec"
+          echo "Server logs:"
+          cat /tmp/api-gateway.log
+          kill $SERVER_PID 2>/dev/null || true
+          exit 1
+        fi
+        
+        # Stop the server
+        kill $SERVER_PID 2>/dev/null || true
+
+    - name: Create Swagger UI documentation page
+      run: |
+        # Create documentation directory
+        mkdir -p public/documentation
+        
+        # Copy OpenAPI spec to documentation directory
+        cp openapi-spec.json public/documentation/openapi-spec.json
+        
+        # Create standalone Swagger UI HTML page
+        # Note: Using unpkg.com CDN with crossorigin attributes for security.
+        # Consider adding integrity (SRI) hashes for production use to ensure
+        # resources haven't been tampered with.
+        cat > public/documentation/index.html << 'SWAGGEREOF'
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <title>API Gateway Documentation - Swagger UI</title>
+          <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui.css" crossorigin="anonymous" />
+          <link rel="icon" type="image/png" href="https://unpkg.com/swagger-ui-dist@5.11.0/favicon-32x32.png" sizes="32x32" crossorigin="anonymous" />
+          <link rel="icon" type="image/png" href="https://unpkg.com/swagger-ui-dist@5.11.0/favicon-16x16.png" sizes="16x16" crossorigin="anonymous" />
+          <style>
+            html {
+              box-sizing: border-box;
+              overflow: -moz-scrollbars-vertical;
+              overflow-y: scroll;
+            }
+            *, *:before, *:after {
+              box-sizing: inherit;
+            }
+            body {
+              margin: 0;
+              padding: 0;
+            }
+            .topbar {
+              display: none;
+            }
+          </style>
+        </head>
+        <body>
+          <div id="swagger-ui"></div>
+          <script src="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-bundle.js" charset="UTF-8" crossorigin="anonymous"></script>
+          <script src="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-standalone-preset.js" charset="UTF-8" crossorigin="anonymous"></script>
+          <script>
+            window.onload = function() {
+              window.ui = SwaggerUIBundle({
+                url: "./openapi-spec.json",
+                dom_id: '#swagger-ui',
+                deepLinking: true,
+                presets: [
+                  SwaggerUIBundle.presets.apis,
+                  SwaggerUIStandalonePreset
+                ],
+                plugins: [
+                  SwaggerUIBundle.plugins.DownloadUrl
+                ],
+                layout: "StandaloneLayout"
+              });
+            };
+          </script>
+        </body>
+        </html>
+        SWAGGEREOF
+        
+        echo "Standalone Swagger UI page created successfully"
+
+    - name: Create JSON viewer page
+      run: |
+        # Create a page to display the raw OpenAPI JSON content
+        cat > public/openapi-json.html << 'JSONEOF'
+        <!DOCTYPE html>
+        <html lang="fr">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>OpenAPI JSON - Contenu brut de l'API</title>
+          <style>
+            body {
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+              line-height: 1.6;
+              max-width: 1400px;
+              margin: 0 auto;
+              padding: 2rem;
+              background: #f5f5f5;
+            }
+            header {
+              background: white;
+              padding: 2rem;
+              border-radius: 8px;
+              box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+              margin-bottom: 2rem;
+            }
+            h1 {
+              color: #333;
+              margin: 0 0 0.5rem 0;
+            }
+            .subtitle {
+              color: #666;
+              font-size: 1.1rem;
+            }
+            .controls {
+              background: white;
+              padding: 1rem 2rem;
+              border-radius: 8px;
+              box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+              margin-bottom: 1rem;
+              display: flex;
+              gap: 1rem;
+              align-items: center;
+            }
+            .controls button {
+              padding: 0.5rem 1rem;
+              background: #2563eb;
+              color: white;
+              border: none;
+              border-radius: 4px;
+              cursor: pointer;
+              font-size: 0.9rem;
+              transition: background 0.2s;
+            }
+            .controls button:hover:not(:disabled) {
+              background: #1d4ed8;
+            }
+            .controls button:disabled {
+              background: #9ca3af;
+              cursor: not-allowed;
+              opacity: 0.6;
+            }
+            .controls a {
+              padding: 0.5rem 1rem;
+              background: #10b981;
+              color: white;
+              text-decoration: none;
+              border-radius: 4px;
+              font-size: 0.9rem;
+              transition: background 0.2s;
+            }
+            .controls a:hover {
+              background: #059669;
+            }
+            .json-container {
+              background: white;
+              padding: 2rem;
+              border-radius: 8px;
+              box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+              overflow: auto;
+            }
+            pre {
+              margin: 0;
+              white-space: pre-wrap;
+              word-wrap: break-word;
+              font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+              font-size: 0.9rem;
+              line-height: 1.5;
+            }
+            .loading {
+              text-align: center;
+              padding: 3rem;
+              color: #666;
+            }
+            .error {
+              background: #fee;
+              color: #c33;
+              padding: 1rem;
+              border-radius: 4px;
+              margin: 1rem 0;
+            }
+            footer {
+              margin-top: 2rem;
+              padding-top: 1rem;
+              border-top: 1px solid #ddd;
+              text-align: center;
+              color: #666;
+            }
+          </style>
+        </head>
+        <body>
+          <header>
+            <h1>OpenAPI JSON Viewer</h1>
+            <p class="subtitle">Contenu brut de la spécification OpenAPI</p>
+          </header>
+
+          <div class="controls">
+            <button id="copy-button" disabled>📋 Copier le JSON</button>
+            <a href="documentation/openapi-spec.json" download="openapi-spec.json">💾 Télécharger le fichier</a>
+            <a href="index.html">🏠 Retour à l'accueil</a>
+          </div>
+
+          <div class="json-container">
+            <div class="loading" id="loading">Chargement du contenu JSON...</div>
+            <pre id="json-content"></pre>
+          </div>
+
+          <footer>
+            <p>Ce JSON est généré automatiquement par l'agrégation des spécifications OpenAPI de tous les microservices.</p>
+          </footer>
+
+          <script>
+            // Configuration - Duration for auto-dismissing temporary error messages
+            const ERROR_DISPLAY_DURATION = 3000; // milliseconds
+
+            function showError(message, temporary = true) {
+              // Remove any existing error messages
+              const existingErrors = document.querySelectorAll('.json-container .error');
+              existingErrors.forEach(err => err.remove());
+              
+              // Show new error message
+              const errorDiv = document.createElement('div');
+              errorDiv.className = 'error';
+              errorDiv.textContent = message;
+              document.querySelector('.json-container').insertBefore(errorDiv, document.getElementById('json-content'));
+              
+              if (temporary) {
+                setTimeout(() => errorDiv.remove(), ERROR_DISPLAY_DURATION);
+              }
+            }
+
+            async function loadJSON() {
+              try {
+                const response = await fetch('documentation/openapi-spec.json');
+                
+                if (!response.ok) {
+                  if (response.status === 404) {
+                    throw new Error('Fichier JSON introuvable (404)');
+                  } else {
+                    throw new Error(`Erreur HTTP: ${response.status}`);
+                  }
+                }
+                
+                const data = await response.json();
+                const formatted = JSON.stringify(data, null, 2);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('json-content').textContent = formatted;
+                
+                // Enable copy button once content is loaded
+                document.getElementById('copy-button').disabled = false;
+              } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                
+                // Provide specific error messages using the same showError function
+                if (error instanceof SyntaxError) {
+                  showError('Erreur: Le fichier JSON est malformé', false);
+                } else if (error.message && (error.message.includes('Failed to fetch') || error.message.includes('NetworkError'))) {
+                  showError('Erreur réseau: Impossible de charger le fichier', false);
+                } else {
+                  showError('Erreur: ' + error.message, false);
+                }
+              }
+            }
+
+            function copyToClipboard(event) {
+              const content = document.getElementById('json-content').textContent;
+              
+              // Check if content exists and is not empty
+              if (!content || content.trim() === '') {
+                showError('Aucun contenu JSON à copier. Veuillez attendre le chargement.');
+                return;
+              }
+              
+              // Check if Clipboard API is available
+              if (!navigator.clipboard) {
+                showError('La copie dans le presse-papiers n\'est pas disponible. Veuillez utiliser HTTPS ou localhost.');
+                return;
+              }
+              
+              navigator.clipboard.writeText(content).then(() => {
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = '✅ Copié!';
+                setTimeout(() => {
+                  button.textContent = originalText;
+                }, 2000);
+              }).catch(err => {
+                showError('Erreur lors de la copie dans le presse-papiers.');
+              });
+            }
+
+            // Setup event listeners when page loads
+            window.addEventListener('DOMContentLoaded', () => {
+              loadJSON();
+              document.getElementById('copy-button').addEventListener('click', copyToClipboard);
+            });
+          </script>
+        </body>
+        </html>
+        JSONEOF
+        
+        echo "JSON viewer page created successfully"
+
+    - name: Generate API documentation from OpenAPI spec
+      run: |
+        if [ -f openapi-spec.json ]; then
+          npx @redocly/cli build-docs openapi-spec.json -o public/api-reference.html
+          echo "Documentation generated from live API Gateway"
+        elif [ -f docs/api/apiGateway.json ]; then
+          npx @redocly/cli build-docs docs/api/apiGateway.json -o public/api-reference.html
+          echo "Documentation generated from static file (fallback)"
+        else
+          echo "Warning: No OpenAPI spec found"
+        fi
+
+    - name: Copy markdown documentation
+      run: |
+        cp -r docs/api/*.md public/ || true
+
+    - name: Create index page
+      run: |
+        cat > public/index.html << 'EOF'
+        <!DOCTYPE html>
+        <html lang="fr">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Transcendence - Documentation API</title>
+            <style>
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                    line-height: 1.6;
+                    max-width: 1200px;
+                    margin: 0 auto;
+                    padding: 2rem;
+                    background: #f5f5f5;
+                }
+                header {
+                    background: white;
+                    padding: 2rem;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    margin-bottom: 2rem;
+                }
+                h1 {
+                    color: #333;
+                    margin: 0 0 0.5rem 0;
+                }
+                .subtitle {
+                    color: #666;
+                    font-size: 1.1rem;
+                }
+                .cards {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                    gap: 1.5rem;
+                }
+                .card {
+                    background: white;
+                    padding: 1.5rem;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    transition: transform 0.2s, box-shadow 0.2s;
+                }
+                .card:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+                }
+                .card h2 {
+                    margin-top: 0;
+                    color: #2563eb;
+                }
+                .card p {
+                    color: #666;
+                    margin-bottom: 1rem;
+                }
+                .card a {
+                    display: inline-block;
+                    padding: 0.5rem 1rem;
+                    background: #2563eb;
+                    color: white;
+                    text-decoration: none;
+                    border-radius: 4px;
+                    transition: background 0.2s;
+                }
+                .card a:hover {
+                    background: #1d4ed8;
+                }
+                footer {
+                    margin-top: 3rem;
+                    padding-top: 2rem;
+                    border-top: 1px solid #ddd;
+                    text-align: center;
+                    color: #666;
+                }
+            </style>
+        </head>
+        <body>
+            <header>
+                <h1>Documentation API Transcendence</h1>
+                <p class="subtitle">Documentation complète des APIs du projet Transcendence</p>
+            </header>
+
+            <div class="cards">
+                <div class="card">
+                    <h2>🚀 Swagger UI - Documentation Interactive</h2>
+                    <p>Interface Swagger UI complète avec possibilité de tester les endpoints directement depuis votre navigateur.</p>
+                    <a href="documentation/">Accéder à Swagger UI</a>
+                </div>
+
+                <div class="card">
+                    <h2>📚 Référence API</h2>
+                    <p>Documentation interactive de l'API Gateway avec tous les endpoints, schémas et exemples de requêtes (générée avec Redocly).</p>
+                    <a href="api-reference.html">Voir la référence</a>
+                </div>
+
+                <div class="card">
+                    <h2>📄 OpenAPI JSON</h2>
+                    <p>Visualisez la spécification OpenAPI complète au format JSON brut avec possibilité de copier ou télécharger.</p>
+                    <a href="openapi-json.html">Voir le JSON</a>
+                </div>
+
+                <div class="card">
+                    <h2>📖 Guide API</h2>
+                    <p>Introduction aux concepts des APIs et guide d'utilisation pour les développeurs.</p>
+                    <a href="api.md">Lire le guide</a>
+                </div>
+
+                <div class="card">
+                    <h2>🔐 Authentification</h2>
+                    <p>Documentation sur les méthodes d'authentification et la gestion des utilisateurs.</p>
+                    <a href="auth.md">Documentation auth</a>
+                </div>
+
+                <div class="card">
+                    <h2>💬 Chat Service</h2>
+                    <p>Documentation de l'API de messagerie et chat en temps réel.</p>
+                    <a href="chat.md">Documentation chat</a>
+                </div>
+
+                <div class="card">
+                    <h2>👥 Utilisateurs</h2>
+                    <p>Gestion des profils utilisateurs et des données associées.</p>
+                    <a href="users.md">Documentation utilisateurs</a>
+                </div>
+
+                <div class="card">
+                    <h2>🍳 Recettes</h2>
+                    <p>API de gestion des recettes, ingrédients et instructions.</p>
+                    <a href="recipes.md">Documentation recettes</a>
+                </div>
+
+                <div class="card">
+                    <h2>🔔 Notifications</h2>
+                    <p>Système de notifications et alertes en temps réel.</p>
+                    <a href="notifications.md">Documentation notifications</a>
+                </div>
+            </div>
+
+            <footer>
+                <p>Projet Transcendence - <a href="https://cookshare.me" target="_blank">cookshare.me</a></p>
+            </footer>
+        </body>
+        </html>
+        EOF
+
+    - name: Copy CNAME file
+      run: |
+        if [ -f CNAME ]; then
+          cp CNAME public/CNAME
+        fi
+
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: './public'
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
