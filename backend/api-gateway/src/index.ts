@@ -1,15 +1,15 @@
 import dotenv from "dotenv"
+dotenv.config();
+
 import path from "path"
 import { authMiddleware } from "./middleware/auth.middleware";
 import fastify from "fastify";
 import { registerRateLimiter } from "./middleware/rateLimiter.middleware";
 import { recipesRoutes } from "./routes/recipes.routes";
-import dbPlugin from "./utils/dbPlugin";
+import { usersRoutes } from "./routes/users.routes";
 import swagger from "@fastify/swagger";
 import swaggerUi from "@fastify/swagger-ui";
 // import fs from 'fs';
-
-dotenv.config();
 
 const key = process.env.API_GATEWAY_KEY;
 
@@ -18,12 +18,11 @@ if (!key) {
 }
 export const app = fastify();
 
-// const apiGatewaySpec = JSON.parse(fs.readFileSync('../../docs/api/apiGateway.json', 'utf-8'));
+// const apiGatewaySpec = JSON.parse(fs.readFileSync ('../../docs/api/apiGateway.json', 'utf-8'));
 
 const start = async () => {
   try {
     await registerRateLimiter(app);
-    app.register(dbPlugin);
     await app.register(swagger, {
       openapi:
       {
@@ -34,11 +33,11 @@ const start = async () => {
         },
         servers: [
           {
-            url: "http://{environment}:{port}/api/{version}",
+            url: "https://{environment}/api/{version}",
             description: "Local development server",
             variables: {
               environment: {
-                default: "localhost"
+                default: "cookshare.me"
               },
               port: {
                 default: "3000"
@@ -69,14 +68,10 @@ const start = async () => {
     app.register(async (api) => {
       api.addHook("preHandler", authMiddleware);
       api.register(recipesRoutes, { prefix: '/api/v1' });
+      api.register(usersRoutes, { prefix: '/api/v1' });
     })
-    // console.log("Database connected");
-    // app.addHook("preHandler", authMiddleware);
-    // console.log("Auth middleware registered");
-    // app.register(recipesRoutes, { prefix: '/api/v1' });
-    // console.log("Recipes routes registered");
     await app.listen({ port: 3000, host: "0.0.0.0" });
-    // console.log("Server started on port 3000");
+    app.log.info(`API Gateway running on ${process.env.API_GATEWAY_URL}`);
   } catch (err) {
     app.log.error(err);
     process.exit(1);

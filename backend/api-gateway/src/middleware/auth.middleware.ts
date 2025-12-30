@@ -16,5 +16,4 @@ export async function authMiddleware(request: FastifyRequest, reply: FastifyRepl
             message: "Invalid API Key"
         });
     }
-    return ;
 }
