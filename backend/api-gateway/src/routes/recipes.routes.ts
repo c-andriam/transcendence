@@ -1,17 +1,77 @@
 import { FastifyInstance } from "fastify";
-import httpProxy from "@fastify/http-proxy";
+import { proxyHydrate } from "../utils/proxy";
+
+const RECIPE_SERVICE_URL = process.env.RECIPE_SERVICE_URL;
 
 export async function recipesRoutes(app: FastifyInstance) {
-    const routes = [
-        { prefix: '/recipes', rewritePrefix: '/api/v1/recipes' }
-    ];
+    app.get("/recipes", async (request, reply) => {
+        return proxyHydrate(app, request, reply, "/api/v1/recipes", RECIPE_SERVICE_URL);
+    });
 
-    for (const route of routes) {
-        app.register(httpProxy, {
-            upstream: 'http://localhost:3003',
-            prefix: route.prefix,
-            rewritePrefix: route.rewritePrefix,
-            http2: false
-        });
-    }
+    app.get("/recipes/:id", async (request, reply) => {
+        const { id } = request.params as { id: string };
+        return proxyHydrate(app, request, reply, `/api/v1/recipes/${id}`, RECIPE_SERVICE_URL);
+    });
+
+    app.post("/recipes", async (request, reply) => {
+        return proxyHydrate(app, request, reply, "/api/v1/recipes", RECIPE_SERVICE_URL);
+    });
+
+    app.put("/recipes/:id", async (request, reply) => {
+        const { id } = request.params as { id: string };
+        return proxyHydrate(app, request, reply, `/api/v1/recipes/${id}`, RECIPE_SERVICE_URL);
+    });
+
+    app.delete("/recipes/:id", async (request, reply) => {
+        const { id } = request.params as { id: string };
+        return proxyHydrate(app, request, reply, `/api/v1/recipes/${id}`, RECIPE_SERVICE_URL);
+    });
+
+    app.get("/recipes/slug/:slug", async (request, reply) => {
+        const { slug } = request.params as { slug: string };
+        return proxyHydrate(app, request, reply, `/api/v1/recipes/by-slug/${slug}`, RECIPE_SERVICE_URL);
+    });
+
+    app.post("/recipes/:id/rate", async (request, reply) => {
+        const { id } = request.params as { id: string };
+        return proxyHydrate(app, request, reply, `/api/v1/recipes/${id}/rate`, RECIPE_SERVICE_URL);
+    });
+
+    app.get("/recipes/:id/rate", async (request, reply) => {
+        const { id } = request.params as { id: string };
+        return proxyHydrate(app, request, reply, `/api/v1/recipes/${id}/rate`, RECIPE_SERVICE_URL);
+    });
+
+    app.delete("/recipes/:id/rate", async (request, reply) => {
+        const { id } = request.params as { id: string };
+        return proxyHydrate(app, request, reply, `/api/v1/recipes/${id}/rate`, RECIPE_SERVICE_URL);
+    });
+
+    app.post("/categories", async (request, reply) => {
+        return proxyHydrate(app, request, reply, "/api/v1/categories", RECIPE_SERVICE_URL);
+    });
+
+    app.get("/categories", async (request, reply) => {
+        return proxyHydrate(app, request, reply, "/api/v1/categories", RECIPE_SERVICE_URL);
+    });
+
+    app.get("/categories/:id", async (request, reply) => {
+        const { id } = request.params as { id: string };
+        return proxyHydrate(app, request, reply, `/api/v1/categories/${id}`, RECIPE_SERVICE_URL);
+    });
+
+    app.get("/categories/by-slug/:slug", async (request, reply) => {
+        const { slug } = request.params as { slug: string };
+        return proxyHydrate(app, request, reply, `/api/v1/categories/by-slug/${slug}`, RECIPE_SERVICE_URL);
+    });
+
+    app.put("/categories/:id", async (request, reply) => {
+        const { id } = request.params as { id: string };
+        return proxyHydrate(app, request, reply, `/api/v1/categories/${id}`, RECIPE_SERVICE_URL);
+    });
+
+    app.delete("/categories/:id", async (request, reply) => {
+        const { id } = request.params as { id: string };
+        return proxyHydrate(app, request, reply, `/api/v1/categories/${id}`, RECIPE_SERVICE_URL);
+    });
 }

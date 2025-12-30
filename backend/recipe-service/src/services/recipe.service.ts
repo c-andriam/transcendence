@@ -1,4 +1,5 @@
 import { FastifyInstance } from "fastify";
+import db from "../utils/db";
 
 export function slugify(text: string): string {
     return text.toLowerCase()
@@ -9,7 +10,6 @@ export function slugify(text: string): string {
 }
 
 export async function createRecipe(
-    app: FastifyInstance,
     data: {
         title: string;
         description: string;
@@ -24,7 +24,7 @@ export async function createRecipe(
         instructions: { stepNumber: number; description: string }[];
     }) {
     const slug = slugify(data.title);
-    const recipe = await app.prisma.recipe.create({
+    const recipe = await db.recipe.create({
         data: {
             title: data.title,
             slug: slug,
@@ -52,7 +52,6 @@ export async function createRecipe(
             },
         },
         include: {
-            // ingredients: true,
             ingredients: {
                 select: {
                     name: true,
@@ -62,27 +61,16 @@ export async function createRecipe(
                 }
             },
             instructions: { orderBy: { stepNumber: 'asc' } },
-            // author: {
-            //     select: {
-            //         // id: true,
-            //         username: true,
-            //         avatarUrl: true,
-            //     }
-            // },
             category: true,
         }
     });
     return recipe;
 }
 
-export async function getAllRecipes(app: FastifyInstance) {
-    const recipes = await app.prisma.recipe.findMany({
+export async function getAllRecipes() {
+    const recipes = await db.recipe.findMany({
+        where: { isPublished: true },
         include: {
-            // ingredients: true,
-            // instructions: { orderBy: { stepNumber: 'asc' } },
-            // author: {
-            //     select: { id: true, username: true, avatarUrl: true },
-            // },
             category: true,
             ratings: true,
         },
@@ -90,31 +78,31 @@ export async function getAllRecipes(app: FastifyInstance) {
             createdAt: 'desc'
         },
     });
+
     return recipes.map(recipe => {
+        const ratingCount = recipe.ratings.length;
         const totalScore = recipe.ratings.reduce((total, rating) => total + rating.score, 0);
-        const averageScore = recipe.ratings.length > 0 ? Math.round((totalScore / recipe.ratings.length) * 10) / 10 : 0;
+        const averageScore = ratingCount > 0 ? Math.round((totalScore / ratingCount) * 10) / 10 : 0;
+
+        const { ratings, ...recipeWithoutRatings } = recipe;
+
         return {
-            ...recipe,
+            ...recipeWithoutRatings,
             averageScore,
+            ratingCount,
         };
     });
 }
 
-export async function getRecipeById(app: FastifyInstance, id: string) {
-    const recipe = await app.prisma.recipe.findUnique({
+export async function getRecipeById(id: string) {
+    const recipe = await db.recipe.findUnique({
         where: { id },
         include: {
             ingredients: true,
             instructions: true,
-            author: {
-                select: { id: true, username: true, avatarUrl: true },
-            },
             category: true,
             ratings: true,
             comments: {
-                // include: {
-                //     user: { select: { id: true, username: true, avatarUrl: true } },
-                // },
                 orderBy: {
                     createdAt: 'desc'
                 },
@@ -124,18 +112,18 @@ export async function getRecipeById(app: FastifyInstance, id: string) {
     if (!recipe) {
         return null;
     }
-    // return recipe;
-    // return recipe.map(recipe => {
+
+    const ratingCount = recipe.ratings.length;
     const totalScore = recipe.ratings.reduce((total, rating) => total + rating.score, 0);
     const averageScore = recipe.ratings.length > 0 ? Math.round((totalScore / recipe.ratings.length) * 10) / 10 : 0;
     return {
         ...recipe,
         averageScore,
+        ratingCount,
     };
-    // });
 }
 
-export async function updateRecipe(app: FastifyInstance, id: string,
+export async function updateRecipe(id: string,
     data: {
         title?: string;
         description?: string;
@@ -149,7 +137,7 @@ export async function updateRecipe(app: FastifyInstance, id: string,
         instructions?: { id?: string; stepNumber: number; description: string }[];
     }) {
 
-    const existing = await app.prisma.recipe.findUnique({
+    const existing = await db.recipe.findUnique({
         where: { id },
     });
     if (!existing) {
@@ -213,7 +201,7 @@ export async function updateRecipe(app: FastifyInstance, id: string,
         description: ins.description
     }))) || [];
 
-    const updatedRecipe = await app.prisma.recipe.update({
+    const updatedRecipe = await db.recipe.update({
         where: { id },
         data: {
             ...updateData,
@@ -229,42 +217,35 @@ export async function updateRecipe(app: FastifyInstance, id: string,
         include: {
             ingredients: true,
             instructions: { orderBy: { stepNumber: 'asc' } },
-            // author: { select: { id: true, username: true, avatarUrl: true } },
             category: true,
         }
     });
     return updatedRecipe;
 }
 
-export async function deleteRecipe(app: FastifyInstance, id: string) {
-    const existing = await app.prisma.recipe.findUnique({
+export async function deleteRecipe(id: string) {
+    const existing = await db.recipe.findUnique({
         where: { id }
     });
     if (!existing) {
         return null;
     }
 
-    const recipe = await app.prisma.recipe.delete({
+    const recipe = await db.recipe.delete({
         where: { id }
     });
     return recipe;
 }
 
-export async function getRecipeBySlug(app: FastifyInstance, slug: string) {
-    const recipe = await app.prisma.recipe.findUnique({
+export async function getRecipeBySlug(slug: string) {
+    const recipe = await db.recipe.findUnique({
         where: { slug },
         include: {
             ingredients: true,
             instructions: { orderBy: { stepNumber: 'asc' } },
-            // author: {
-            //     select: { id: true, username: true, avatarUrl: true },
-            // },
             category: true,
             ratings: true,
             comments: {
-                include: {
-                    // user: { select: { id: true, username: true, avatarUrl: true } },
-                },
                 orderBy: {
                     createdAt: 'desc'
                 },
@@ -274,20 +255,40 @@ export async function getRecipeBySlug(app: FastifyInstance, slug: string) {
     if (!recipe) {
         return null;
     }
+
+    const ratingCount = recipe.ratings.length;
     const totalScore = recipe.ratings.reduce((total, rating) => total + rating.score, 0);
     const averageScore = recipe.ratings.length > 0 ? Math.round((totalScore / recipe.ratings.length) * 10) / 10 : 0;
     return {
         ...recipe,
         averageScore,
+        ratingCount,
     };
 }
 
 export async function rateRecipe(
-    app: FastifyInstance,
     recipeId: string,
     userId: string,
     score: number) {
-    const rating = await app.prisma.rating.upsert({
+
+    const recipe = await db.recipe.findUnique({
+        where: { id: recipeId },
+        select: { isPublished: true, authorId: true }
+    });
+
+    if (!recipe) {
+        throw new Error("RECIPE_NOT_FOUND");
+    }
+
+    if (!recipe.isPublished) {
+        throw new Error("RECIPE_NOT_PUBLISHED");
+    }
+
+    if (recipe.authorId === userId) {
+        throw new Error("AUTHOR_CANNOT_RATE_OWN_RECIPE");
+    }
+
+    const rating = await db.rating.upsert({
         where: {
             userId_recipeId: {
                 recipeId,
@@ -306,18 +307,9 @@ export async function rateRecipe(
     return rating;
 }
 
-export async function getRecipeRatings(app: FastifyInstance, recipeId: string) {
-    const ratings = await app.prisma.rating.findMany({
+export async function getRecipeRatings(recipeId: string) {
+    const ratings = await db.rating.findMany({
         where: { recipeId },
-        include: {
-            // user: {
-            //     select: {
-            //         id: true,
-            //         username: true,
-            //         avatarUrl: true,
-            //     }
-            // }
-        },
         orderBy: {
             score: 'desc'
         },
@@ -332,8 +324,8 @@ export async function getRecipeRatings(app: FastifyInstance, recipeId: string) {
     };
 }
 
-export async function removeRecipeRating(app: FastifyInstance, recipeId: string, userId: string) {
-    const rating = await app.prisma.rating.delete({
+export async function removeRecipeRating(recipeId: string, userId: string) {
+    const rating = await db.rating.delete({
         where: {
             userId_recipeId: {
                 recipeId,
@@ -348,7 +340,7 @@ export async function removeRecipeRating(app: FastifyInstance, recipeId: string,
     //     where: { id: rating.id }
     // });
 
-    const ratings = await app.prisma.rating.findMany({
+    const ratings = await db.rating.findMany({
         where: { recipeId },
     });
 
@@ -363,7 +355,6 @@ export async function removeRecipeRating(app: FastifyInstance, recipeId: string,
 }
 
 export async function getAllRecipesBySearch(
-    app: FastifyInstance,
     page: number,
     limit: number,
     categoryId?: string,
@@ -388,16 +379,13 @@ export async function getAllRecipesBySearch(
     }
     else
         where.isPublished = true;
-    const recipes = await app.prisma.recipe.findMany({
+    const recipes = await db.recipe.findMany({
         where: where,
         skip: (page - 1) * limit,
         take: limit,
         include: {
             ingredients: true,
             instructions: { orderBy: { stepNumber: 'asc' } },
-            // author: {
-            //     select: { id: true, username: true, avatarUrl: true },
-            // },
             category: true,
         },
         orderBy: {

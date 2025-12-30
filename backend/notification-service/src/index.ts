@@ -1,48 +1,19 @@
-import fastify from "fastify";
-import { PrismaClient } from '@prisma/client';
-import { PrismaPg } from '@prisma/adapter-pg';
-import { Pool } from 'pg';
-import swagger from "@fastify/swagger";
-import swaggerUi from "@fastify/swagger-ui";
+import 'dotenv/config';
+import fastify from 'fastify';
 
 const app = fastify({
     logger: true
 });
 
-const connectionString = `${process.env.DATABASE_URL}`;
-const pool = new Pool({ connectionString });
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
-
-app.get('/health', async (request, reply) => {
-    return {
-        status: 'ok',
-        service: 'notification-service'
-    };
-});
-
 const start = async () => {
     try {
-        app.log.info('Database connection...');
-        await prisma.$connect();
-        app.log.info('Database connected');
-
-        await app.register(swagger, {
-            openapi: {
-                info: {
-                    title: "Notification Service API",
-                    version: "1.0.0"
-                }
-            }
-        });
-        await app.register(swaggerUi, {
-            routePrefix: "/documentation",
-        });
+        const port = 3004;
         await app.listen({
-            port: 3002,
+            port: port,
             host: '0.0.0.0'
         });
-        app.log.info('Server running on http://localhost:3002');
+
+        app.log.info(`Notification Service running on http://localhost:${port}`);
     } catch (err) {
         app.log.error(err);
         process.exit(1);

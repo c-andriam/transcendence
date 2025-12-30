@@ -1,35 +1,32 @@
-// ==================== NOTIFICATIONS ====================
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+    provider = "postgresql"
 }
 
-
 model Notification {
-  id        String           @id @default(cuid())
-  type      NotificationType
-  title     String
-  message   String
-  data      Json?
-  isRead    Boolean          @default(false)
-  createdAt DateTime         @default(now())
+    id        String           @id @default(cuid())
+    type      NotificationType
+    title     String
+    message   String
+    data      Json?
+    isRead    Boolean          @default(false)
+    createdAt DateTime         @default(now())
 
-  userId String
-//   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId String
 
-  @@index([userId, isRead])
-  @@index([createdAt])
+    @@index([userId, isRead])
+    @@index([createdAt])
 }
 
 enum NotificationType {
-  NEW_FOLLOWER
-  NEW_FRIEND_REQUEST
-  FRIEND_REQUEST_ACCEPTED
-  NEW_COMMENT
-  NEW_RATING
-  NEW_MESSAGE
-  RECIPE_FAVORITED
+    NEW_FOLLOWER
+    NEW_FRIEND_REQUEST
+    FRIEND_REQUEST_ACCEPTED
+    NEW_COMMENT
+    NEW_RATING
+    NEW_MESSAGE
+    RECIPE_FAVORITED
 }
