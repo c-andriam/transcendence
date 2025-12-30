@@ -455,7 +455,7 @@ export async function recipesRoutes(app: FastifyInstance) {
                 isPublished?: boolean;
                 categoryId?: string;
                 ingredients?: { id?: string; name: string; quantityText: string; isOptional?: boolean }[];
-                instructions?: { stepNumber: number; description: string }[];
+                instructions?: { id?: string; stepNumber: number; description: string }[];
             };
 
             if (!body || Object.keys(body).length === 0) {

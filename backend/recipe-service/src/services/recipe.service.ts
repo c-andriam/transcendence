@@ -205,14 +205,28 @@ export async function updateRecipe(id: string,
         where: { id },
         data: {
             ...updateData,
-            ingredients: {
-                update: ingredientsUpdate,
-                create: ingredientsCreate,
-            },
-            instructions: {
-                update: instructionsUpdate,
-                create: instructionsCreate,
-            },
+            // Remplacement complet des ingrédients si fournis
+            ...(data.ingredients && {
+                ingredients: {
+                    deleteMany: {},
+                    create: data.ingredients.map((ing, index) => ({
+                        name: ing.name,
+                        quantityText: ing.quantityText,
+                        sortOrder: index,
+                        isOptional: ing.isOptional ?? false,
+                    })),
+                },
+            }),
+            // Remplacement complet des instructions si fournies
+            ...(data.instructions && {
+                instructions: {
+                    deleteMany: {},
+                    create: data.instructions.map((ins) => ({
+                        stepNumber: ins.stepNumber,
+                        description: ins.description,
+                    })),
+                },
+            }),
         },
         include: {
             ingredients: true,
