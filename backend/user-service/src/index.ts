@@ -1,49 +1,26 @@
+import dotenv from 'dotenv';
 import fastify from 'fastify';
-import { PrismaClient } from '@prisma/client';
-import { PrismaPg } from '@prisma/adapter-pg';
-import { Pool } from 'pg';
-import swagger from "@fastify/swagger";
-import swaggerUi from "@fastify/swagger-ui";
+import db from './utils/dbPlugin';
+import { userRoutes } from './routes/user.routes';
+import { apikeyMiddleware } from './middleware/apikey.middleware';
 
-const app = fastify({
+dotenv.config();
+
+export const app = fastify({
     logger: true
-});
-
-const connectionString = `${process.env.DATABASE_URL}`;
-
-const pool = new Pool({ connectionString });
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
-
-app.get('/health', async (request, reply) => {
-    return {
-        status: 'ok',
-        service: 'user-service'
-    };
 });
 
 const start = async () => {
     try {
-        app.log.info('Database connection...');
-        await prisma.$connect();
-        app.log.info('Database connected');
-
-        await app.register(swagger, {
-            openapi: {
-                info: {
-                    title: "User Service API",
-                    version: "1.0.0"
-                }
-            }
-        });
-        await app.register(swaggerUi, {
-            routePrefix: "/documentation",
-        });
+        app.decorate('db', db);
+        app.addHook('preHandler', apikeyMiddleware);
+        app.register(userRoutes, { prefix: '/api/v1' });
+        const port = 3005;
         await app.listen({
-            port: 3004,
+            port: port,
             host: '0.0.0.0'
         });
-        app.log.info('Server running on http://localhost:3004');
+        app.log.info(`User Service running on ${process.env.USER_SERVICE_URL}`);
     } catch (err) {
         app.log.error(err);
         process.exit(1);

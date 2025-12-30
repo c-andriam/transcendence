@@ -8,19 +8,11 @@ import { getRecipeBySlug } from "../services/recipe.service"
 import { rateRecipe } from "../services/recipe.service"
 import { getRecipeRatings } from "../services/recipe.service"
 import { removeRecipeRating } from "../services/recipe.service"
-// import { PrismaClient } from "@prisma/client";
 
-// const prisma = new PrismaClient();
 // import { getAllRecipesBySearch } from "../config/services.config"
 
 export async function recipesRoutes(app: FastifyInstance) {
 
-    app.get('/health', async (request, reply) => {
-        return {
-            status: 'ok',
-            service: 'recipe-service'
-        };
-    });
 
     // ========== ROUTES RECETTES ==========
 
@@ -55,9 +47,9 @@ export async function recipesRoutes(app: FastifyInstance) {
                                     updatedAt: { "type": "string", "format": "date-time" },
                                     authorId: { "type": "string" },
                                     categoryId: { "type": "string" },
-                                    author: { "type": "object", "properties": { "id": { "type": "string" }, "username": { "type": "string" }, "avatarUrl": { "type": "string" } } },
                                     category: { "type": "object", "properties": { "name": { "type": "string" } } },
                                     averageScore: { "type": "number" },
+                                    ratingCount: { "type": "number" },
                                 }
                             }
                         }
@@ -83,7 +75,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         }
     }, async (request, reply) => {
         try {
-            const data = await getAllRecipes(app);
+            const data = await getAllRecipes();
             if (data.length === 0) {
                 return reply.code(200).send({
                     status: "success",
@@ -97,6 +89,7 @@ export async function recipesRoutes(app: FastifyInstance) {
                 data
             });
         } catch (err) {
+            app.log.error(err);
             return reply.code(500).send({
                 error: "Internal Server Error",
                 message: "Failed to find recipes"
@@ -114,48 +107,11 @@ export async function recipesRoutes(app: FastifyInstance) {
                 required: [
                     "title",
                     "description",
-                    "prepTime",
-                    "cookTime",
-                    "servings",
                     "authorId",
                     "categoryId",
                     "ingredients",
                     "instructions"
-                ],
-                properties: {
-                    title: { type: "string" },
-                    description: { type: "string" },
-                    prepTime: { type: "number" },
-                    cookTime: { type: "number" },
-                    servings: { type: "number" },
-                    difficulty: { type: "string", enum: ["EASY", "MEDIUM", "HARD"] },
-                    isPublished: { type: "boolean" },
-                    authorId: { type: "string" },
-                    categoryId: { type: "string" },
-                    ingredients: {
-                        type: "array",
-                        items: {
-                            type: "object",
-                            properties: {
-                                name: { type: "string" },
-                                quantityText: { type: "string" },
-                                isOptional: { type: "boolean" }
-                            },
-                            required: ["name", "quantityText"]
-                        }
-                    },
-                    instructions: {
-                        type: "array",
-                        items: {
-                            type: "object",
-                            properties: {
-                                stepNumber: { type: "number" },
-                                description: { type: "string" }
-                            },
-                            required: ["stepNumber", "description"]
-                        }
-                    }
-                }
+                ]
             },
             response: {
                 201: {
@@ -193,7 +149,6 @@ export async function recipesRoutes(app: FastifyInstance) {
                                     }
                                 },
                                 instructions: { "type": "array", "items": { "type": "object", "properties": { "stepNumber": { "type": "number" }, "description": { "type": "string" } } } },
-                                author: { "type": "object", "properties": { "username": { "type": "string" }, "avatarUrl": { "type": "string" } } },
                                 category: { "type": "object", "properties": { "name": { "type": "string" }, "sortOrder": { "type": "string" } } }
                             }
                         }
@@ -252,13 +207,14 @@ export async function recipesRoutes(app: FastifyInstance) {
         }
 
         try {
-            const data = await createRecipe(app, body);
+            const data = await createRecipe(body);
             return reply.code(201).send({
                 status: "success",
                 message: "Recipe created successfully",
                 data
             });
         } catch (err) {
+            app.log.error(err);
             return reply.code(500).send({
                 error: "Internal Server Error",
                 message: "Failed to create recipe"
@@ -318,9 +274,9 @@ export async function recipesRoutes(app: FastifyInstance) {
                                         }
                                     }
                                 },
-                                author: { "type": "object", "properties": { "id": { "type": "string" }, "username": { "type": "string" }, "avatarUrl": { "type": "string" } } },
                                 category: { "type": "object", "properties": { "name": { "type": "string" }, "sortOrder": { "type": "number" } } },
                                 averageScore: { "type": "number" },
+                                ratingCount: { "type": "number" },
                             }
                         }
                     }
@@ -354,7 +310,7 @@ export async function recipesRoutes(app: FastifyInstance) {
     }, async (request, reply) => {
         const { id } = request.params as { id: string };
         try {
-            const data = await getRecipeById(app, id);
+            const data = await getRecipeById(id);
             if (!data) {
                 return reply.code(404).send({
                     status: "error",
@@ -367,6 +323,7 @@ export async function recipesRoutes(app: FastifyInstance) {
                 data
             });
         } catch (err) {
+            app.log.error(err);
             return reply.code(500).send({
                 error: "Internal Server Error",
                 message: "Failed to find recipe"
@@ -509,7 +466,7 @@ export async function recipesRoutes(app: FastifyInstance) {
             }
 
             try {
-                const data = await updateRecipe(app, id, body);
+                const data = await updateRecipe(id, body);
                 if (!data) {
                     return reply.code(404).send({
                         status: "error",
@@ -522,6 +479,7 @@ export async function recipesRoutes(app: FastifyInstance) {
                     data
                 });
             } catch (err) {
+                app.log.error(err);
                 return reply.code(500).send({
                     error: "Internal Server Error",
                     message: "Failed to update recipe"
@@ -573,7 +531,7 @@ export async function recipesRoutes(app: FastifyInstance) {
     }, async (request, reply) => {
         const { id } = request.params as { id: string };
         try {
-            const data = await deleteRecipe(app, id);
+            const data = await deleteRecipe(id);
             if (!data) {
                 return reply.code(404).send({
                     error: "Not Found",
@@ -586,6 +544,7 @@ export async function recipesRoutes(app: FastifyInstance) {
                 data
             });
         } catch (err) {
+            app.log.error(err);
             return reply.code(500).send({
                 error: "Internal Server Error",
                 message: "Failed to find recipe"
@@ -643,9 +602,9 @@ export async function recipesRoutes(app: FastifyInstance) {
                                         }
                                     }
                                 },
-                                author: { "type": "object", "properties": { "id": { "type": "string" }, "username": { "type": "string" }, "avatarUrl": { "type": "string" } } },
                                 category: { "type": "object", "properties": { "name": { "type": "string" }, "sortOrder": { "type": "number" } } },
                                 averageScore: { "type": "number" },
+                                ratingCount: { "type": "number" },
                             }
                         }
                     }
@@ -680,7 +639,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         async (request, reply) => {
             const { slug } = request.params as { slug: string };
             try {
-                const data = await getRecipeBySlug(app, slug);
+                const data = await getRecipeBySlug(slug);
                 if (!data) {
                     return reply.code(404).send({
                         status: "error",
@@ -693,6 +652,7 @@ export async function recipesRoutes(app: FastifyInstance) {
                     data
                 });
             } catch (err) {
+                app.log.error(err);
                 return reply.code(500).send({
                     error: "Internal Server Error",
                     message: "Failed to find recipe"
@@ -781,21 +741,33 @@ export async function recipesRoutes(app: FastifyInstance) {
                 message: "score must be between 1 and 5"
             });
         }
-        const recipe = await getRecipeById(app, id);
-        if (!recipe) {
-            return reply.code(404).send({
-                status: "Not Found",
-                message: "Recipe not found"
-            });
-        }
         try {
-            const data = await rateRecipe(app, id, body.userId, body.score);
+            const data = await rateRecipe(id, body.userId, body.score);
             return reply.code(200).send({
                 status: "success",
                 message: "Recipe rated successfully",
                 data
             });
-        } catch (err) {
+        } catch (err: any) {
+            if (err.message === "RECIPE_NOT_FOUND") {
+                return reply.code(404).send({
+                    error: "Not Found",
+                    message: "Recipe not found"
+                });
+            }
+            if (err.message === "RECIPE_NOT_PUBLISHED") {
+                return reply.code(403).send({
+                    error: "Forbidden",
+                    message: "Cannot rate an unpublished recipe"
+                });
+            }
+            if (err.message === "AUTHOR_CANNOT_RATE_OWN_RECIPE") {
+                return reply.code(403).send({
+                    error: "Forbidden",
+                    message: "Authors cannot rate their own recipes"
+                });
+            }
+            app.log.error(err);
             return reply.code(500).send({
                 error: "Internal Server Error",
                 message: "Failed to rate recipe"
@@ -846,7 +818,7 @@ export async function recipesRoutes(app: FastifyInstance) {
     }, async (request, reply) => {
         const { id } = request.params as { id: string };
         try {
-            const data = await getRecipeRatings(app, id);
+            const data = await getRecipeRatings(id);
             if (data.totalRaters === 0) {
                 return reply.code(200).send({
                     status: "success",
@@ -864,6 +836,7 @@ export async function recipesRoutes(app: FastifyInstance) {
                 data
             })
         } catch (err) {
+            app.log.error(err);
             return reply.code(500).send({
                 error: "Internal Server Error",
                 message: "Failed to find recipe ratings"
@@ -936,13 +909,14 @@ export async function recipesRoutes(app: FastifyInstance) {
             });
         }
         try {
-            const data = await removeRecipeRating(app, id, body.userId);
+            const data = await removeRecipeRating(id, body.userId);
             return reply.code(200).send({
                 status: "success",
                 message: "Recipe rating removed successfully",
                 data
             })
         } catch (err) {
+            app.log.error(err);
             return reply.code(404).send({
                 status: "error",
                 message: "Recipe rating not found"
