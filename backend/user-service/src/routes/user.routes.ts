@@ -6,9 +6,13 @@ export async function userRoutes(app: FastifyInstance) {
     app.get("/users", async (request, reply) => {
         try {
             const users = await getAllUsers();
+            const usersWithoutPasswords = users.map((user: any) => {
+                const { password, ...userWithoutPassword } = user;
+                return userWithoutPassword;
+            });
             reply.send({
                 status: "success",
-                data: users
+                data: usersWithoutPasswords
             });
         } catch (error) {
             reply.status(500).send({
@@ -30,9 +34,10 @@ export async function userRoutes(app: FastifyInstance) {
                 });
                 return;
             }
+            const { password, ...userWithoutPassword } = user as any;
             reply.status(200).send({
                 status: "success",
-                data: user
+                data: userWithoutPassword
             });
         } catch (error) {
             reply.status(500).send({
@@ -62,9 +67,11 @@ export async function userRoutes(app: FastifyInstance) {
                 avatarUrl,
                 bio
             });
+            // Strip password
+            const { password: _, ...userWithoutPassword } = user as any;
             reply.status(201).send({
                 status: "success",
-                data: user
+                data: userWithoutPassword
             });
         } catch (error) {
             if ((error as any).code === "P2002") {
@@ -93,9 +100,11 @@ export async function userRoutes(app: FastifyInstance) {
         };
         try {
             const user = await updateUser(id, body);
+            // Strip password
+            const { password, ...userWithoutPassword } = user as any;
             reply.status(200).send({
                 status: "success",
-                data: user
+                data: userWithoutPassword
             });
         } catch (error) {
             if ((error as any).code === "P2002") {
@@ -123,9 +132,11 @@ export async function userRoutes(app: FastifyInstance) {
         const { id } = request.params as { id: string };
         try {
             const user = await deleteUser(id);
+            // Strip password
+            const { password, ...userWithoutPassword } = user as any;
             reply.status(200).send({
                 status: "success",
-                data: user
+                data: userWithoutPassword
             });
         } catch (error) {
             if ((error as any).code === "P2025") {
@@ -147,9 +158,14 @@ export async function userRoutes(app: FastifyInstance) {
         const splittedIds = ids.split(",");
         try {
             const users = await getUsersByIds(splittedIds);
+            // Strip passwords
+            const usersWithoutPasswords = users.map((user: any) => {
+                const { password, ...userWithoutPassword } = user;
+                return userWithoutPassword;
+            });
             reply.status(200).send({
                 status: "success",
-                data: users
+                data: usersWithoutPasswords
             });
         } catch (error) {
             reply.status(500).send({
@@ -170,6 +186,7 @@ export async function userRoutes(app: FastifyInstance) {
                 });
                 return;
             }
+
             reply.status(200).send({
                 status: "success",
                 data: user

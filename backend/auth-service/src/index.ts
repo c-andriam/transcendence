@@ -7,8 +7,12 @@ const app = fastify({
     logger: true
 });
 
+if (!process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET environment variable is required');
+}
+
 app.register(jwt, {
-    secret: process.env.JWT_SECRET || 'supersecret'
+    secret: process.env.JWT_SECRET
 });
 
 app.register(authRoutes);

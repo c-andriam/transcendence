@@ -7,6 +7,10 @@ import { categoryRoutes } from './routes/category.routes';
 
 dotenv.config();
 
+if (!process.env.INTERNAL_API_KEY) {
+    throw new Error("INTERNAL_API_KEY is not defined");
+}
+
 export const app = fastify({
     logger: true
 });

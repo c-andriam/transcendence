@@ -1,5 +1,16 @@
 import bcrypt from "bcrypt";
 
+const USER_SERVICE_URL = process.env.USER_SERVICE_URL;
+const INTERNAL_API_KEY = process.env.INTERNAL_API_KEY;
+
+if (!USER_SERVICE_URL) {
+    throw new Error("USER_SERVICE_URL is not defined");
+}
+
+if (!INTERNAL_API_KEY) {
+    throw new Error("INTERNAL_API_KEY is not defined");
+}
+
 export async function hashPassword(password: string) {
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
@@ -24,25 +35,35 @@ export async function registerUser(userData: any) {
         password: hashedPassword
     };
 
-    const url = process.env.USER_SERVICE_URL;
     const path = "/api/v1/users";
-    const response = await fetch(`${url}${path}`, {
+    const response = await fetch(`${USER_SERVICE_URL}${path}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'x-internal-api-key': process.env.INTERNAL_API_KEY || ''
+            'x-internal-api-key': INTERNAL_API_KEY
         },
         body: JSON.stringify(userToCreate)
     });
-    return await response.json();
+
+    const result = await response.json();
+
+    if (!response.ok) {
+        throw new Error(result.message || "Failed to register user");
+    }
+
+    if (result.data && result.data.password) {
+        const { password: _, ...userWithoutPassword } = result.data;
+        result.data = userWithoutPassword;
+    }
+
+    return result;
 }
 
 export async function loginUser(credentials: any) {
     const { identifier, password } = credentials;
-    const url = process.env.USER_SERVICE_URL;
-    const response = await fetch(`${url}/api/v1/internal/users/by-identifier/${identifier}`, {
+    const response = await fetch(`${USER_SERVICE_URL}/api/v1/internal/users/by-identifier/${identifier}`, {
         headers: {
-            'x-internal-api-key': process.env.INTERNAL_API_KEY || ''
+            'x-internal-api-key': INTERNAL_API_KEY
         }
     });
     const result = await response.json();
@@ -53,7 +74,10 @@ export async function loginUser(credentials: any) {
 
     const user = result.data;
     await verifyPassword(password, user.password);
-    return user;
+
+    // Strip password before returning
+    const { password: _, ...userWithoutPassword } = user;
+    return userWithoutPassword;
 }
 
 // hashPassword("password123").then(hash => console.log(hash));

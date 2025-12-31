@@ -3,6 +3,10 @@ import { proxyHydrate } from "../utils/proxy";
 
 const RECIPE_SERVICE_URL = process.env.RECIPE_SERVICE_URL;
 
+if (!RECIPE_SERVICE_URL) {
+    throw new Error("RECIPE_SERVICE_URL is not defined");
+}
+
 export async function recipesRoutes(app: FastifyInstance) {
     app.get("/recipes", async (request, reply) => {
         return proxyHydrate(app, request, reply, "/api/v1/recipes", RECIPE_SERVICE_URL);

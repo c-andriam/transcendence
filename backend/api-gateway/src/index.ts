@@ -17,6 +17,10 @@ const key = process.env.API_GATEWAY_KEY;
 if (!key) {
   throw new Error("API_GATEWAY_KEY is not defined");
 }
+
+if (!process.env.INTERNAL_API_KEY) {
+  throw new Error("INTERNAL_API_KEY is not defined");
+}
 export const app = fastify();
 
 // const apiGatewaySpec = JSON.parse(fs.readFileSync ('../../docs/api/apiGateway.json', 'utf-8'));
