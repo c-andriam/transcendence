@@ -6,7 +6,7 @@ import { JWT } from "@fastify/jwt";
 const registerSchema = z.object({
     email: z.string().email(),
     username: z.string().min(3).max(50),
-    password: z.string().min(8).max(42),
+    password: z.string().min(8).max(142),
     firstName: z.string().optional(),
     lastName: z.string().optional(),
     avatarUrl: z.string().optional(),
@@ -15,7 +15,7 @@ const registerSchema = z.object({
 
 const loginSchema = z.object({
     identifier: z.string().min(3).max(50),
-    password: z.string().min(8).max(42),
+    password: z.string().min(8).max(142),
 });
 
 export async function authRoutes(app: FastifyInstance) {
