@@ -1,4 +1,6 @@
-import { hashPassword, comparePassword, verifyPassword } from "@transcendence/common";
+import { hashPassword, comparePassword, verifyPassword, isValidEmail } from "@transcendence/common";
+import { BadRequestError } from "@transcendence/common";
+
 const DOMAIN = process.env.DOMAIN;
 const USER_SERVICE_PORT = process.env.USER_SERVICE_PORT;
 const USER_SERVICE_URL = `${DOMAIN}:${USER_SERVICE_PORT}`;
@@ -14,6 +16,10 @@ if (!INTERNAL_API_KEY) {
 }
 
 export async function registerUser(userData: any) {
+    const isSafeEmail = await isValidEmail(userData.email);
+    if (!isSafeEmail) {
+        throw new BadRequestError("Invalid email or email address doesn't exist");
+    }
     const hashedPassword = await hashPassword(userData.password);
     const userToCreate = {
         ...userData,
