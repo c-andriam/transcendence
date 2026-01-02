@@ -1,4 +1,6 @@
 import db from "../utils/dbPlugin";
+import { hashPassword, isValidEmail } from "@transcendence/common";
+import { BadRequestError } from "@transcendence/common";
 
 export async function createUser(data: {
     email: string;
@@ -9,8 +11,22 @@ export async function createUser(data: {
     avatarUrl?: string;
     bio?: string;
 }) {
+    const isSafeEmail = await isValidEmail(data.email);
+    if (!isSafeEmail) {
+        throw new BadRequestError("Invalid email or email address doesn't exist");
+    }
+
+    if (data.password.length < 8 || data.password.length > 142) {
+        throw new BadRequestError("Password must be between 8 and 142 characters");
+    }
+
+    const hashedPassword = await hashPassword(data.password);
+
     const user = await db.user.create({
-        data: { ...data }
+        data: { 
+            ...data,
+            password: hashedPassword
+        }
     });
     return user;
 }
