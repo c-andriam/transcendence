@@ -91,7 +91,7 @@ export async function userRoutes(app: FastifyInstance) {
     app.put("/users/:id", async (request, reply) => {
         const { id } = request.params as { id: string };
         const body = request.body as {
-            email?: string;
+            // email?: string;
             username?: string;
             firstName?: string;
             lastName?: string;
@@ -100,7 +100,6 @@ export async function userRoutes(app: FastifyInstance) {
         };
         try {
             const user = await updateUser(id, body);
-            // Strip password
             const { password, ...userWithoutPassword } = user as any;
             reply.status(200).send({
                 status: "success",
@@ -110,7 +109,7 @@ export async function userRoutes(app: FastifyInstance) {
             if ((error as any).code === "P2002") {
                 reply.status(409).send({
                     status: "error",
-                    message: "Email or username already exists"
+                    message: "Username already exists"
                 });
                 return;
             }

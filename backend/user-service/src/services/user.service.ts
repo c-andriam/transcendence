@@ -26,7 +26,7 @@ export async function getUserById(id: string) {
 }
 
 export async function updateUser(id: string, data: {
-    email?: string;
+    // email?: string;
     username?: string;
     firstName?: string;
     lastName?: string;
@@ -35,7 +35,13 @@ export async function updateUser(id: string, data: {
 }) {
     const user = await db.user.update({
         where: { id },
-        data: { ...data }
+        data: { 
+            username: data.username,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            avatarUrl: data.avatarUrl,
+            bio: data.bio
+         }
     });
     return user;
 }
