@@ -1,7 +1,10 @@
 import { FastifyInstance } from "fastify";
 import { proxyRequest } from "../utils/proxy";
 
-const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL;
+const DOMAIN = process.env.DOMAIN;
+const AUTH_SERVICE_PORT = process.env.AUTH_SERVICE_PORT;
+
+const AUTH_SERVICE_URL = `${DOMAIN}:${AUTH_SERVICE_PORT}`;
 
 if (!AUTH_SERVICE_URL) {
     throw new Error("AUTH_SERVICE_URL is not defined");

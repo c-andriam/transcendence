@@ -1,6 +1,9 @@
 import { FastifyInstance } from "fastify";
 
-const USER_SERVICE_URL = process.env.USER_SERVICE_URL;
+const INTERNAL_API_KEY = process.env.INTERNAL_API_KEY;
+const DOMAIN = process.env.DOMAIN;
+const USER_SERVICE_PORT = process.env.USER_SERVICE_PORT;
+const USER_SERVICE_URL = `${DOMAIN}:${USER_SERVICE_PORT}`;
 
 export async function hydrateRecipes(app: FastifyInstance, data: any) {
     if (!data)
@@ -13,7 +16,7 @@ export async function hydrateRecipes(app: FastifyInstance, data: any) {
     const response = await fetch(`${USER_SERVICE_URL}/api/v1/internal/users/batch?ids=${authorIds.join(",")}`, {
         method: "GET",
         headers: {
-            "x-internal-api-key": process.env.INTERNAL_API_KEY || "",
+            "x-internal-api-key": INTERNAL_API_KEY,
             "Content-Type": "application/json"
         }
     });

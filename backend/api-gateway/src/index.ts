@@ -70,14 +70,17 @@ const start = async () => {
       }
     });
     await app.register(swaggerUi, { routePrefix: "/documentation" });
-    app.register(authRoutes, { prefix: '/api/v1' });
     app.register(async (api) => {
       api.addHook("preHandler", authMiddleware);
+      api.register(authRoutes, { prefix: '/api/v1' });
       api.register(recipesRoutes, { prefix: '/api/v1' });
       api.register(usersRoutes, { prefix: '/api/v1' });
     })
-    await app.listen({ port: 3000, host: "0.0.0.0" });
-    app.log.info(`API Gateway running on ${process.env.API_GATEWAY_URL}`);
+    const port = Number(process.env.API_GATEWAY_PORT);
+    await app.listen({ port: port, host: "0.0.0.0" });
+    const api_gateway_url = `${process.env.DOMAIN}:${process.env.API_GATEWAY_PORT}`;
+    console.log(`API Gateway running on ${api_gateway_url}`);
+
   } catch (err) {
     app.log.error(err);
     process.exit(1);

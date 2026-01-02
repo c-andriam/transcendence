@@ -1,7 +1,10 @@
 import { FastifyInstance } from "fastify";
 import { proxyRequest } from "../utils/proxy";
 
-const USER_SERVICE_URL = process.env.USER_SERVICE_URL;
+const DOMAIN = process.env.DOMAIN;
+const USER_SERVICE_PORT = process.env.USER_SERVICE_PORT;
+
+const USER_SERVICE_URL = `${DOMAIN}:${USER_SERVICE_PORT}`;
 
 if (!USER_SERVICE_URL) {
     throw new Error("USER_SERVICE_URL is not defined");

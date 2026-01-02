@@ -19,13 +19,15 @@ app.register(authRoutes);
 
 const start = async () => {
     try {
-        const port = 3002;
+        const port = Number(process.env.AUTH_SERVICE_PORT);
+        console.log(port);
         await app.listen({
             port: port,
             host: '0.0.0.0'
         });
 
-        app.log.info(`Auth Service running on http://localhost:${port}`);
+    const auth_service_url = `${process.env.DOMAIN}:${process.env.AUTH_SERVICE_PORT}`;
+    console.log(`Auth Service running on ${auth_service_url}`);
     } catch (err) {
         app.log.error(err);
         process.exit(1);

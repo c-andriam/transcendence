@@ -18,13 +18,14 @@ const start = async () => {
     try {
         app.decorate('db', db);
         app.addHook('preHandler', apikeyMiddleware);
-        app.register(userRoutes, { prefix: '/api/v1' });
-        const port = 3005;
+        await app.register(userRoutes, { prefix: '/api/v1' });
+        const port = Number(process.env.USER_SERVICE_PORT);
         await app.listen({
             port: port,
             host: '0.0.0.0'
         });
-        app.log.info(`User Service running on ${process.env.USER_SERVICE_URL}`);
+        const user_service_url = `${process.env.DOMAIN}:${process.env.USER_SERVICE_PORT}`;
+        console.log(`User Service running on ${user_service_url}`);
     } catch (err) {
         app.log.error(err);
         process.exit(1);

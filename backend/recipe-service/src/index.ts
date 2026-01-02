@@ -21,12 +21,13 @@ const start = async () => {
         app.addHook("preHandler", apikeyMiddleware);
         await app.register(recipesRoutes, { prefix: '/api/v1' });
         await app.register(categoryRoutes, { prefix: '/api/v1' });
-        const port = 3001;
+        const port = Number(process.env.RECIPE_SERVICE_PORT);
         await app.listen({
             port: port,
             host: '0.0.0.0'
         });
-        app.log.info(`Recipe Service running on ${process.env.RECIPE_SERVICE_URL}`);
+        const recipe_service_url = `${process.env.DOMAIN}:${process.env.RECIPE_SERVICE_PORT}`;
+        console.log(`Recipe Service running on ${recipe_service_url}`);
     } catch (err) {
         app.log.error(err);
         process.exit(1);
