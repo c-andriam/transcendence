@@ -20,10 +20,10 @@ model User {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
 
-  followers              Follow[]                  @relation("Following")
-  following              Follow[]                  @relation("Followers")
-  friendRequestsSent     FriendRequest[]           @relation("FriendRequestSent")
-  friendRequestsReceived FriendRequest[]           @relation("FriendRequestReceived")
+  followers              Follow[]        @relation("Following")
+  following              Follow[]        @relation("Followers")
+  friendRequestsSent     FriendRequest[] @relation("FriendRequestSent")
+  friendRequestsReceived FriendRequest[] @relation("FriendRequestReceived")
 
   @@index([email])
   @@index([username])

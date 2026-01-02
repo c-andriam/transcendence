@@ -1,0 +1,23 @@
+{
+    "name": "transcendence-backend",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Backend monorepo for Transcendence",
+    "workspaces": [
+        "common",
+        "api-gateway",
+        "auth-service",
+        "user-service",
+        "recipe-service",
+        "chat-service",
+        "notification-service",
+        "websocket-service"
+    ],
+    "scripts": {
+        "install:all": "npm install",
+        "build:common": "npm run build --workspace=common"
+    },
+    "devDependencies": {
+        "concurrently": "^9.2.1"
+    }
+}
