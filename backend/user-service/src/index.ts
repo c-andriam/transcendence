@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import fastify from 'fastify';
 import db from './utils/dbPlugin';
 import { userRoutes } from './routes/user.routes';
-import { apikeyMiddleware } from './middleware/apikey.middleware';
+import { globalErrorHandler, internalApiKeyMiddleware } from '@transcendence/common';
 
 dotenv.config();
 
@@ -14,10 +14,12 @@ export const app = fastify({
     logger: true
 });
 
+app.setErrorHandler(globalErrorHandler);
+
 const start = async () => {
     try {
         app.decorate('db', db);
-        app.addHook('preHandler', apikeyMiddleware);
+        app.addHook('preHandler', internalApiKeyMiddleware);
         await app.register(userRoutes, { prefix: '/api/v1' });
         const port = Number(process.env.USER_SERVICE_PORT);
         await app.listen({

@@ -113,7 +113,7 @@ jobs:
           echo "OpenAPI spec fetched successfully"
           echo "First 20 lines of spec:"
           cat ../../openapi-spec.json | head -20
-        elif curl -s -H "x-api-key: github-actions-doc-generation" http://localhost:3000/api/v1/json -o ../../openapi-spec.json; then
+        elif curl -s -H "x-gateway-api-key: github-actions-doc-generation" http://localhost:3000/api/v1/json -o ../../openapi-spec.json; then
           echo "OpenAPI spec fetched successfully (with auth)"
           echo "First 20 lines of spec:"
           cat ../../openapi-spec.json | head -20

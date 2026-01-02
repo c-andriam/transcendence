@@ -1,13 +1,6 @@
 import { FastifyInstance } from "fastify";
 import db from "../utils/db";
-
-export function slugify(text: string): string {
-    return text.toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^a-z0-9]/g, '-')
-        .replace(/^-+|-+$/g, '');
-}
+import { slugify, NotFoundError, ForbiddenError } from "@transcendence/common";
 
 export async function createRecipe(
     data: {
@@ -205,7 +198,6 @@ export async function updateRecipe(id: string,
         where: { id },
         data: {
             ...updateData,
-            // Remplacement complet des ingrédients si fournis
             ...(data.ingredients && {
                 ingredients: {
                     deleteMany: {},
@@ -217,7 +209,6 @@ export async function updateRecipe(id: string,
                     })),
                 },
             }),
-            // Remplacement complet des instructions si fournies
             ...(data.instructions && {
                 instructions: {
                     deleteMany: {},
@@ -291,15 +282,15 @@ export async function rateRecipe(
     });
 
     if (!recipe) {
-        throw new Error("RECIPE_NOT_FOUND");
+        throw new NotFoundError("Recipe not found");
     }
 
     if (!recipe.isPublished) {
-        throw new Error("RECIPE_NOT_PUBLISHED");
+        throw new ForbiddenError("Cannot rate an unpublished recipe");
     }
 
     if (recipe.authorId === userId) {
-        throw new Error("AUTHOR_CANNOT_RATE_OWN_RECIPE");
+        throw new ForbiddenError("Authors cannot rate their own recipes");
     }
 
     const rating = await db.rating.upsert({
@@ -350,9 +341,6 @@ export async function removeRecipeRating(recipeId: string, userId: string) {
     if (!rating) {
         throw new Error("Rating not Found");
     }
-    // await app.db.rating.delete({
-    //     where: { id: rating.id }
-    // });
 
     const ratings = await db.rating.findMany({
         where: { recipeId },

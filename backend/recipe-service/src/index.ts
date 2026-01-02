@@ -2,8 +2,8 @@ import dotenv from 'dotenv';
 import fastify from 'fastify';
 import db from './utils/db';
 import { recipesRoutes } from './routes/recipe.routes';
-import { apikeyMiddleware } from './middleware/apikey.middleware';
 import { categoryRoutes } from './routes/category.routes';
+import { globalErrorHandler, internalApiKeyMiddleware } from '@transcendence/common';
 
 dotenv.config();
 
@@ -15,10 +15,12 @@ export const app = fastify({
     logger: true
 });
 
+app.setErrorHandler(globalErrorHandler);
+
 const start = async () => {
     try {
         app.decorate('prisma', db);
-        app.addHook("preHandler", apikeyMiddleware);
+        app.addHook("preHandler", internalApiKeyMiddleware);
         await app.register(recipesRoutes, { prefix: '/api/v1' });
         await app.register(categoryRoutes, { prefix: '/api/v1' });
         const port = Number(process.env.RECIPE_SERVICE_PORT);

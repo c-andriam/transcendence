@@ -2,10 +2,13 @@ import 'dotenv/config';
 import fastify from 'fastify';
 import jwt from '@fastify/jwt';
 import { authRoutes } from './routes/auth.routes';
+import { globalErrorHandler } from '@transcendence/common';
 
 const app = fastify({
     logger: true
 });
+
+app.setErrorHandler(globalErrorHandler);
 
 if (!process.env.JWT_SECRET) {
     throw new Error('JWT_SECRET environment variable is required');

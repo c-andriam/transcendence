@@ -1,7 +1,6 @@
 import dotenv from "dotenv"
 dotenv.config();
 
-import path from "path"
 import { authMiddleware } from "./middleware/auth.middleware";
 import fastify from "fastify";
 import { registerRateLimiter } from "./middleware/rateLimiter.middleware";
@@ -10,7 +9,7 @@ import { usersRoutes } from "./routes/users.routes";
 import swagger from "@fastify/swagger";
 import swaggerUi from "@fastify/swagger-ui";
 import { authRoutes } from "./routes/auth.routes";
-// import fs from 'fs';
+import { globalErrorHandler } from "@transcendence/common";
 
 const key = process.env.API_GATEWAY_KEY;
 
@@ -21,9 +20,10 @@ if (!key) {
 if (!process.env.INTERNAL_API_KEY) {
   throw new Error("INTERNAL_API_KEY is not defined");
 }
+
 export const app = fastify();
 
-// const apiGatewaySpec = JSON.parse(fs.readFileSync ('../../docs/api/apiGateway.json', 'utf-8'));
+app.setErrorHandler(globalErrorHandler);
 
 const start = async () => {
   try {
@@ -57,7 +57,7 @@ const start = async () => {
           securitySchemes: {
             apiKeyAuth: {
               type: "apiKey",
-              name: "x-api-key",
+              name: "x-gateway-api-key",
               in: "header"
             }
           }

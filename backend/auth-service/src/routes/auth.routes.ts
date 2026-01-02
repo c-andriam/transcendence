@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
 import { loginUser, registerUser } from "../services/auth.service";
 import { z } from "zod";
-import { JWT } from "@fastify/jwt";
+import { bodyValidator, sendSuccess, sendCreated } from "@transcendence/common";
 
 const registerSchema = z.object({
     email: z.string().email(),
@@ -19,55 +19,21 @@ const loginSchema = z.object({
 });
 
 export async function authRoutes(app: FastifyInstance) {
-    app.post("/register", async (request, reply) => {
-        try {
-            const validatedData = registerSchema.parse(request.body);
-            const result = await registerUser(validatedData);
-            if (result.status === 'error') {
-                return reply.status(400).send(result);
-            }
-            return reply.status(201).send(result);
-        } catch (error: any) {
-            if (error instanceof z.ZodError) {
-                return reply.status(400).send({
-                    status: 'error',
-                    message: 'Validation failed',
-                    errors: error.issues
-                });
-            }
-            return reply.status(500).send({
-                status: 'error',
-                message: error.message || 'Internal Server Error'
-            });
-        }
+    app.post("/register", {
+        preHandler: bodyValidator(registerSchema)
+    }, async (request, reply) => {
+        const result = await registerUser(request.body);
+        sendCreated(reply, result, 'User registered successfully');
     });
 
-    app.post("/login", async (request, reply) => {
-        try {
-            const validatedData = loginSchema.parse(request.body);
-            const user = await loginUser(validatedData);
-            const token = app.jwt.sign({
-                id: user.id,
-                username: user.username,
-            });
-            return reply.status(200).send({
-                status: 'success',
-                data: {
-                    token
-                }
-            });
-        } catch (error: any) {
-            if (error instanceof z.ZodError) {
-                return reply.status(400).send({
-                    status: 'error',
-                    message: 'Validation failed',
-                    errors: error.issues
-                });
-            }
-            return reply.status(401).send({
-                status: 'error',
-                message: error.message || 'Invalid credentials'
-            });
-        }
+    app.post("/login", {
+        preHandler: bodyValidator(loginSchema)
+    }, async (request, reply) => {
+        const user = await loginUser(request.body);
+        const token = app.jwt.sign({
+            id: user.id,
+            username: user.username,
+        });
+        sendSuccess(reply, { token }, 'Login successful');
     });
 }

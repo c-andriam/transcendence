@@ -1,4 +1,14 @@
-import { ConflictError, NotFoundError, ApplicationError } from "./index";
+import { 
+    ConflictError,
+    NotFoundError,
+    BadRequestError,
+    InternalServerError,
+    ApplicationError
+} from "./index";
+
+export function isPrismaError(error: any): boolean {
+    return error?.code?.startsWith('P');
+}
 
 export function prismaErrorHandler(error: any): ApplicationError {
     const code = error.code;
@@ -11,6 +21,10 @@ export function prismaErrorHandler(error: any): ApplicationError {
                 const field = Array.isArray(target) ? target.join(', ') : target || 'field';
                 return new ConflictError(`${field} already exists`, 'DUPLICATE_ENTRY');
             }
+        case 'P2001':
+            {
+                return new NotFoundError('Record does not exist', 'NOT_FOUND');
+            }
         case 'P2025':
             {
                 return new NotFoundError('Record Not Found', 'NOT_FOUND');
@@ -20,9 +34,23 @@ export function prismaErrorHandler(error: any): ApplicationError {
                 const field = meta?.field_name || 'relation';
                 return new ConflictError(`Invalid reference: ${field}`, 'FOREIGN_KEY_VIOLATION');
             }
+        case 'P2000':
+            {
+                return new BadRequestError('Value too long for column', 'VALUE_TOO_LONG');
+            }
+        case 'P2014':
+            {
+                return new BadRequestError('Required relation violation', 'REQUIRED_RELATION');
+            }
+        case 'P2021':
+        case 'P2024':
+            {
+                return new InternalServerError('Database error', 'DATABASE_ERROR');
+            }
         default:
             {
-                return new ApplicationError(error.message, error.code);
+                return new InternalServerError(error.message || 'Database error', 'DATABASE_ERROR');
             }
     }
 }
+

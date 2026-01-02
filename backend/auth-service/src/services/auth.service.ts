@@ -1,5 +1,4 @@
-import bcrypt from "bcrypt";
-
+import { hashPassword, comparePassword, verifyPassword } from "@transcendence/common";
 const DOMAIN = process.env.DOMAIN;
 const USER_SERVICE_PORT = process.env.USER_SERVICE_PORT;
 const USER_SERVICE_URL = `${DOMAIN}:${USER_SERVICE_PORT}`;
@@ -12,23 +11,6 @@ if (!USER_SERVICE_URL) {
 
 if (!INTERNAL_API_KEY) {
     throw new Error("INTERNAL_API_KEY is not defined");
-}
-
-export async function hashPassword(password: string) {
-    const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(password, salt);
-    return hash;
-}
-
-export async function comparePassword(password: string, hash: string) {
-    return await bcrypt.compare(password, hash);
-}
-
-export async function verifyPassword(password: string, hash: string) {
-    const isMatch = await comparePassword(password, hash);
-    if (!isMatch) {
-        throw new Error("Invalid password");
-    }
 }
 
 export async function registerUser(userData: any) {
@@ -78,10 +60,6 @@ export async function loginUser(credentials: any) {
     const user = result.data;
     await verifyPassword(password, user.password);
 
-    // Strip password before returning
     const { password: _, ...userWithoutPassword } = user;
     return userWithoutPassword;
 }
-
-// hashPassword("password123").then(hash => console.log(hash));
-// comparePassword("password123", "$2b$10$mSweGKwbH446ZBfbOkza5.o6SILphLF0FTkoIPliex6JhLRz1705.").then(result => console.log(result));

@@ -10,7 +10,7 @@ L'API Recettes permet de gérer l'ensemble des recettes culinaires sur la platef
 
 Toutes les requêtes nécessitent une clé API dans l'en-tête:
 ```
-x-api-key: votre-cle-api
+x-gateway-api-key: votre-cle-api
 ```
 
 ---
@@ -25,7 +25,7 @@ Récupère la liste de toutes les recettes disponibles.
 
 **Headers:**
 ```
-x-api-key: votre-cle-api
+x-gateway-api-key: votre-cle-api
 ```
 
 **Réponse:** `200 OK`
@@ -77,7 +77,7 @@ Récupère les détails complets d'une recette spécifique.
 
 **Headers:**
 ```
-x-api-key: votre-cle-api
+x-gateway-api-key: votre-cle-api
 ```
 
 **Exemple:**
@@ -154,7 +154,7 @@ Récupère une recette en utilisant son slug (URL-friendly identifier).
 
 **Headers:**
 ```
-x-api-key: votre-cle-api
+x-gateway-api-key: votre-cle-api
 ```
 
 **Exemple:**
@@ -175,7 +175,7 @@ Crée une nouvelle recette avec ses ingrédients et instructions.
 **Headers:**
 ```
 Content-Type: application/json
-x-api-key: votre-cle-api
+x-gateway-api-key: votre-cle-api
 ```
 
 **Corps de la requête:**
@@ -313,7 +313,7 @@ Met à jour une recette existante.
 **Headers:**
 ```
 Content-Type: application/json
-x-api-key: votre-cle-api
+x-gateway-api-key: votre-cle-api
 ```
 
 **Corps de la requête:** (même structure que POST, tous les champs)
@@ -348,7 +348,7 @@ Supprime une recette de façon permanente.
 
 **Headers:**
 ```
-x-api-key: votre-cle-api
+x-gateway-api-key: votre-cle-api
 ```
 
 **Exemple:**
@@ -374,7 +374,7 @@ Permet à un utilisateur de noter une recette (score de 1 à 5 étoiles).
 **Headers:**
 ```
 Content-Type: application/json
-x-api-key: votre-cle-api
+x-gateway-api-key: votre-cle-api
 ```
 
 **Corps de la requête:**
@@ -415,7 +415,7 @@ Récupère toutes les notes d'une recette spécifique.
 
 **Headers:**
 ```
-x-api-key: votre-cle-api
+x-gateway-api-key: votre-cle-api
 ```
 
 **Réponse:** `200 OK`
@@ -461,7 +461,7 @@ Supprime la note d'un utilisateur sur une recette.
 
 **Headers:**
 ```
-x-api-key: votre-cle-api
+x-gateway-api-key: votre-cle-api
 ```
 
 **Réponse:** `204 No Content` (suppression réussie)
