@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import fastify from 'fastify';
+import fastifyJwt from '@fastify/jwt';
 import db from './utils/dbPlugin';
 import { userRoutes } from './routes/user.routes';
 import { globalErrorHandler, internalApiKeyMiddleware } from '@transcendence/common';
@@ -10,8 +11,16 @@ if (!process.env.INTERNAL_API_KEY) {
     throw new Error("INTERNAL_API_KEY is not defined");
 }
 
+if (!process.env.JWT_SECRET) {
+    throw new Error("JWT_SECRET is not defined");
+}
+
 export const app = fastify({
     logger: true
+});
+
+app.register(fastifyJwt, {
+    secret: process.env.JWT_SECRET
 });
 
 app.setErrorHandler(globalErrorHandler);

@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 import { createUser, deleteUser, getAllUsers, getUserById, getUserByIdentifier, getUsersByIds, updateUser } from "../services/user.service";
-import { sendSuccess, sendCreated, sendDeleted, stripPassword, NotFoundError } from "@transcendence/common";
+import { sendSuccess, sendCreated, sendDeleted, stripPassword, NotFoundError, authMiddleware } from "@transcendence/common";
 
 export async function userRoutes(app: FastifyInstance) {
 
@@ -38,6 +38,15 @@ export async function userRoutes(app: FastifyInstance) {
             bio
         });
         sendCreated(reply, stripPassword(user), 'User created');
+    });
+
+    app.get("/me", { preHandler: authMiddleware }, async (request, reply) => {
+        const userId = request.user!.id;
+        const user = await getUserById(userId);
+        if (!user) {
+            throw new NotFoundError('User not found');
+        }
+        sendSuccess(reply, stripPassword(user), 'Profile retrieved');
     });
 
     app.put("/users/:id", async (request, reply) => {

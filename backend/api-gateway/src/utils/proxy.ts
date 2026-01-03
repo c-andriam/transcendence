@@ -21,7 +21,9 @@ export async function proxyRequest(
         method: request.method,
         headers: {
             "x-internal-api-key": process.env.INTERNAL_API_KEY,
-            // "content-type": request.headers["content-type"] || "application/json"
+            ...(request.headers.authorization && {
+                "authorization": request.headers.authorization
+            })
         }
     };
 
