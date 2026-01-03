@@ -1,0 +1,30 @@
+#!/bin/bash
+
+API_KEY="707658358141d2ef07ef6e180eba4349da74dd9059f6ff0a08bbf724a99114a994db9c376b1103ef37a967f20b4ec5de1d10104dfd048e5ff8cb774cf68d2c9e4285f68f636c5039d971a94f584a75c054e27a52e4dd03cee202fc0439464070b816f748f32f9250ef5cdd78d43f4db53d9e777f718462195c4adee94dd79509f2849ae203ebda81326e0b518c6b1c1358e098282f53d0cbe0550e46592c51e5b00480203c0191539d41ba5c9a0311d92d8bef94e5dcdc617d88940c7e8e76225cf56b4abe4873cd1850f6b7b9fa66bd8da80bd8322dd7c3b930af44c6117c20b726af8c32845a8d5b3f6ab3f8f854136ed66edcbe939246a8042b3c8b28adbb"
+
+echo "🧪 Test du Rate Limiting sur /api/v1/login"
+echo "=========================================="
+echo "Configuration: 5 requêtes max par minute"
+echo ""
+
+for i in {1..8}; do
+    echo -n "Requête $i: "
+    RESPONSE=$(curl -s -w "\n%{http_code}" -X POST http://localhost:3000/api/v1/login \
+        -H "Content-Type: application/json" \
+        -H "x-gateway-api-key: $API_KEY" \
+        -d '{"identifier": "test", "password": "password123"}')
+    
+    HTTP_CODE=$(echo "$RESPONSE" | tail -n 1)
+    BODY=$(echo "$RESPONSE" | head -n -1)
+    
+    if [ "$HTTP_CODE" == "429" ]; then
+        echo "❌ BLOQUÉ (429) - Rate limit atteint!"
+        echo "   Message: $(echo $BODY | jq -r '.message // .error // "N/A"' 2>/dev/null || echo $BODY)"
+    else
+        echo "✅ Status $HTTP_CODE"
+    fi
+done
+
+echo ""
+echo "=========================================="
+echo "✅ Test terminé! Les requêtes 6, 7, 8 devraient être bloquées (429)"

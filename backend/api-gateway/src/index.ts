@@ -78,7 +78,7 @@ const start = async () => {
     })
     const port = Number(process.env.API_GATEWAY_PORT);
     await app.listen({ port: port, host: "0.0.0.0" });
-    const api_gateway_url = `${process.env.DOMAIN}:${process.env.API_GATEWAY_PORT}`;
+    const api_gateway_url = `${process.env.DOMAIN}:${port}`;
     console.log(`API Gateway running on ${api_gateway_url}`);
 
   } catch (err) {
