@@ -11,7 +11,18 @@ services:
       VAULT_API_ADDR: 'http://0.0.0.0:8200'
     cap_add:
       - IPC_LOCK
-    command: server -dev
+    volumes:
+      - ./scripts:/vault/scripts:ro
+    command: >
+      bash -c '
+        vault server -dev &
+        VAULT_PID=$$!
+        sleep 5
+        echo "Initializing Vault secrets..."
+        /vault/scripts/init_vault_container.sh
+        echo "Vault initialization completed"
+        wait $$VAULT_PID
+      '
     networks:
       - ft
     

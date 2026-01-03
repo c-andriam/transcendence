@@ -7,6 +7,7 @@ filebeat.autodiscover:
         type: container
         paths:
           - /var/lib/containers/storage/overlay-containers/${data.container.id}/userdata/ctr.log
+        prospector.scanner.symlinks: true
         processors:
           - add_docker_metadata:
               host: "unix:///var/run/podman.sock"

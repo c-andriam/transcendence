@@ -1,14 +1,18 @@
 services:
   nginx:
-      image: quay.io/nginx/nginx-unprivileged:alpine3.22
-      container_name: nginx
-      ports:
-          - "8080"
-      networks:
-          - ft
-          - proxy_net
-      volumes:
-          - ./conf/default.conf:/etc/nginx/conf.d/default.conf:z
-          - ./html:/usr/share/nginx/html:z
-          - logs:/var/log:rw
-      restart: on-failure
+    image: quay.io/nginx/nginx-unprivileged:alpine3.22
+    container_name: nginx
+    labels:
+      co.elastic.logs/enabled: true
+      co.elastic.logs/module: nginx
+      co.elastic.logs/fileset.stdout: access
+      co.elastic.logs/fileset.stderr: error
+    ports:
+      - "8080"
+    networks:
+      - ft
+      - proxy_net
+    volumes:
+      - ./conf/default.conf:/etc/nginx/conf.d/default.conf:z
+      - ./html:/usr/share/nginx/html:z
+    restart: on-failure
