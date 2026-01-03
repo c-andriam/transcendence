@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 import { z } from "zod";
-import { bodyValidator, sendSuccess, sendCreated } from "@transcendence/common";
+import { bodyValidator, sendSuccess, sendCreated, authMiddleware } from "@transcendence/common";
 import { loginUser, registerUser, createRefreshToken, refreshAccessToken, deleteRefreshToken } from "../services/auth.service";
 
 const registerSchema = z.object({
@@ -69,7 +69,7 @@ export async function authRoutes(app: FastifyInstance) {
     });
 
     app.post("/logout", {
-        preHandler: bodyValidator(logoutSchema)
+        preHandler: [authMiddleware, bodyValidator(logoutSchema)]
     }, async (request, reply) => {
         const { refreshToken } = request.body as z.infer<typeof logoutSchema>;
         await deleteRefreshToken(refreshToken);

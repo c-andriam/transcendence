@@ -1,6 +1,7 @@
 import { FastifyInstance } from "fastify";
 import { createRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, getRecipeBySlug, rateRecipe, getRecipeRatings, removeRecipeRating } from "../services/recipe.service";
-import { sendSuccess, sendCreated, sendDeleted, ForbiddenError } from "@transcendence/common";
+import { sendSuccess, sendCreated, sendDeleted, ForbiddenError, NotFoundError } from "@transcendence/common";
+import { authMiddleware } from "@transcendence/common";
 
 export async function recipesRoutes(app: FastifyInstance) {
 
@@ -11,9 +12,12 @@ export async function recipesRoutes(app: FastifyInstance) {
         sendSuccess(reply, data, data.length ? 'Recipes found' : 'No recipes yet');
     });
 
-    app.post("/recipes", async (request, reply) => {
+    app.post("/recipes", { preHandler: authMiddleware }, async (request, reply) => {
         const body = request.body as any;
-        const recipe = await createRecipe(body);
+        const recipe = await createRecipe({
+            ...body,
+            authorId: request.user!.id
+        });
         sendCreated(reply, recipe, 'Recipe created successfully');
     });
 
@@ -23,19 +27,30 @@ export async function recipesRoutes(app: FastifyInstance) {
         sendSuccess(reply, recipe, 'Recipe found');
     });
 
-    app.put("/recipes/:id", async (request, reply) => {
+    app.put("/recipes/:id", { preHandler: authMiddleware }, async (request, reply) => {
         const { id } = request.params as { id: string };
+        const existingRecipe = await getRecipeById(id);
+        if (!existingRecipe) {
+            throw new NotFoundError('Recipe not found');
+        }
+        if (existingRecipe.authorId !== request.user!.id) {
+            throw new ForbiddenError('You do not have access to update this recipe');
+        }
         const body = request.body as any;
         const recipe = await updateRecipe(id, body);
         sendSuccess(reply, recipe, 'Recipe updated successfully');
     });
 
-    app.delete("/recipes/:id", async (request, reply) => {
+    app.delete("/recipes/:id", { preHandler: authMiddleware }, async (request, reply) => {
         const { id } = request.params as { id: string };
-        const recipe = await deleteRecipe(id);
-        if (!recipe) {
-            throw new Error('Recipe not found');
+        const existingRecipe = await getRecipeById(id);
+        if (!existingRecipe) {
+            throw new NotFoundError('Recipe not found');
         }
+        if (existingRecipe.authorId !== request.user!.id) {
+            throw new ForbiddenError('You do not have access to delete this recipe');
+        }
+        const recipe = await deleteRecipe(id);
         sendDeleted(reply, recipe, 'Recipe deleted successfully');
     });
 
@@ -50,11 +65,11 @@ export async function recipesRoutes(app: FastifyInstance) {
 
     // ========== ROUTES RATINGS ==========
 
-    app.post("/recipes/:id/rate", async (request, reply) => {
+    app.post("/recipes/:id/rate", { preHandler: authMiddleware }, async (request, reply) => {
         const { id } = request.params as { id: string };
-        const { userId, score } = request.body as { userId: string, score: number };
+        const { score } = request.body as { score: number };
 
-        const rating = await rateRecipe(id, userId, score);
+        const rating = await rateRecipe(id, request.user!.id, score);
         sendCreated(reply, rating, 'Rating added successfully');
     });
 
@@ -64,10 +79,9 @@ export async function recipesRoutes(app: FastifyInstance) {
         sendSuccess(reply, ratings, 'Ratings retrieved');
     });
 
-    app.delete("/recipes/:id/ratings", async (request, reply) => {
+    app.delete("/recipes/:id/ratings", { preHandler: authMiddleware }, async (request, reply) => {
         const { id } = request.params as { id: string };
-        const { userId } = request.body as { userId: string };
-        const result = await removeRecipeRating(id, userId);
+        const result = await removeRecipeRating(id, request.user!.id);
         sendSuccess(reply, result, 'Rating removed successfully');
     });
 }

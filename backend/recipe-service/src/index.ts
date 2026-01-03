@@ -4,6 +4,7 @@ import db from './utils/db';
 import { recipesRoutes } from './routes/recipe.routes';
 import { categoryRoutes } from './routes/category.routes';
 import { globalErrorHandler, internalApiKeyMiddleware } from '@transcendence/common';
+import fastifyJwt from '@fastify/jwt';
 
 dotenv.config();
 
@@ -20,6 +21,9 @@ app.setErrorHandler(globalErrorHandler);
 const start = async () => {
     try {
         app.decorate('prisma', db);
+        app.register(fastifyJwt, {
+            secret: process.env.JWT_SECRET
+        });
         app.addHook("preHandler", internalApiKeyMiddleware);
         await app.register(recipesRoutes, { prefix: '/api/v1' });
         await app.register(categoryRoutes, { prefix: '/api/v1' });

@@ -2,16 +2,19 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import { UnauthorizedError } from '../error';
 import '@fastify/jwt';
 
-export interface JwtPayload {
+export interface JwtSignPayload {
     id: string;
     username: string;
+}
+
+export interface JwtPayload extends JwtSignPayload {
     iat: number;
     exp: number;
 }
 
 declare module '@fastify/jwt' {
     interface FastifyJWT {
-        payload: JwtPayload;
+        payload: JwtSignPayload | JwtPayload;
         user: JwtPayload;
     }
 }

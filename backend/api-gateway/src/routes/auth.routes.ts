@@ -36,4 +36,30 @@ export async function authRoutes(app: FastifyInstance) {
             });
         }
     });
+
+    app.post("/refresh", async (request, reply) => {
+        try {
+            const { statusCode, body } = await proxyRequest(request, reply, "/refresh", AUTH_SERVICE_URL);
+            return reply.status(statusCode).send(body);
+        } catch (error) {
+            app.log.error(error);
+            return reply.status(500).send({
+                status: "error",
+                message: "Authentication service is unavailable"
+            });
+        }
+    });
+
+    app.post("/logout", async (request, reply) => {
+        try {
+            const { statusCode, body } = await proxyRequest(request, reply, "/logout", AUTH_SERVICE_URL);
+            return reply.status(statusCode).send(body);
+        } catch (error) {
+            app.log.error(error);
+            return reply.status(500).send({
+                status: "error",
+                message: "Authentication service is unavailable"
+            });
+        }
+    });
 }

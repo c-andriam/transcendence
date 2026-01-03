@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 import { createUser, deleteUser, getAllUsers, getUserById, getUserByIdentifier, getUsersByIds, updateUser } from "../services/user.service";
-import { sendSuccess, sendCreated, sendDeleted, stripPassword, NotFoundError, authMiddleware } from "@transcendence/common";
+import { sendSuccess, sendCreated, sendDeleted, stripPassword, NotFoundError, authMiddleware, ForbiddenError } from "@transcendence/common";
 
 export async function userRoutes(app: FastifyInstance) {
 
@@ -49,8 +49,11 @@ export async function userRoutes(app: FastifyInstance) {
         sendSuccess(reply, stripPassword(user), 'Profile retrieved');
     });
 
-    app.put("/users/:id", async (request, reply) => {
+    app.put("/users/:id", { preHandler: authMiddleware }, async (request, reply) => {
         const { id } = request.params as { id: string };
+        if (request.user!.id !== id) {
+            throw new ForbiddenError('You can only update your own profile');
+        }
         const body = request.body as {
             username?: string;
             firstName?: string;
@@ -62,8 +65,11 @@ export async function userRoutes(app: FastifyInstance) {
         sendSuccess(reply, stripPassword(user), 'User updated');
     });
 
-    app.delete("/users/:id", async (request, reply) => {
+    app.delete("/users/:id", { preHandler: authMiddleware }, async (request, reply) => {
         const { id } = request.params as { id: string };
+        if (request.user!.id !== id) {
+            throw new ForbiddenError('You can only delete your own profile');
+        }
         const user = await deleteUser(id);
         sendDeleted(reply, stripPassword(user), 'User deleted');
     });
