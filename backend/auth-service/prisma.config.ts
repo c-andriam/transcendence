@@ -6,7 +6,6 @@ dotenv.config({ path: ".env" });
 export default defineConfig({
   schema: "prisma/schema.prisma",
   datasource: {
-    // ✅ Cette ligne est obligatoire pour prisma migrate
     url: process.env.DATABASE_URL,
   },
 });

@@ -49,6 +49,7 @@ export function prismaErrorHandler(error: any): ApplicationError {
             }
         default:
             {
+                console.error('Prisma error code:', code, 'Full error:', JSON.stringify(error, null, 2));
                 return new InternalServerError(error.message || 'Database error', 'DATABASE_ERROR');
             }
     }

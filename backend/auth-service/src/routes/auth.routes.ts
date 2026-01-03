@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
-import { loginUser, registerUser } from "../services/auth.service";
 import { z } from "zod";
 import { bodyValidator, sendSuccess, sendCreated } from "@transcendence/common";
+import { loginUser, registerUser, createRefreshToken, refreshAccessToken, deleteRefreshToken } from "../services/auth.service";
 
 const registerSchema = z.object({
     email: z.string().email(),
@@ -18,6 +18,14 @@ const loginSchema = z.object({
     password: z.string().min(8).max(142),
 });
 
+const refreshSchema = z.object({
+    refreshToken: z.string(),
+});
+
+const logoutSchema = z.object({
+    refreshToken: z.string(),
+});
+
 export async function authRoutes(app: FastifyInstance) {
     app.post("/register", {
         preHandler: bodyValidator(registerSchema)
@@ -29,11 +37,32 @@ export async function authRoutes(app: FastifyInstance) {
     app.post("/login", {
         preHandler: bodyValidator(loginSchema)
     }, async (request, reply) => {
-        const user = await loginUser(request.body);
-        const token = app.jwt.sign({
+        const result = await loginUser(request.body);
+        const { refreshToken, ...user } = result;
+        const accessToken = app.jwt.sign({
             id: user.id,
             username: user.username,
         });
-        sendSuccess(reply, { token }, 'Login successful');
+        sendSuccess(reply, { accessToken, refreshToken }, 'Login successful');
+    });
+
+    app.post("/refresh", {
+        preHandler: bodyValidator(refreshSchema)
+    }, async (request, reply) => {
+        const { refreshToken } = request.body as z.infer<typeof refreshSchema>;
+        const result = await refreshAccessToken(refreshToken);
+        const accessToken = app.jwt.sign({
+            id: result.userId,
+            username: result.username,
+        });
+        sendSuccess(reply, { accessToken, refreshToken: result.refreshToken }, 'Access token refreshed successfully');
+    });
+
+    app.post("/logout", {
+        preHandler: bodyValidator(logoutSchema)
+    }, async (request, reply) => {
+        const { refreshToken } = request.body as z.infer<typeof logoutSchema>;
+        await deleteRefreshToken(refreshToken);
+        sendSuccess(reply, {}, 'Logout successful');
     });
 }
