@@ -39,10 +39,15 @@ export async function authRoutes(app: FastifyInstance) {
     }, async (request, reply) => {
         const result = await loginUser(request.body);
         const { refreshToken, ...user } = result;
-        const accessToken = app.jwt.sign({
-            id: user.id,
-            username: user.username,
-        });
+        const accessToken = app.jwt.sign(
+            {
+                id: user.id,
+                username: user.username,
+            },
+            {
+                expiresIn: '15m',
+            }
+        );
         sendSuccess(reply, { accessToken, refreshToken }, 'Login successful');
     });
 
@@ -51,10 +56,15 @@ export async function authRoutes(app: FastifyInstance) {
     }, async (request, reply) => {
         const { refreshToken } = request.body as z.infer<typeof refreshSchema>;
         const result = await refreshAccessToken(refreshToken);
-        const accessToken = app.jwt.sign({
-            id: result.userId,
-            username: result.username,
-        });
+        const accessToken = app.jwt.sign(
+            {
+                id: result.userId,
+                username: result.username,
+            },
+            {
+                expiresIn: '15m',
+            }
+        );
         sendSuccess(reply, { accessToken, refreshToken: result.refreshToken }, 'Access token refreshed successfully');
     });
 
