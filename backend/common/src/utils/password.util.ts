@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import { UnauthorizedError } from '../error';
+import { passwordRateLimiter } from './rate-limiter.util';
 
 const SALT_ROUNDS = 10;
 
@@ -17,10 +18,24 @@ export async function comparePassword(
 
 export async function verifyPassword(
     plain: string,
-    hashed: string
+    hashed: string,
+    identifier: string
 ): Promise<void> {
+    if (passwordRateLimiter.isRateLimited(identifier)) {
+        throw new UnauthorizedError('Too many attempts, please retry again in 1 minute');
+    }
+
     const isMatch = await comparePassword(plain, hashed);
+
     if (!isMatch) {
+        passwordRateLimiter.recordAttempt(identifier);
+
+        if (passwordRateLimiter.isRateLimited(identifier)) {
+            throw new UnauthorizedError('Too many attempts, please retry again in 1 minute');
+        }
+
         throw new UnauthorizedError('Invalid password');
     }
+
+    passwordRateLimiter.reset(identifier);
 }

@@ -81,7 +81,7 @@ export async function loginUser(credentials: any) {
     }
 
     const user = result.data;
-    await verifyPassword(password, user.password);
+    await verifyPassword(password, user.password, identifier);
 
     const { password: _, ...userWithoutPassword } = user;
     const refreshToken = await createRefreshToken(user.id, user.username);
@@ -98,7 +98,7 @@ export async function createRefreshToken(userId: string, username: string): Prom
     return token;
 }
 
-export async function refreshAccessToken(refreshToken: string): Promise<{userId: string; username: string; refreshToken: string}> {
+export async function refreshAccessToken(refreshToken: string): Promise<{ userId: string; username: string; refreshToken: string }> {
     const hashedToken = createHash('sha256').update(refreshToken).digest('hex');
     const storedToken = await prisma.refreshToken.findUnique({ where: { token: hashedToken } });
     if (!storedToken || storedToken.expiresAt < new Date()) {

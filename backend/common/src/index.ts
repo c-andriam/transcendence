@@ -10,3 +10,4 @@ export * from './utils/password.util';
 export * from './utils/response.util';
 export * from './utils/sanitize.util';
 export * from './utils/email.util';
+export * from './utils/rate-limiter.util';
