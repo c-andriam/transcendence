@@ -15,7 +15,7 @@ if (!AUTH_SERVICE_URL) {
 
 export async function authRoutes(app: FastifyInstance) {
     app.post("/register", {
-        preHandler: [strictRateLimiter(5, 60000)],
+        preHandler: [strictRateLimiter(15, 60000)],
         handler: async (request, reply) => {
             try {
                 const { statusCode, body } = await proxyRequest(request, reply, "/register", AUTH_SERVICE_URL);
