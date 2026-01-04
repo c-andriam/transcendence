@@ -10,7 +10,7 @@ export async function registerRateLimiter(app: FastifyInstance) {
     });
 }
 
-export function strictRateLimiter(max: number = 5, timeWindow: number = 60000) {
+export function strictRateLimiter(max: number = 15, timeWindow: number = 60000) {
     return async (request: FastifyRequest, reply: FastifyReply) => {
         const ip = request.ip;
         const now = Date.now();
@@ -24,7 +24,7 @@ export function strictRateLimiter(max: number = 5, timeWindow: number = 60000) {
     };
 }
 
-export function moderateRateLimiter(max: number = 10, timeWindow: number = 60000) {
+export function moderateRateLimiter(max: number = 20, timeWindow: number = 60000) {
     return async (request: FastifyRequest, reply: FastifyReply) => {
         const ip = request.ip;
         const now = Date.now();

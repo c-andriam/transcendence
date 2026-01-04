@@ -31,7 +31,7 @@ export async function authRoutes(app: FastifyInstance) {
     });
 
     app.post("/login", {
-        preHandler: [strictRateLimiter(5, 60000)],
+        preHandler: [strictRateLimiter(15, 60000)],
         handler: async (request, reply) => {
             try {
                 const { statusCode, body } = await proxyRequest(request, reply, "/login", AUTH_SERVICE_URL);
@@ -47,7 +47,7 @@ export async function authRoutes(app: FastifyInstance) {
     });
 
     app.post("/refresh", {
-        preHandler: [moderateRateLimiter(10, 60000)],
+        preHandler: [moderateRateLimiter(20, 60000)],
         handler: async (request, reply) => {
             try {
                 const { statusCode, body } = await proxyRequest(request, reply, "/refresh", AUTH_SERVICE_URL);
