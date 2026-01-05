@@ -100,6 +100,119 @@ model	Post {
 	@@map("posts")
 }
 
+/// Details des recettes. Temps en minutes. Difficulte: facile, moyen, difficile
+model	Recipe {
+	id					BigInt	@id @default(autoincrement())
+	postId				BigInt	@unique @map("post_id")
+	servings			BigInt
+	prepTime			BigInt	@map("prep_time")
+	cookTime			BigInt	@map("cook_time")
+	difficulty			Difficulty
+
+	// Relations
+	post				Post	@relation(fields: [postId], references: [id], onDelete: Cascade)
+	steps				RecipeStep[]
+	recipeIngredients	RecipeIngredient[]
+
+	@@map("recipes")
+}
+
+/// Listes des ingredient utilisables
+model	ingredient {
+	id					BigInt		@id @default(autoincrement())
+	name				String		@db.VarChar() @unique
+	createdAt			DateTime	@default(now())
+
+	// Relations
+	recipeIngredients	RecipeIngredient[]
+
+	@@map("ingredients")
+}
+
+/// Ingredients utiliser dans chaque recette avec quantites
+model	RecipeIngredient {
+	recipeId		BigInt		@map("recipe_id")
+	ingredientId	BigInt		@map("ingredient_id")
+	quantity		String		@db.VarChar()
+	unit			String		@db.VarChar()
+
+	// Relations
+	recipe			Recipe		@relation(fields: [recipeId], references: [id], onDelete: Cascade)
+	ingredient		ingredient	@relation(fields: [ingredientId], references: [id], onDelete: Restrict)
+	
+	@@id([recipeId, ingredientId])
+	@@map("recipe_ingredients")
+}
+
+/// Etap de preparations ordonnes
+model	RecipeStep {
+	id			BigInt		@id @default(autoincrement())
+	recipeId	BigInt		@map("recipe_id")
+	stepOrder	BigInt		@map("step_order")
+	instruction	String		@db.VarChar()
+	createdAt	DateTime	@default(now())
+
+	// Relations
+	recipe		Recipe		@relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+	@@map("recipe_steps")
+}
+
+/// Tag pour les categorie des recettes
+model	Tag {
+	id			BigInt @id @default(autoincrement())
+	name		String @db.VarChar() @unique
+	createdAt	DateTime @default(now())
+
+	// Relations
+	postTags	PostTag[]
+
+	@@map("Tags")
+}
+
+/// Liaisn entre posts et tags (N-N)
+model	PostTag {
+	postId	BigInt	@map("post_id")
+	tagId	BigInt	@map("tag_id")
+
+	// Relations
+	post	Post	@relation(fields: [postId], references: [id], onDelete: Cascade)
+	tag		Tag		@relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+	@@id([postId, tagId])
+	@@map("post_tags")
+}
+
+/// Systeme de likes, un likes par post pour chaque utilisateur
+model	Like {
+	id			BigInt		@id @default(autoincrement())
+	postId		BigInt		@map("post_id")
+	userId		BigInt		@map("user_id")
+	createdAt	DateTime	@default(now())
+
+	// Relations
+	post		Post		@relation(fields: [postId], references: [id], onDelete: Cascade)
+	user		User		@relation(fields: [userId], references: [id], onDelete: Cascade)
+
+	@@unique([postId, userId])
+	@@map("likes")
+}
+
+/// Commentaire sur les posts
+model	Comment {
+	id			BigInt		@id @default(autoincrement())
+	postId		BigInt		@map("post_id")
+	userId		BigInt		@map("user_id")
+	content		String		@db.VarChar()
+	createdAt	DateTime	@default(now())
+
+	// Relations
+	post		Post		@relation(fields: [postId], references: [id], onDelete: Cascade)
+	user		User		@relation(fields: [userId], references: [id], onDelete: Cascade)
+	
+	@@map("comments")
+}
+
 ///Systeme de suivi entre utilisateurs. Follower_id = celui qui suit, followed_id = celui qui est suivi
 model	Follow {
 	id			BigInt @id @default(autoincrement())
@@ -132,7 +245,6 @@ model	Message {
 	@@map("messages")
 }
 
-
 ///Conversation avec l'IA pour chaque utilisateur
 model	AiConversation {
 	id			BigInt			@id @default(autoincrement())
@@ -148,6 +260,17 @@ model	AiConversation {
 	@@map("ai_conversations")
 }
 
+/// Messages dans les conversations IA
+model	AiMessage {
+	id				BigInt			@id @default(autoincrement())
+	conversationId	BigInt			@map("conversation_id")
+	content			String			@db.VarChar()
+	createdAt		DateTime		@default(now())
+
+	// Relations
+	conversation	AiConversation	@relation(fields: [conversationId], references: [id], onDelete: Cascade)
+	@@map("ai_messages")
+}
 
 /// Notifications pour les utilisateurs, types: likes, comment, follow, message
 model	Notification {
@@ -165,135 +288,4 @@ model	Notification {
 	sender	User			@relation("NotificationSender", fields: [senderId], references: [id], onDelete: Cascade)
 
 	@@map("notifications")
-}
-
-/// Tag pour les categorie des recettes
-model	Tag {
-	id			BigInt @id @default(autoincrement())
-	name		String @db.VarChar() @unique
-	createdAt	DateTime @default(now())
-
-	// Relations
-	postTags	PostTag[]
-
-	@@map("Tags")
-}
-
-/// Liaisn entre posts et tags (N-N)
-model	PostTag {
-	postId	BigInt	@map("post_id")
-	tagId	BigInt	@map("tag_id")
-
-	// Relations
-	post	Post	@relation(fields: [postId], references: [id], onDelete: Cascade)
-	tag		Tag		@relation(fields: [tagId], references: [id], onDelete: Cascade)
-
-	@@id([postId, tagId])
-	@@map("post_tags")
-}
-
-
-/// Details des recettes. Temps en minutes. Difficulte: facile, moyen, difficile
-model	Recipe {
-	id					BigInt	@id @default(autoincrement())
-	postId				BigInt	@unique @map("post_id")
-	servings			BigInt
-	prepTime			BigInt	@map("prep_time")
-	cookTime			BigInt	@map("cook_time")
-	difficulty			Difficulty
-
-	// Relations
-	post				Post	@relation(fields: [postId], references: [id], onDelete: Cascade)
-	steps				RecipeStep[]
-	recipeIngredients	RecipeIngredient[]
-
-	@@map("recipes")
-}
-
-/// Systeme de likes, un likes par post pour chaque utilisateur
-model	Like {
-	id			BigInt		@id @default(autoincrement())
-	postId		BigInt		@map("post_id")
-	userId		BigInt		@map("user_id")
-	createdAt	DateTime	@default(now())
-
-	// Relations
-	post		Post		@relation(fields: [postId], references: [id], onDelete: Cascade)
-	user		User		@relation(fields: [userId], references: [id], onDelete: Cascade)
-
-	@@unique([postId, userId])
-	@@map("likes")
-}
-
-
-/// Commentaire sur les posts
-model	Comment {
-	id			BigInt		@id @default(autoincrement())
-	postId		BigInt		@map("post_id")
-	userId		BigInt		@map("user_id")
-	content		String		@db.VarChar()
-	createdAt	DateTime	@default(now())
-
-	// Relations
-	post		Post		@relation(fields: [postId], references: [id], onDelete: Cascade)
-	user		User		@relation(fields: [userId], references: [id], onDelete: Cascade)
-	
-	@@map("comments")
-}
-
-
-/// Messages dans les conversations IA
-model	AiMessage {
-	id				BigInt			@id @default(autoincrement())
-	conversationId	BigInt			@map("conversation_id")
-	content			String			@db.VarChar()
-	createdAt		DateTime		@default(now())
-
-	// Relations
-	conversation	AiConversation	@relation(fields: [conversationId], references: [id], onDelete: Cascade)
-	@@map("ai_messages")
-}
-
-
-/// Ingredients utiliser dans chaque recette avec quantites
-model	RecipeIngredient {
-	recipeId		BigInt		@map("recipe_id")
-	ingredientId	BigInt		@map("ingredient_id")
-	quantity		String		@db.VarChar()
-	unit			String		@db.VarChar()
-
-	// Relations
-	recipe			Recipe		@relation(fields: [recipeId], references: [id], onDelete: Cascade)
-	ingredient		ingredient	@relation(fields: [ingredientId], references: [id], onDelete: Restrict)
-	
-	@@id([recipeId, ingredientId])
-	@@map("recipe_ingredients")
-}
-
-
-/// Etap de preparations ordonnes
-model	RecipeStep {
-	id			BigInt		@id @default(autoincrement())
-	recipeId	BigInt		@map("recipe_id")
-	stepOrder	BigInt		@map("step_order")
-	instruction	String		@db.VarChar()
-	createdAt	DateTime	@default(now())
-
-	// Relations
-	recipe		Recipe		@relation(fields: [recipeId], references: [id], onDelete: Cascade)
-
-	@@map("recipe_steps")
-}
-
-
-/// Listes des ingredient utilisables
-model	ingredient {
-	id					BigInt		@id @default(autoincrement())
-	name				String		@db.VarChar() @unique
-	createdAt			DateTime	@default(now())
-
-	// Relations
-	recipeIngredients	RecipeIngredient[]
-
-	@@map("ingredients")
 }
