@@ -2,6 +2,7 @@ import { FastifyInstance } from "fastify";
 import { z } from "zod";
 import { bodyValidator, sendSuccess, sendCreated, authMiddleware } from "@transcendence/common";
 import { loginUser, registerUser, createRefreshToken, refreshAccessToken, deleteRefreshToken } from "../services/auth.service";
+import path from "path";
 
 const registerSchema = z.object({
     email: z.string().email(),
@@ -48,6 +49,13 @@ export async function authRoutes(app: FastifyInstance) {
                 expiresIn: '15m',
             }
         );
+        // reply.setCookie('refreshToken', refreshToken, {
+        //     httpOnly: true,
+        //     secure: true,
+        //     sameSite: 'strict',
+        //     path: '/refresh',
+        //     maxAge: 7 * 24 * 60 * 60
+        // });
         sendSuccess(reply, { accessToken, refreshToken }, 'Login successful');
     });
 
@@ -65,6 +73,13 @@ export async function authRoutes(app: FastifyInstance) {
                 expiresIn: '15m',
             }
         );
+        // reply.setCookie('refreshToken', result.refreshToken, {
+        //     httpOnly: true,
+        //     secure: true,
+        //     sameSite: 'strict',
+        //     path: '/refresh',
+        //     maxAge: 7 * 24 * 60 * 60
+        // });
         sendSuccess(reply, { accessToken, refreshToken: result.refreshToken }, 'Access token refreshed successfully');
     });
 
@@ -73,6 +88,12 @@ export async function authRoutes(app: FastifyInstance) {
     }, async (request, reply) => {
         const { refreshToken } = request.body as z.infer<typeof logoutSchema>;
         await deleteRefreshToken(refreshToken);
+        // reply.clearCookie('refreshToken', {
+        //     httpOnly: true,
+        //     secure: true,
+        //     sameSite: 'strict',
+        //     path: '/refresh',
+        // });
         sendSuccess(reply, {}, 'Logout successful');
     });
 }

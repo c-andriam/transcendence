@@ -10,6 +10,7 @@ import swagger from "@fastify/swagger";
 import swaggerUi from "@fastify/swagger-ui";
 import { authRoutes } from "./routes/auth.routes";
 import { globalErrorHandler } from "@transcendence/common";
+import cookie from "@fastify/cookie";
 
 const key = process.env.API_GATEWAY_KEY;
 
@@ -24,6 +25,10 @@ if (!process.env.INTERNAL_API_KEY) {
 export const app = fastify();
 
 app.setErrorHandler(globalErrorHandler);
+// app.register(cookie, {
+//   secret: process.env.COOKIE_SECRET,
+//   parseOptions: {}
+// });
 
 const start = async () => {
   try {

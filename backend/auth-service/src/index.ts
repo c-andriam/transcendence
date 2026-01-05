@@ -3,6 +3,7 @@ import fastify from 'fastify';
 import jwt from '@fastify/jwt';
 import { authRoutes } from './routes/auth.routes';
 import { globalErrorHandler } from '@transcendence/common';
+import cookie from "@fastify/cookie";
 
 const app = fastify({
     logger: true
@@ -17,6 +18,11 @@ if (!process.env.JWT_SECRET) {
 app.register(jwt, {
     secret: process.env.JWT_SECRET
 });
+
+// app.register(cookie, {
+//   secret: process.env.COOKIE_SECRET,
+//   parseOptions: {}
+// });
 
 app.register(authRoutes);
 
