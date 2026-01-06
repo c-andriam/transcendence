@@ -23,6 +23,9 @@ export async function proxyRequest(
             "x-internal-api-key": process.env.INTERNAL_API_KEY,
             ...(request.headers.authorization && {
                 "authorization": request.headers.authorization
+            }),
+            ...(request.headers.cookie && {
+                "cookie": request.headers.cookie
             })
         }
     };
@@ -36,6 +39,11 @@ export async function proxyRequest(
         const response = await fetch(url.toString(), options);
         const statusCode = response.status;
         const body = await response.json();
+
+        const setCookieHeaders = response.headers.get('set-cookie');
+        if (setCookieHeaders) {
+            reply.header('set-cookie', setCookieHeaders);
+        }
 
         return { statusCode, body };
     } catch (error) {

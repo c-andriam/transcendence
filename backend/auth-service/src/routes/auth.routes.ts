@@ -49,20 +49,24 @@ export async function authRoutes(app: FastifyInstance) {
                 expiresIn: '15m',
             }
         );
-        // reply.setCookie('refreshToken', refreshToken, {
-        //     httpOnly: true,
-        //     secure: true,
-        //     sameSite: 'strict',
-        //     path: '/refresh',
-        //     maxAge: 7 * 24 * 60 * 60
-        // });
-        sendSuccess(reply, { accessToken, refreshToken }, 'Login successful');
+        reply.setCookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'strict',
+            path: '/refresh',
+            maxAge: 7 * 24 * 60 * 60
+        });
+        sendSuccess(reply, { accessToken }, 'Login successful');
     });
 
-    app.post("/refresh", {
-        preHandler: bodyValidator(refreshSchema)
-    }, async (request, reply) => {
-        const { refreshToken } = request.body as z.infer<typeof refreshSchema>;
+    app.post("/refresh", async (request, reply) => {
+        const refreshToken = request.cookies.refreshToken;
+        if (!refreshToken) {
+            return reply.status(400).send({
+                status: "error",
+                message: "Refresh token is required"
+            });
+        }
         const result = await refreshAccessToken(refreshToken);
         const accessToken = app.jwt.sign(
             {
@@ -73,27 +77,33 @@ export async function authRoutes(app: FastifyInstance) {
                 expiresIn: '15m',
             }
         );
-        // reply.setCookie('refreshToken', result.refreshToken, {
-        //     httpOnly: true,
-        //     secure: true,
-        //     sameSite: 'strict',
-        //     path: '/refresh',
-        //     maxAge: 7 * 24 * 60 * 60
-        // });
-        sendSuccess(reply, { accessToken, refreshToken: result.refreshToken }, 'Access token refreshed successfully');
+        reply.setCookie('refreshToken', result.refreshToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'strict',
+            path: '/refresh',
+            maxAge: 7 * 24 * 60 * 60
+        });
+        sendSuccess(reply, { accessToken }, 'Access token refreshed successfully');
     });
 
     app.post("/logout", {
-        preHandler: [authMiddleware, bodyValidator(logoutSchema)]
+        preHandler: [authMiddleware]
     }, async (request, reply) => {
-        const { refreshToken } = request.body as z.infer<typeof logoutSchema>;
+        const refreshToken = request.cookies.refreshToken;
+        if (!refreshToken) {
+            return reply.status(400).send({
+                status: "error",
+                message: "Refresh token is required"
+            });
+        }
         await deleteRefreshToken(refreshToken);
-        // reply.clearCookie('refreshToken', {
-        //     httpOnly: true,
-        //     secure: true,
-        //     sameSite: 'strict',
-        //     path: '/refresh',
-        // });
+        reply.clearCookie('refreshToken', {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'strict',
+            path: '/refresh',
+        });
         sendSuccess(reply, {}, 'Logout successful');
     });
 }

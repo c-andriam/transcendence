@@ -19,10 +19,16 @@ app.register(jwt, {
     secret: process.env.JWT_SECRET
 });
 
-// app.register(cookie, {
-//   secret: process.env.COOKIE_SECRET,
-//   parseOptions: {}
-// });
+const COOKIE_SECRET = process.env.COOKIE_SECRET;
+
+if (!COOKIE_SECRET) {
+    throw new Error('COOKIE_SECRET environment variable is required');
+}
+
+app.register(cookie, {
+  secret: COOKIE_SECRET,
+  parseOptions: {}
+});
 
 app.register(authRoutes);
 

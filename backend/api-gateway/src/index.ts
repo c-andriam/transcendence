@@ -25,10 +25,10 @@ if (!process.env.INTERNAL_API_KEY) {
 export const app = fastify();
 
 app.setErrorHandler(globalErrorHandler);
-// app.register(cookie, {
-//   secret: process.env.COOKIE_SECRET,
-//   parseOptions: {}
-// });
+app.register(cookie, {
+  secret: process.env.COOKIE_SECRET,
+  parseOptions: {}
+});
 
 const start = async () => {
   try {
