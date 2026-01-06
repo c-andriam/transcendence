@@ -42,7 +42,7 @@ services:
           unzip config/certs/certs.zip -d config/certs;
         fi;
         echo "Setting file permissions"
-        chown -R root:root config/certs;
+        chown -R 1000:0 config/certs;
         find . -type d -exec chmod 750 \{\} \;;
         find . -type f -exec chmod 640 \{\} \;;
         echo "Waiting for Elasticsearch availability";
@@ -110,8 +110,6 @@ services:
     depends_on:
       setup:
         condition: service_healthy
-      vault:
-        condition: service_started
     image: docker.elastic.co/elasticsearch/elasticsearch-wolfi:9.2.2
     container_name: es01
     env_file:
@@ -146,47 +144,6 @@ services:
       timeout: 5s
       retries: 10
       start_period: 30s
-
-  filebeat:
-    image: docker.elastic.co/beats/filebeat-wolfi:9.2.2
-    container_name: filebeat
-    user: root
-    privileged: true
-    env_file:
-      - .env
-    volumes:
-      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:z
-      - logs:/var/log/:ro
-      - elasticsearch_certs:/usr/share/filebeat/config/certs:ro
-      - /run/user/1000/podman/podman.sock:/var/run/podman.sock:ro,z
-      - /home/admin/.local/share/containers/storage:/var/lib/containers/storage:ro,z
-    depends_on:
-      logstash:
-        condition: service_started
-      elasticsearch:
-        condition: service_healthy
-      kibana:
-        condition: service_healthy
-    networks:
-      - elastic
-      - ft
-    command: >
-      bash -c '
-        echo "Running Filebeat setup...";
-        filebeat setup -e \
-          -E setup.kibana.host=https://kibana:5601 \
-          -E setup.kibana.ssl.enabled=true \
-          -E setup.kibana.ssl.certificate_authorities=["config/certs/ca/ca.crt"] \
-          -E setup.kibana.ssl.verification_mode=full \
-          -E output.logstash.enabled=false \
-          -E output.elasticsearch.enabled=true \
-          -E output.elasticsearch.hosts=["https://es01:9200"] \
-          -E output.elasticsearch.username=elastic \
-          -E output.elasticsearch.password=$${ELASTIC_PASSWORD} \
-          -E output.elasticsearch.ssl.certificate_authorities=["config/certs/ca/ca.crt"];
-        echo "Setup complete. Starting Filebeat...";
-        filebeat -e
-      '
 
   kibana:
     image: docker.elastic.co/kibana/kibana-wolfi:9.2.2
@@ -223,23 +180,41 @@ services:
   logstash:
     image: docker.elastic.co/logstash/logstash-wolfi:9.2.2
     container_name: logstash
-    user: "1000:0"
     env_file:
       - .env
     volumes:
-      - ./logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:z
-      - elasticsearch_certs:/usr/share/logstash/config/certs:ro,z
+      - ./logstash/pipelines.yml:/usr/share/logstash/config/pipelines.yml:z
+      - ./logstash/syslog.conf:/usr/share/logstash/pipeline/syslog.conf:z
+      - ./logstash/file.conf:/usr/share/logstash/pipeline/file.conf:z
+      - ./logstash/init.sh:/usr/share/logstash/bin/init.sh:z
+      - logs:/var/log:ro,z
+      - logstash_data:/usr/share/logstash/data:rw,z
+      - elasticsearch_certs:/usr/share/logstash/config/certs
     ports:
-      - "5044:5044"
+      - "5140:5140/udp"
+      - "5140:5140/tcp"
+    command: >
+      bash -c '
+        /usr/share/logstash/bin/init.sh &&
+        /usr/share/logstash/bin/logstash --config.reload.automatic
+      '
     depends_on:
       elasticsearch:
         condition: service_healthy
+      kibana:
+        condition: service_healthy
     networks:
       - elastic
+    healthcheck:
+      test: ["CMD-SHELL", "/usr/share/logstash/bin/logstash --version"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
 volumes:
   elasticsearch_data:
   elasticsearch_certs:
+  logstash_data:
 
 networks:
   elastic:

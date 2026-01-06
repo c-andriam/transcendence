@@ -13,6 +13,9 @@ start:
 stop:
 	$(DC) stop
 
+status:
+	$(DC) ps
+
 down:
 	$(DC) down --remove-orphans -v
 
@@ -26,4 +29,4 @@ re: clean all
 
 rebuild: fclean all
 
-.PHONY: all up start down clean fclean re rebuild
+.PHONY: all up start stop status down clean fclean re rebuild

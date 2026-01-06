@@ -1,0 +1,6 @@
+# Multiple pipelines configuration
+- pipeline.id: syslog-pipeline
+  path.config: "/usr/share/logstash/pipeline/syslog.conf"
+
+- pipeline.id: file-pipeline
+  path.config: "/usr/share/logstash/pipeline/file.conf"
