@@ -12,7 +12,10 @@ const Footer = () => {
             {/* Afficher chaque lien en utilisant map() */}
             <nav>
                 {links.map((link) => (
-                    <a key={link.href} href={link.href}>
+                    <a
+                        className='link link-hover'
+                        key={link.href}
+                        href={link.href}>
                         {link.name}
                         {link.href !== links[links.length - 1].href ? <span> | </span> : null}
                     </a>
