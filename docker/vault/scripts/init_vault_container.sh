@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 VAULT_TOKEN="root"
 VAULT_ADDR="http://0.0.0.0:8200"

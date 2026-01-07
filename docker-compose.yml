@@ -5,12 +5,12 @@ networks:
   ft:
     driver: bridge
     name: transcendence-net
-  elk:
-    name: elk-net
-    driver: bridge
   monitor_net:
     driver: bridge
     name: monitoring-net
+  n_logs:
+    driver: bridge
+    name: logs-net
 
 volumes:
   logs:

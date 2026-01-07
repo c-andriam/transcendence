@@ -11,14 +11,14 @@ services:
     cap_add:
       - IPC_LOCK
     volumes:
-      - ./scripts:/vault/scripts:ro
+      - ./scripts/init_vault_container.sh:/vault/scripts/init.sh:ro,exec,z
     command: >
       sh -c '
         vault server -dev &
         VAULT_PID=$$!
         sleep 5
         echo "Initializing Vault secrets..."
-        /vault/scripts/init_vault_container.sh
+        /vault/scripts/init.sh
         echo "Vault initialization completed"
         wait $$VAULT_PID
       '

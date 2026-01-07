@@ -6,6 +6,7 @@ services:
       - "8080"
     networks:
       - ft
+      - n_logs
       - proxy_net
     volumes:
       - ./conf/default.conf:/etc/nginx/conf.d/default.conf:z
