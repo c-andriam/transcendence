@@ -20,7 +20,9 @@ model User {
   lastSeenAt DateTime?
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
+  isEmailVerified   Boolean @default(false)
 
+  emailVerificationTokens EmailVerificationToken[]
   passwordResetTokens PasswordResetToken[]
   followers              Follow[]        @relation("Following")
   following              Follow[]        @relation("Followers")
@@ -70,6 +72,20 @@ model Follow {
 }
 
 model PasswordResetToken {
+  id        String   @id @default(cuid())
+  token     String   @unique // Token hashé pour sécurité
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  used      Boolean  @default(false) // Pour usage unique
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([token])
+  @@unique([userId, token]) // Un token par utilisateur
+}
+
+model EmailVerificationToken {
   id        String   @id @default(cuid())
   token     String   @unique // Token hashé pour sécurité
   userId    String

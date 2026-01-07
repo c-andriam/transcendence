@@ -1,6 +1,25 @@
 import { FastifyInstance } from "fastify";
-import { createUser, deleteUser, getAllUsers, getUserById, getUserByIdentifier, getUsersByIds, updateUser } from "../services/user.service";
-import { sendSuccess, sendCreated, sendDeleted, stripPassword, NotFoundError, authMiddleware, ForbiddenError } from "@transcendence/common";
+import { createEmailVerificationToken,
+    createUser,
+    deleteUser,
+    getAllUsers,
+    getUserByEmailIdentifier,
+    getUserById,
+    getUserByIdentifier,
+    getUsersByIds,
+    updatePassword,
+    updateUser,
+    verifyResetToken,
+    verifyEmailToken
+} from "../services/user.service";
+import { sendSuccess,
+    sendCreated,
+    sendDeleted,
+    stripPassword,
+    NotFoundError,
+    authMiddleware,
+    ForbiddenError
+} from "@transcendence/common";
 
 export async function userRoutes(app: FastifyInstance) {
 
@@ -88,5 +107,35 @@ export async function userRoutes(app: FastifyInstance) {
             throw new NotFoundError('User not found');
         }
         sendSuccess(reply, user, 'User found');
+    });
+
+    app.post("/internal/verify-reset-token", async (request, reply) => {
+        const { token } = request.body as { token: string };
+        const user = await verifyResetToken(token);
+        sendSuccess(reply, user, 'Token verified');
+    });
+
+    app.post("/internal/update-password", async (request, reply) => {
+        const { userId, newPassword } = request.body as { userId: string; newPassword: string };
+        await updatePassword(userId, newPassword);
+        sendSuccess(reply, {}, 'Password updated');
+    });
+
+    app.get("/internal/users/by-email-identifier/:email", async (request, reply) => {
+        const { email } = request.params as { email: string };
+        const user = await getUserByEmailIdentifier(email);
+        sendSuccess(reply, user, 'User found');
+    });
+
+    app.post("/internal/create-verification-token", async (request, reply) => {
+        const { userId } = request.body as { userId: string };
+        const verificationToken = await createEmailVerificationToken(userId);
+        sendSuccess(reply, { verificationToken }, 'Token created');
+    });
+
+    app.post("/internal/verify-email-token", async (request, reply) => {
+        const { token } = request.body as { token: string };
+        const user = await verifyEmailToken(token);
+        sendSuccess(reply, user, 'Token verified');
     });
 }

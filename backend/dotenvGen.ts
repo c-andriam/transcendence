@@ -67,6 +67,13 @@ COOKIE_SECRET=${generateSecretBase64("CS", 256)}
 SENDGRID_API_KEY=${generateSecretBase64("SG", 256)}
 
 # ===============================
+# Mailbox Key
+# ===============================
+#MAILBOX_KEY=${generateSecretBase64("MBK", 20)}
+MAILBOX_KEY=MBK.i0h3wXzVkecQybvgdUGDyh_0Fi0
+MAILBOX_ADDRESS="cookshare@cookshare.me"
+
+# ===============================
 # Ports
 # ===============================
 API_GATEWAY_PORT=${PORTS.API_GATEWAY_PORT}

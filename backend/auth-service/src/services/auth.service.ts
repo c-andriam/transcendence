@@ -17,6 +17,9 @@ const USER_SERVICE_PORT = process.env.USER_SERVICE_PORT;
 const USER_SERVICE_URL = `${DOMAIN}:${USER_SERVICE_PORT}`;
 const INTERNAL_API_KEY = process.env.INTERNAL_API_KEY;
 
+const NOTIFICATION_SERVICE_PORT = process.env.NOTIFICATION_SERVICE_PORT;
+const NOTIFICATION_SERVICE_URL = `${DOMAIN}:${NOTIFICATION_SERVICE_PORT}`;
+
 const AUTH_DATABASE_URL = process.env.AUTH_DATABASE_URL;
 console.log("AUTH_DATABASE_URL:", AUTH_DATABASE_URL);
 
@@ -73,6 +76,26 @@ export async function registerUser(userData: any) {
         result.data = userWithoutPassword;
     }
 
+    const verificationResponse = await fetch(`${USER_SERVICE_URL}/api/v1/internal/create-verification-token`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-internal-api-key': INTERNAL_API_KEY
+        },
+        body: JSON.stringify({ userId: result.data.id })
+    });
+    const verificationResult = await verificationResponse.json();
+    if (verificationResult.status === 'success') {
+        await fetch(`${NOTIFICATION_SERVICE_URL}/api/v1/internal/send-verification-email`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-internal-api-key': INTERNAL_API_KEY
+            },
+            body: JSON.stringify({ email: result.data.email, verificationToken: verificationResult.data.verificationToken })
+        });
+    }
+
     return result;
 }
 
@@ -92,26 +115,65 @@ export async function loginUser(credentials: any) {
     const user = result.data;
     await verifyPassword(password, user.password, identifier);
 
+    if (!user.isEmailVerified) {
+        throw new BadRequestError("Please verify your email address before logging in");
+    }
+
     const { password: _, ...userWithoutPassword } = user;
     const refreshToken = await createRefreshToken(user.id, user.username);
     return { ...userWithoutPassword, refreshToken };
 }
 
-// export async function forgotPasswordByEmailIdentifier(email: string) {
-//     const response = await fetch(`${USER_SERVICE_URL}/api/v1/internal/users/by-email-identifier/${email}`, {
-//         headers: {
-//             'x-internal-api-key': INTERNAL_API_KEY
-//         }
-//     });
-//     const result = await response.json();
+export async function forgotPasswordByEmailIdentifier(email: string) {
+    const response = await fetch(`${USER_SERVICE_URL}/api/v1/internal/users/by-email-identifier/${email}`, {
+        headers: {
+            'x-internal-api-key': INTERNAL_API_KEY
+        }
+    });
+    const result = await response.json();
 
-//     if (result.status === 'error') {
-//         throw new Error(result.message || "User not found");
-//     }
-//     const user = result.data;
-//     // Générer un token de réinitialisation et l'envoyer par email
-//     // ...
-// }
+    if (result.status === 'error') {
+        return ;
+    }
+    const { user, resetToken } = result.data;
+    await fetch(`${NOTIFICATION_SERVICE_URL}/api/v1/internal/send-reset-email`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-internal-api-key': INTERNAL_API_KEY
+        },
+        body: JSON.stringify({ email: user.email, resetToken })
+    });
+}
+
+export async function resetPassword(token: string, newPassword: string) {
+    const response = await fetch(`${USER_SERVICE_URL}/api/v1/internal/verify-reset-token`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-internal-api-key': INTERNAL_API_KEY
+        },
+        body: JSON.stringify({ token })
+    });
+    const result = await response.json();
+
+    if (result.status === 'error') {
+        throw new Error(result.message || "Invalid or expired reset token");
+    }
+    const user = result.data;
+    const updateResponse = await fetch(`${USER_SERVICE_URL}/api/v1/internal/update-password`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-internal-api-key': INTERNAL_API_KEY
+        },
+        body: JSON.stringify({ userId: user.id, newPassword })
+    });
+    
+    if (!updateResponse.ok) {
+        throw new Error('Failed to update password');
+    }
+}
 
 export async function createRefreshToken(userId: string, username: string): Promise<string> {
     const token = randomBytes(64).toString('hex');

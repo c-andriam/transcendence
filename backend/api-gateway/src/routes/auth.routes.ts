@@ -3,6 +3,7 @@ import { proxyRequest } from "../utils/proxy";
 import { strictRateLimiter, moderateRateLimiter } from "../middleware/rateLimiter.middleware";
 import dotenv from "dotenv";
 import path from "path";
+import { bodyValidator } from "@transcendence/common";
 
 dotenv.config({
   path: path.resolve(__dirname, "../../../.env"),
@@ -78,6 +79,66 @@ export async function authRoutes(app: FastifyInstance) {
                 status: "error",
                 message: "Authentication service is unavailable"
             });
+        }
+    });
+
+    app.post("/forgot-password", { preHandler: [moderateRateLimiter(5, 60000)],
+        handler: async (request, reply) => {
+            try {
+                const { statusCode, body } = await proxyRequest(request, reply, "/forgot-password", AUTH_SERVICE_URL);
+                return reply.status(statusCode).send(body);
+            } catch (error) {
+                app.log.error(error);
+                return reply.status(500).send({
+                    status: "error",
+                    message: "Authentication service is unavailable"
+                });
+            }
+        }
+    });
+
+    app.post("/reset-password", { preHandler: [moderateRateLimiter(5, 60000)],
+        handler: async (request, reply) => {
+            try {
+                const { statusCode, body } = await proxyRequest(request, reply, "/reset-password", AUTH_SERVICE_URL);
+                return reply.status(statusCode).send(body);
+            } catch (error) {
+                app.log.error(error);
+                return reply.status(500).send({
+                    status: "error",
+                    message: "Authentication service is unavailable"
+                });
+            }
+        }
+    });
+
+    app.post("/verify-email", { preHandler: [moderateRateLimiter(10, 60000)],
+        handler: async (request, reply) => {
+            try {
+                const { statusCode, body } = await proxyRequest(request, reply, "/verify-email", AUTH_SERVICE_URL);
+                return reply.status(statusCode).send(body);
+            } catch (error) {
+                app.log.error(error);
+                return reply.status(500).send({
+                    status: "error",
+                    message: "Authentication service is unavailable"
+                });
+            }
+        }
+    });
+
+    app.post("/resend-verification", { preHandler: [moderateRateLimiter(5, 60000)],
+        handler: async (request, reply) => {
+            try {
+                const { statusCode, body } = await proxyRequest(request, reply, "/resend-verification", AUTH_SERVICE_URL);
+                return reply.status(statusCode).send(body);
+            } catch (error) {
+                app.log.error(error);
+                return reply.status(500).send({
+                    status: "error",
+                    message: "Authentication service is unavailable"
+                });
+            }
         }
     });
 }
