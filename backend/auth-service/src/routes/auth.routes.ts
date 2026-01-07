@@ -27,6 +27,10 @@ const logoutSchema = z.object({
     refreshToken: z.string(),
 });
 
+const emailSchema = z.object({
+    email: z.string().email()
+});
+
 export async function authRoutes(app: FastifyInstance) {
     app.post("/register", {
         preHandler: bodyValidator(registerSchema)
@@ -51,11 +55,12 @@ export async function authRoutes(app: FastifyInstance) {
         );
         reply.setCookie('refreshToken', refreshToken, {
             httpOnly: true,
-            secure: true,
+            secure: true,//process.env.NODE_ENV === 'production',
             sameSite: 'strict',
-            path: '/refresh',
+            path: '/api/v1/refresh',
             maxAge: 7 * 24 * 60 * 60
         });
+        
         sendSuccess(reply, { accessToken }, 'Login successful');
     });
 
@@ -79,9 +84,9 @@ export async function authRoutes(app: FastifyInstance) {
         );
         reply.setCookie('refreshToken', result.refreshToken, {
             httpOnly: true,
-            secure: true,
+            secure: true,//process.env.NODE_ENV === 'production',
             sameSite: 'strict',
-            path: '/refresh',
+            path: '/api/v1/refresh',
             maxAge: 7 * 24 * 60 * 60
         });
         sendSuccess(reply, { accessToken }, 'Access token refreshed successfully');
@@ -100,10 +105,18 @@ export async function authRoutes(app: FastifyInstance) {
         await deleteRefreshToken(refreshToken);
         reply.clearCookie('refreshToken', {
             httpOnly: true,
-            secure: true,
+            secure: true,//process.env.NODE_ENV === 'production',
             sameSite: 'strict',
-            path: '/refresh',
+            path: '/api/v1/refresh',
         });
         sendSuccess(reply, {}, 'Logout successful');
     });
+
+    // app.post("/forgot-password", {
+    //     preHandler: bodyValidator(emailSchema)
+    // }, async (request, reply) => {
+    //     const { email } = request.body as { email: string };
+    //     await forgotPasswordByEmailIdentifier(email);
+    //     sendSuccess(reply, {}, 'If an account with that email exists, a password reset link has been sent.');
+    // });
 }

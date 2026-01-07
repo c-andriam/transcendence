@@ -1,9 +1,16 @@
-import 'dotenv/config';
 import fastify from 'fastify';
 import jwt from '@fastify/jwt';
 import { authRoutes } from './routes/auth.routes';
 import { globalErrorHandler } from '@transcendence/common';
 import cookie from "@fastify/cookie";
+import path from "path";
+import dotenv from 'dotenv';
+
+dotenv.config({
+  path: path.resolve(__dirname, "../../.env"),
+});
+
+// dotenv.config();
 
 const app = fastify({
     logger: true
@@ -11,12 +18,18 @@ const app = fastify({
 
 app.setErrorHandler(globalErrorHandler);
 
-if (!process.env.JWT_SECRET) {
+const INTERNAL_API_KEY = process.env.INTERNAL_API_KEY;
+if (!INTERNAL_API_KEY) {
+    throw new Error("INTERNAL_API_KEY is not defined");
+}
+
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
     throw new Error('JWT_SECRET environment variable is required');
 }
 
 app.register(jwt, {
-    secret: process.env.JWT_SECRET
+    secret: JWT_SECRET
 });
 
 const COOKIE_SECRET = process.env.COOKIE_SECRET;

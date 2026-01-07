@@ -5,10 +5,16 @@ import { recipesRoutes } from './routes/recipe.routes';
 import { categoryRoutes } from './routes/category.routes';
 import { globalErrorHandler, internalApiKeyMiddleware } from '@transcendence/common';
 import fastifyJwt from '@fastify/jwt';
+import path from "path";
 
-dotenv.config();
+dotenv.config({
+  path: path.resolve(__dirname, "../../.env"),
+});
 
-if (!process.env.INTERNAL_API_KEY) {
+// dotenv.config();
+const INTERNAL_API_KEY = process.env.INTERNAL_API_KEY;
+
+if (!INTERNAL_API_KEY) {
     throw new Error("INTERNAL_API_KEY is not defined");
 }
 
@@ -18,12 +24,18 @@ export const app = fastify({
 
 app.setErrorHandler(globalErrorHandler);
 
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+    throw new Error('JWT_SECRET environment variable is required');
+}
+
+app.register(fastifyJwt, {
+    secret: JWT_SECRET
+});
+
 const start = async () => {
     try {
         app.decorate('prisma', db);
-        app.register(fastifyJwt, {
-            secret: process.env.JWT_SECRET
-        });
         app.addHook("preHandler", internalApiKeyMiddleware);
         await app.register(recipesRoutes, { prefix: '/api/v1' });
         await app.register(categoryRoutes, { prefix: '/api/v1' });

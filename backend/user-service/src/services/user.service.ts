@@ -1,6 +1,8 @@
 import db from "../utils/dbPlugin";
 import { hashPassword, isValidEmail } from "@transcendence/common";
 import { BadRequestError } from "@transcendence/common";
+import bcrypt from "bcrypt";
+import crypto from "crypto";
 
 export async function createUser(data: {
     email: string;
@@ -89,4 +91,26 @@ export async function getUserByIdentifier(identifier: string) {
         }
     });
     return user;
+}
+
+export async function getUserByEmailIdentifier(email: string) {
+    const user = await db.user.findUnique({
+        where: {
+            email: email
+        }
+    });
+    if (user) {
+        const resetToken = crypto.randomBytes(64).toString('hex');
+        const hashedToken = await bcrypt.hash(resetToken, 10);
+        const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+        await db.passwordResetToken.create({
+            data: {
+                token: hashedToken,
+                userId: user.id,
+                expiresAt
+            }
+        });
+        return { user, resetToken };
+    }
+    return null;
 }

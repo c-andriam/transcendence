@@ -4,6 +4,7 @@ generator client {
 
 datasource db {
     provider = "postgresql"
+    schemas = ["recipe_service"]
 }
 
 // ==================== RECETTES ====================
@@ -40,12 +41,16 @@ model Recipe {
     @@index([isPublished])
     @@index([createdAt])
     @@index([viewCount])
+
+    @@schema("recipe_service")
 }
 
 enum Difficulty {
     EASY // Facile
     MEDIUM // Moyen
     HARD // Difficile
+
+    @@schema("recipe_service")
 }
 
 model Category {
@@ -59,6 +64,8 @@ model Category {
     recipes Recipe[]
 
     @@index([slug])
+
+    @@schema("recipe_service")
 }
 
 // ==================== INGRÉDIENTS ====================
@@ -74,6 +81,8 @@ model RecipeIngredient {
     recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
 
     @@index([recipeId])
+
+    @@schema("recipe_service")
 }
 
 // ==================== INSTRUCTIONS ====================
@@ -88,6 +97,8 @@ model Instruction {
 
     @@unique([recipeId, stepNumber])
     @@index([recipeId])
+
+    @@schema("recipe_service")
 }
 
 // ==================== IMAGES ====================
@@ -103,6 +114,8 @@ model RecipeImage {
     recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
 
     @@index([recipeId])
+
+    @@schema("recipe_service")
 }
 
 // ==================== RÉGIMES ALIMENTAIRES ====================
@@ -116,6 +129,8 @@ model DietaryTag {
     recipes RecipeDietaryTag[]
 
     @@index([slug])
+
+    @@schema("recipe_service")
 }
 
 model RecipeDietaryTag {
@@ -130,6 +145,8 @@ model RecipeDietaryTag {
     @@unique([recipeId, dietaryTagId])
     @@index([recipeId])
     @@index([dietaryTagId])
+
+    @@schema("recipe_service")
 }
 
 // ==================== AVIS & COMMENTAIRES ====================
@@ -147,6 +164,8 @@ model Rating {
     @@unique([userId, recipeId])
     @@index([recipeId])
     @@index([userId])
+
+    @@schema("recipe_service")
 }
 
 model Comment {
@@ -167,6 +186,8 @@ model Comment {
     @@index([recipeId])
     @@index([userId])
     @@index([parentId])
+
+    @@schema("recipe_service")
 }
 
 // ==================== FAVORIS ====================
@@ -183,4 +204,6 @@ model Favorite {
     @@unique([userId, recipeId])
     @@index([userId])
     @@index([recipeId])
+
+    @@schema("recipe_service")
 }

@@ -1,5 +1,11 @@
 import { FastifyInstance } from "fastify";
 import { proxyRequest } from "../utils/proxy";
+import dotenv from "dotenv";
+import path from "path";
+
+dotenv.config({
+  path: path.resolve(__dirname, "../../../.env"),
+});
 
 const DOMAIN = process.env.DOMAIN;
 const USER_SERVICE_PORT = process.env.USER_SERVICE_PORT;

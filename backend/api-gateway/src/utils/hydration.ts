@@ -1,4 +1,10 @@
 import { FastifyInstance } from "fastify";
+import dotenv from "dotenv";
+import path from "path";
+
+dotenv.config({
+  path: path.resolve(__dirname, "../../../.env"),
+});
 
 const INTERNAL_API_KEY = process.env.INTERNAL_API_KEY;
 const DOMAIN = process.env.DOMAIN;

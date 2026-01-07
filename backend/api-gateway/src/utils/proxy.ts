@@ -1,5 +1,11 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { hydrateRecipes } from "./hydration";
+import dotenv from "dotenv";
+import path from "path";
+
+dotenv.config({
+  path: path.resolve(__dirname, "../../../.env"),
+});
 
 export async function proxyRequest(
     request: FastifyRequest,

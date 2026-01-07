@@ -1,6 +1,4 @@
-import dotenv from "dotenv"
-dotenv.config();
-
+import dotenv from "dotenv";
 import { authMiddleware } from "./middleware/auth.middleware";
 import fastify from "fastify";
 import { registerRateLimiter } from "./middleware/rateLimiter.middleware";
@@ -11,6 +9,14 @@ import swaggerUi from "@fastify/swagger-ui";
 import { authRoutes } from "./routes/auth.routes";
 import { globalErrorHandler } from "@transcendence/common";
 import cookie from "@fastify/cookie";
+import path from "path";
+
+dotenv.config({
+  path: path.resolve(__dirname, "../../.env"),
+});
+
+// dotenv.config();
+
 
 const key = process.env.API_GATEWAY_KEY;
 
@@ -18,15 +24,23 @@ if (!key) {
   throw new Error("API_GATEWAY_KEY is not defined");
 }
 
-if (!process.env.INTERNAL_API_KEY) {
+const INTERNAL_API_KEY = process.env.INTERNAL_API_KEY;
+if (!
+  INTERNAL_API_KEY) {
   throw new Error("INTERNAL_API_KEY is not defined");
 }
 
 export const app = fastify();
 
 app.setErrorHandler(globalErrorHandler);
+const COOKIE_SECRET = process.env.COOKIE_SECRET;
+
+if (!COOKIE_SECRET) {
+  throw new Error("COOKIE_SECRET is not defined");
+}
+
 app.register(cookie, {
-  secret: process.env.COOKIE_SECRET,
+  secret: COOKIE_SECRET,
   parseOptions: {}
 });
 

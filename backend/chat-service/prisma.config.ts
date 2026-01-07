@@ -7,6 +7,6 @@ export default defineConfig({
   schema: "prisma/schema.prisma",
   datasource: {
     // ✅ Cette ligne est obligatoire pour prisma migrate
-    url: process.env.DATABASE_URL,
+    url: process.env.CHAT_DATABASE_URL,
   },
 });

@@ -21,6 +21,7 @@ model User {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
 
+  passwordResetTokens PasswordResetToken[]
   followers              Follow[]        @relation("Following")
   following              Follow[]        @relation("Followers")
   friendRequestsSent     FriendRequest[] @relation("FriendRequestSent")
@@ -66,4 +67,18 @@ model Follow {
   @@unique([followerId, followingId])
   @@index([followerId])
   @@index([followingId])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  token     String   @unique // Token hashé pour sécurité
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  used      Boolean  @default(false) // Pour usage unique
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([token])
+  @@unique([userId, token]) // Un token par utilisateur
 }

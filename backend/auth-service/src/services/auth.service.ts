@@ -5,21 +5,30 @@ import { PrismaClient } from "../generated/prisma";
 import { randomBytes, createHash } from "crypto";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
+import dotenv from "dotenv";
+import path from "path";
+
+dotenv.config({
+  path: path.resolve(__dirname, "../../../.env"),
+});
 
 const DOMAIN = process.env.DOMAIN;
 const USER_SERVICE_PORT = process.env.USER_SERVICE_PORT;
 const USER_SERVICE_URL = `${DOMAIN}:${USER_SERVICE_PORT}`;
 const INTERNAL_API_KEY = process.env.INTERNAL_API_KEY;
 
-if (!process.env.DATABASE_URL) {
-    throw new Error("DATABASE_URL is not defined");
+const AUTH_DATABASE_URL = process.env.AUTH_DATABASE_URL;
+console.log("AUTH_DATABASE_URL:", AUTH_DATABASE_URL);
+
+if (!AUTH_DATABASE_URL) {
+    throw new Error("AUTH_DATABASE_URL is not defined");
 }
 
-const dbUrl = new URL(process.env.DATABASE_URL);
+const dbUrl = new URL(AUTH_DATABASE_URL);
 const schema = dbUrl.searchParams.get('schema') || 'public';
 
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
+    connectionString: AUTH_DATABASE_URL,
 });
 
 const prisma = new PrismaClient({
@@ -88,6 +97,22 @@ export async function loginUser(credentials: any) {
     return { ...userWithoutPassword, refreshToken };
 }
 
+// export async function forgotPasswordByEmailIdentifier(email: string) {
+//     const response = await fetch(`${USER_SERVICE_URL}/api/v1/internal/users/by-email-identifier/${email}`, {
+//         headers: {
+//             'x-internal-api-key': INTERNAL_API_KEY
+//         }
+//     });
+//     const result = await response.json();
+
+//     if (result.status === 'error') {
+//         throw new Error(result.message || "User not found");
+//     }
+//     const user = result.data;
+//     // Générer un token de réinitialisation et l'envoyer par email
+//     // ...
+// }
+
 export async function createRefreshToken(userId: string, username: string): Promise<string> {
     const token = randomBytes(64).toString('hex');
     const hashedToken = createHash('sha256').update(token).digest('hex');
@@ -113,3 +138,4 @@ export async function deleteRefreshToken(refreshToken: string): Promise<void> {
     const hashedToken = createHash('sha256').update(refreshToken).digest('hex');
     await prisma.refreshToken.delete({ where: { token: hashedToken } });
 }
+

@@ -1,6 +1,12 @@
 import { FastifyInstance } from "fastify";
 import { proxyRequest } from "../utils/proxy";
 import { strictRateLimiter, moderateRateLimiter } from "../middleware/rateLimiter.middleware";
+import dotenv from "dotenv";
+import path from "path";
+
+dotenv.config({
+  path: path.resolve(__dirname, "../../../.env"),
+});
 
 const DOMAIN = process.env.DOMAIN;
 const AUTH_SERVICE_PORT = process.env.AUTH_SERVICE_PORT;
