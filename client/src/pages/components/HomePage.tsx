@@ -1,58 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import Footer from '../../components/Footer'
 import Pollaroide from '../../components/Pollaroide'
+import homePageData from '../../data/homePageData.json'
 
-const UsersImages = [
-    "/images/users/hehe.png",
-    "/images/users/hehe.png",
-    "/images/users/hehe.png",
-    "/images/users/hehe.png",
-    "/images/users/hehe.png",
-    "/images/users/hehe.png",
-    "/images/users/hehe.png",
-    "/images/users/hehe.png",
-    "/images/users/hehe.png",
-    "/images/users/hehe.png",
-];
-
-const recipeImages = [
-    "/images/recipes/Carbonara.png",
-    "/images/recipes/Carbonara.png",
-    "/images/recipes/Carbonara.png",
-    "/images/recipes/Carbonara.png",
-    "/images/recipes/Carbonara.png",
-    "/images/recipes/Carbonara.png",
-    "/images/recipes/Carbonara.png",
-    "/images/recipes/Carbonara.png",
-    "/images/recipes/Carbonara.png",
-    "/images/recipes/Carbonara.png",
-];
-
-const UsersName = [
-    "John Doe",
-    "Jane Smith",
-    "Mike Johnson",
-    "Sarah Williams",
-    "Tom Brown",
-    "Emily Davis",
-    "Chris Wilson",
-    "Anna Martinez",
-    "David Lee",
-    "Lisa Anderson",
-];
-
-const recipeNames = [
-    "Carbonara",
-    "Pasta Bolognese",
-    "Pizza Margherita",
-    "Risotto",
-    "Lasagna",
-    "Tiramisu",
-    "Bruschetta",
-    "Pesto Pasta",
-    "Minestrone",
-    "Osso Buco",
-];
+const { usersImages: UsersImages, recipeImages, usersName: UsersName, recipeNames } = homePageData;
 
 const HomePage = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -67,7 +18,7 @@ const HomePage = () => {
     useEffect(() => {
         const interval = setInterval(() => {
             increaseIndex();
-        }, 2000); // 2000ms = 2 secondes
+        }, 5000); // 5 secondes
 
         // Cleanup: clear interval when component unmounts
         return () => clearInterval(interval);
@@ -75,18 +26,32 @@ const HomePage = () => {
 
     return (
         <>
-            <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8">
+            <section className="grid grid-cols-1 lg:grid-cols-2 gap-32 px-8 pt-12 pb-8 h-full min-h-[80vh]">
                 {/* Section gauche */}
-                <div className="flex flex-col justify-center">
-                    <div className="mb-8">
-                        <h1 className="text-4xl font-bold mb-4">Hello world</h1>
-                        <p className="text-lg text-gray-600">Ici c'est le Bla Bla</p>
+                <div className="flex flex-col justify-center gap-10">
+
+                    {/* Header: Logo + Slogan */}
+                    <div className="flex flex-col items-start gap-1">
+                        <h1 className="text-4xl font-bold text-left"><span className='text-orange-500'>Cook</span>Share</h1>
+                        <p className="text-lg text-gray-600 text-left">Cuisine, partage, amour !</p>
                     </div>
-                    <div className="flex gap-4">
-                        <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+
+                    {/* Main Content: Hero Title + Desc */}
+                    <div className="flex flex-col items-start gap-6">
+                        <h2 className="text-7xl font-semibold text-left leading-tight">
+                            Prêt à mettre le <span className='text-orange-500'>feu en cuisine</span> ?
+                        </h2>
+                        <p className='text-lg text-white/70 text-left max-w-lg'>
+                            Rejoins le réseau social où les cuisiniers se rencontrent : partage tes recettes secrètes, apprends des pros et papote avec +1 000 passionnés.
+                        </p>
+                    </div>
+
+                    {/* Buttons */}
+                    <div className="flex gap-4 mt-2">
+                        <button className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium">
                             Sign In
                         </button>
-                        <button className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+                        <button className="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium">
                             Sign Up
                         </button>
                     </div>
@@ -106,7 +71,7 @@ const HomePage = () => {
                                                 ${currentIndex === index ? "carousel-item-active" : "carousel-item-exit"}`}
                                             style={{
                                                 opacity: currentIndex === index ? 1 : 0,
-                                                transition: "opacity 0.5s ease-in-out",
+                                                transition: "opacity 3s ease-in-out",
                                                 position: currentIndex === index ? "relative" : "absolute",
                                             }}
                                         >
@@ -133,7 +98,7 @@ const HomePage = () => {
                                 ) : (
                                     <div
                                         key={index}
-                                        className="w-3 h-3 bg-gray-400 rounded-full cursor-pointer hover:bg-gray-600 transition"
+                                        className="w-1 h-1 bg-gray-400 rounded-full cursor-pointer hover:bg-gray-600 transition"
                                         onClick={() => setCurrentIndex(index)}
                                     ></div>
                                 )
