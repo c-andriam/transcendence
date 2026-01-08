@@ -165,7 +165,7 @@ export async function userRoutes(app: FastifyInstance) {
             message: 'Store this API key securely. It will not be shown again.',
             usage: {
                 header: 'x-gateway-api-key',
-                example: `curl -H "x-gateway-api-key: ${apiKey}" https://api.cookshare.me/api/v1/recipes`
+                example: `curl -H "x-gateway-api-key: ${apiKey}" https://cookshare.me/documentation/api/v1/recipes`
             }
         }, 'API Key generated');
     });
