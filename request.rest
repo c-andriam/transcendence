@@ -4,9 +4,9 @@
 
 @baseUrl = http://localhost:3000
 @gatewayKey = AGK.ZbOuUn3D1JzHH7JhLAo8aL67eXCbSFiMDIChBw5V1Fs
-@jwtToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtazR2eDc0YjAwMDA4MnNvMG8yZ3QxZTUiLCJ1c2VybmFtZSI6ImNhbmRyaWFtIiwiaWF0IjoxNzY3ODQ3Mjc5LCJleHAiOjE3Njc4NDgxNzl9.YLieo0cB43G6q1fydxd_8V3cvQ0NyGUiY_4SeBjcxCM
-@userApiKey = cs_cmk4vx74b000082so0o2gt1e5_1767847327_e66faed1.gyhLfKdCZTRKTJhMNUpFKyjcILhtN1x-
-
+@jwtToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MWEzMjRjLTQ3ZmItNGI2MS1hYWE1LWFhZTc4M2RjOTRjMyIsInVzZXJuYW1lIjoiY2FuZHJpYW0iLCJpYXQiOjE3Njc4NDgxOTUsImV4cCI6MTc2Nzg0OTA5NX0.xoJK6ycYXa6eKE_4-M8V5-uP1gwIYRmaU6TCVWN9AZo
+@userApiKey = cs_661a324c-47fb-4b61-aaa5-aae783dc94c3_1767848230_df0465c5.5goFIdr2_1YSREeT2aUaPxPQKPGGJshe
+@id = 661a324c-47fb-4b61-aaa5-aae783dc94c3
 ### 1. Register a new user (requires email verification)
 POST {{baseUrl}}/api/v1/register
 Content-Type: application/json
@@ -26,7 +26,7 @@ Content-Type: application/json
 x-gateway-api-key: {{gatewayKey}}
 
 {
-    "token": "e671930f023b51334f59ab31d03dee42918056d8da1eff02ec3886bd86c8e54dd5565369e99a82f800b748c799905b2c152544cf3c8d1879362388c862b10a45"
+    "token": "141a4a80ac85d17380f00893aca95920059ca34461c8fb1cf0099255a19a28fa9c1c12d5ae25a7107ce32d977a9a401f9d1b28d951b44d6f7b47ecde48016c85"
 }
 
 ### 3. Login with verified user
@@ -199,7 +199,7 @@ Cookie: refreshToken=e16abf77d6ec537eab811be79bd5bd26f30048e2da3c848f85eca5014e1
 ### get my profile (protected route - requires accessToken from login)
 GET {{baseUrl}}/api/v1/me
 x-gateway-api-key: {{gatewayKey}}
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtank2aWJkczAwMDA5YnNvdG5tbTM2eG8iLCJ1c2VybmFtZSI6Imtha2FiZXNvbG8iLCJpYXQiOjE3Njc0MzcyNzMsImV4cCI6MTc2NzQzODE3M30.hR2yvf5WRLGb5GeS4Wj1pze3hKKO8pfNUe5j-hbHt38
+Authorization: Bearer {{jwtToken}}
 
 ### read user
 GET {{baseUrl}}/api/v1/users
@@ -213,7 +213,7 @@ x-gateway-api-key: {{gatewayKey}}
 PUT {{baseUrl}}/api/v1/users/cmk3uscvj0000guso4xinj425
 Content-Type: application/json
 x-gateway-api-key: {{gatewayKey}}
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtazN1c2N2ajAwMDBndXNvNHhpbmo0MjUiLCJ1c2VybmFtZSI6Imtha2FiZXNvbG8iLCJpYXQiOjE3Njc3ODA0MTYsImV4cCI6MTc2Nzc4MTMxNn0.tC8hhtLJsKEiEwIwC3YN_U_6B9hFs0-1UzczVs5nxeE
+Authorization: Bearer {{jwtToken}}
 
 {
     "username": "candriam",
@@ -222,14 +222,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtazN1c2N2a
 }
 
 ### delete user
-DELETE {{baseUrl}}/api/v1/users/cmk463jim00007pso3basnugy
+DELETE {{baseUrl}}/api/v1/users/cmk4yz96q00009jsow3g4wzk1
 x-gateway-api-key: {{gatewayKey}}
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtazQ2M2ppbTAwMDA3cHNvM2Jhc251Z3kiLCJ1c2VybmFtZSI6ImNhbmRyaWFtIiwiaWF0IjoxNzY3ODQyNjc2LCJleHAiOjE3Njc4NDM1NzZ9.m2DvJG1udRDbCyUSzhv93sqcZINa2Vt3oaCoqL2lY60
-
+Authorization: Bearer {{jwtToken}}
 ### logout user
 POST {{baseUrl}}/api/v1/logout
 x-gateway-api-key: {{gatewayKey}}
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtank2czhtZzAwMDE5YnNvaHdydWxwZ2YiLCJ1c2VybmFtZSI6ImNhbmRyaWFtIiwiaWF0IjoxNzY3NDM3OTg1LCJleHAiOjE3Njc0Mzg4ODV9.363tR1gxleGDTWvEK01aVO86a7A6oi4Yw1T5mq7JiWU
+Authorization: Bearer {{jwtToken}}
 
 {
     "refreshToken": "2922168b8f809630f0309fb2733439d3a4c0bf074d1f37710a9b34a2e456ef666e62a64382c2eb42a5c1656766bd3ba589269cd070f079bdb32beace3c73c6c3"

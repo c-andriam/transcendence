@@ -8,7 +8,7 @@ datasource db {
 }
 
 model RefreshToken {
-    id        String   @id @default(cuid())
+    id        String   @id @default(uuid())
     token     String   @unique
     userId    String
     username  String

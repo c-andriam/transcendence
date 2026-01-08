@@ -474,7 +474,7 @@ x-gateway-api-key: votre-cle-api
 
 | Champ | Type | Description |
 |-------|------|-------------|
-| `id` | string | Identifiant unique (CUID) |
+| `id` | string | Identifiant unique (uuid) |
 | `title` | string | Titre de la recette |
 | `slug` | string | URL-friendly identifier (unique) |
 | `description` | string | Description détaillée |
