@@ -8,20 +8,24 @@ const Footer = () => {
         { name: 'Contact us', href: '/Contact' },
     ]
     return (
-        <footer>
+        <footer className='mt-6'>
             {/* Afficher chaque lien en utilisant map() */}
-            <nav>
+            <nav className='flex flex-wrap justify-center pb-4 gap-8'>
                 {links.map((link) => (
                     <a
-                        className='link link-hover'
                         key={link.href}
-                        href={link.href}>
+                        href={link.href}
+                        className='text-gray-400 hover:text-orange-500 transition-colors duration-200 text-sm font-medium'
+                    >
                         {link.name}
-                        {link.href !== links[links.length - 1].href ? <span> | </span> : null}
                     </a>
                 ))}
             </nav>
-            <p>&copy; 2026 ft_transcendence. All rights reserved.</p>
+
+            {/* Copyright */}
+            <p className="text-gray-600 text-xs text-center">
+                &copy; {new Date().getFullYear()} CookShare. All rights reserved.
+            </p>
         </footer>
     )
 }

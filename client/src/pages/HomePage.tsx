@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import Footer from '../../components/Footer'
-import Pollaroide from '../../components/Pollaroide'
-import homePageData from '../../data/homePageData.json'
+import Footer from '../components/Footer'
+import Pollaroide from '../components/Pollaroide'
+import homePageData from '../data/homePageData.json'
+import NavigationButton from '../components/NavigationButton'
 
 const { usersImages: UsersImages, recipeImages, usersName: UsersName, recipeNames } = homePageData;
 
@@ -26,39 +27,39 @@ const HomePage = () => {
 
     return (
         <>
-            <section className="grid grid-cols-1 lg:grid-cols-2 gap-32 px-8 pt-12 pb-8 h-full min-h-[80vh]">
+            {/* Header: Logo + Slogan */}
+            <nav className="flex flex-row justify-between m-2 mx-12">
+                <div className="flex flex-col justify-center items-center gap-1">
+                    <h1 className="text-4xl font-bold text-left"><span className='text-orange-500'>Cook</span>Share</h1>
+                    <p className="text-lg text-gray-600 text-left">Cooking, sharing, love!</p>
+                </div>
+                <div>
+                    <NavigationButton to="/login" variant="primary" width='w-32' height='h-12'>Sign In</NavigationButton>
+                </div>
+
+            </nav>
+            <section className="grid grid-cols-2 gap-24 m-2 mx-12">
                 {/* Section gauche */}
                 <div className="flex flex-col justify-center gap-10">
-
-                    {/* Header: Logo + Slogan */}
-                    <div className="flex flex-col items-start gap-1">
-                        <h1 className="text-4xl font-bold text-left"><span className='text-orange-500'>Cook</span>Share</h1>
-                        <p className="text-lg text-gray-600 text-left">Cuisine, partage, amour !</p>
-                    </div>
-
                     {/* Main Content: Hero Title + Desc */}
-                    <div className="flex flex-col items-start gap-6">
+                    <div className="flex flex-col items-start gap-8">
                         <h2 className="text-7xl font-semibold text-left leading-tight">
-                            Prêt à mettre le <span className='text-orange-500'>feu en cuisine</span> ?
+                            Ready to bring the <br /><span className="text-orange-500">heat</span><br /> to the kitchen?
                         </h2>
-                        <p className='text-lg text-white/70 text-left max-w-lg'>
-                            Rejoins le réseau social où les cuisiniers se rencontrent : partage tes recettes secrètes, apprends des pros et papote avec +1 000 passionnés.
+                        <p className='text-lg text-white/80 text-left '>
+                            Join the social network where cooks connect:
+                            share your secret recipes, learn from top chefs,
+                            chat with 1,000+ food lovers, and get real-time cooking advice from our AI.
                         </p>
                     </div>
-
                     {/* Buttons */}
                     <div className="flex gap-4 mt-2">
-                        <button className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium">
-                            Sign In
-                        </button>
-                        <button className="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium">
-                            Sign Up
-                        </button>
+                        <NavigationButton to="/register" variant='primary' width='w-64' height='h-16'>Start Exploring</NavigationButton>
                     </div>
                 </div>
 
                 {/* Section droite - Carousel */}
-                <div className="flex justify-center items-center">
+                <div className="flex justify-end items-center m-8">
                     <div className="w-full max-w-[600px] relative">
                         {/* Carousel Content */}
                         <div className="relative">

@@ -9,7 +9,7 @@ const Pollaroide = ({ username, userImage, recipeName, recipeImage }: Pollaroide
                 <img
                     src={recipeImage}
                     alt="Recipe"
-                    className='w-128 h-112 object-cover rounded-lg'
+                    className='w-144 h-128 object-cover rounded-lg'
                 />
                 <div className='flex items-center justify-between mt-4'>
                     <p className='text-start text-2xl text-amber-600 font-semibold'>{recipeName}</p>
