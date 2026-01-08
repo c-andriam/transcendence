@@ -1,0 +1,28 @@
+{
+    "name": "transcendence-backend",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Backend monorepo for Transcendence",
+    "workspaces": [
+        "common",
+        "api-gateway",
+        "auth-service",
+        "user-service",
+        "recipe-service",
+        "chat-service",
+        "notification-service",
+        "websocket-service"
+    ],
+    "scripts": {
+        "install:all": "npm install",
+        "build:common": "npm run build --workspace=common",
+        "env:generate": "ts-node dotenvGen.ts"
+    },
+    "devDependencies": {
+        "@types/node": "^25.0.3",
+        "concurrently": "^9.2.1"
+    },
+    "dependencies": {
+        "@fastify/cookie": "^11.0.2"
+    }
+}

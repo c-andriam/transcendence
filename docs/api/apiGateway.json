@@ -26,7 +26,7 @@
         "securitySchemes": {
             "apiKeyAuth": {
                 "type": "apiKey",
-                "name": "x-api-key",
+                "name": "x-gateway-api-key",
                 "in": "header"
             }
         },

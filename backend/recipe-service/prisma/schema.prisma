@@ -1,0 +1,209 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    schemas = ["recipe_service"]
+}
+
+// ==================== RECETTES ====================
+
+model Recipe {
+    id          String     @id @default(cuid())
+    title       String
+    slug        String     @unique
+    description String
+    prepTime    Int // minutes
+    cookTime    Int // minutes
+    servings    Int
+    difficulty  Difficulty @default(MEDIUM)
+    isPublished Boolean    @default(false)
+    viewCount   Int        @default(0)
+    createdAt   DateTime   @default(now())
+    updatedAt   DateTime   @updatedAt
+
+    authorId String // Référence ID vers le User Service
+
+    categoryId String
+    category   Category @relation(fields: [categoryId], references: [id])
+
+    ingredients  RecipeIngredient[]
+    instructions Instruction[]
+    images       RecipeImage[]
+    ratings      Rating[]
+    comments     Comment[]
+    favorites    Favorite[]
+    dietaryTags  RecipeDietaryTag[]
+
+    @@index([authorId])
+    @@index([categoryId])
+    @@index([isPublished])
+    @@index([createdAt])
+    @@index([viewCount])
+
+    @@schema("recipe_service")
+}
+
+enum Difficulty {
+    EASY // Facile
+    MEDIUM // Moyen
+    HARD // Difficile
+
+    @@schema("recipe_service")
+}
+
+model Category {
+    id        String  @id @default(cuid())
+    name      String  @unique // Plats, Entrés, Desserts, Boissons... 
+    slug      String  @unique
+    iconName  String?
+    color     String?
+    sortOrder Int     @default(0)
+
+    recipes Recipe[]
+
+    @@index([slug])
+
+    @@schema("recipe_service")
+}
+
+// ==================== INGRÉDIENTS ====================
+
+model RecipeIngredient {
+    id           String  @id @default(cuid())
+    name         String // "Poulet", "Crème fraîche", "Épices tikka"
+    quantityText String // "500g", "200ml", "2 c.s"
+    sortOrder    Int     @default(0)
+    isOptional   Boolean @default(false)
+
+    recipeId String
+    recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+    @@index([recipeId])
+
+    @@schema("recipe_service")
+}
+
+// ==================== INSTRUCTIONS ====================
+
+model Instruction {
+    id          String @id @default(cuid())
+    stepNumber  Int // 1, 2, 3... 
+    description String // Texte de l'étape
+
+    recipeId String
+    recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+    @@unique([recipeId, stepNumber])
+    @@index([recipeId])
+
+    @@schema("recipe_service")
+}
+
+// ==================== IMAGES ====================
+
+model RecipeImage {
+    id        String  @id @default(cuid())
+    url       String
+    altText   String?
+    isPrimary Boolean @default(false)
+    sortOrder Int     @default(0)
+
+    recipeId String
+    recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+    @@index([recipeId])
+
+    @@schema("recipe_service")
+}
+
+// ==================== RÉGIMES ALIMENTAIRES ====================
+
+model DietaryTag {
+    id       String  @id @default(cuid())
+    name     String  @unique // Végétarien, Végan, Sans gluten... 
+    slug     String  @unique
+    iconName String?
+
+    recipes RecipeDietaryTag[]
+
+    @@index([slug])
+
+    @@schema("recipe_service")
+}
+
+model RecipeDietaryTag {
+    id String @id @default(cuid())
+
+    recipeId String
+    recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+    dietaryTagId String
+    dietaryTag   DietaryTag @relation(fields: [dietaryTagId], references: [id], onDelete: Cascade)
+
+    @@unique([recipeId, dietaryTagId])
+    @@index([recipeId])
+    @@index([dietaryTagId])
+
+    @@schema("recipe_service")
+}
+
+// ==================== AVIS & COMMENTAIRES ====================
+
+model Rating {
+    id        String   @id @default(cuid())
+    score     Int // 1-5 étoiles
+    createdAt DateTime @default(now())
+
+    userId String // Référence ID vers le User Service
+
+    recipeId String
+    recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+    @@unique([userId, recipeId])
+    @@index([recipeId])
+    @@index([userId])
+
+    @@schema("recipe_service")
+}
+
+model Comment {
+    id        String   @id @default(cuid())
+    content   String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    userId String // Référence ID vers le User Service
+
+    recipeId String
+    recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+    parentId String?
+    parent   Comment?  @relation("Replies", fields: [parentId], references: [id], onDelete: Cascade)
+    replies  Comment[] @relation("Replies")
+
+    @@index([recipeId])
+    @@index([userId])
+    @@index([parentId])
+
+    @@schema("recipe_service")
+}
+
+// ==================== FAVORIS ====================
+
+model Favorite {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+
+    userId String // Référence ID vers le User Service
+
+    recipeId String
+    recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+    @@unique([userId, recipeId])
+    @@index([userId])
+    @@index([recipeId])
+
+    @@schema("recipe_service")
+}

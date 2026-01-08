@@ -1,0 +1,377 @@
+### create user
+POST http://localhost:3000/api/v1/users
+Content-Type: application/json
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+
+{
+    "email": "juvence@gmail.com",
+    "username": "test",
+    "password": "test",
+    "firstName": "Test",
+    "lastName": "Test"
+}
+
+### register user
+POST http://localhost:3000/api/v1/register
+Content-Type: application/json
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+
+{
+    "email": "juvence00@gmail.com",
+    "username": "kakabesolo",
+    "password": "password123",
+    "firstName": "Kakabesolo",
+    "lastName": "Kakabesolo"
+}
+
+### login user
+POST http://localhost:3000/api/v1/login
+Content-Type: application/json
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+
+{
+    "identifier": "candriam",
+    "password": "password123"
+}
+
+### ============================================
+### TEST COOKIES - FLUX COMPLET
+### ============================================
+
+### 1. Login (récupère le cookie refreshToken)
+# @name login
+POST http://localhost:3000/api/v1/login
+Content-Type: application/json
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+
+{
+    "identifier": "candriam",
+    "password": "password123"
+}
+
+### 2. Refresh Token (envoyer le cookie manuellement)
+# Copiez la valeur du cookie refreshToken depuis les headers de la réponse login
+POST http://localhost:3000/api/v1/refresh
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+Cookie: refreshToken=98f1fd70e538ad1bcc2ac3d2ebe1881333993eb40930fcf5e098b687927f7f16662e98832db75e3a4faf8de6e3555a02c350d274502649457903328a96ad9b1f
+
+### 3. Logout (avec cookie)
+POST http://localhost:3000/api/v1/logout
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtazEya3MzMDAwMDBkMXNvZnI2c3pkODgiLCJ1c2VybmFtZSI6ImNhbmRyaWFtIiwiaWF0IjoxNzY3NzYzNjMyLCJleHAiOjE3Njc3NjQ1MzJ9.Cgj_sbtD3GUcbuadH06tXP03kW_6r0g1AfdIp9SjWfM
+Cookie: refreshToken=e16abf77d6ec537eab811be79bd5bd26f30048e2da3c848f85eca5014e183f65a88a0b502a0b9543b24e1cb1e4f8570a8cbaa4a69a0c82d618e980a3f282c3e5
+
+### get my profile (protected route - requires accessToken from login)
+GET http://localhost:3000/api/v1/me
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtank2aWJkczAwMDA5YnNvdG5tbTM2eG8iLCJ1c2VybmFtZSI6Imtha2FiZXNvbG8iLCJpYXQiOjE3Njc0MzcyNzMsImV4cCI6MTc2NzQzODE3M30.hR2yvf5WRLGb5GeS4Wj1pze3hKKO8pfNUe5j-hbHt38
+
+### read user
+GET http://localhost:3000/api/v1/users
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+
+### read user by id
+GET http://localhost:3000/api/v1/users/cmjxz8a2j0000wusoljkgx5tu
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+
+### update user
+PUT http://localhost:3000/api/v1/users/cmk3uscvj0000guso4xinj425
+Content-Type: application/json
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtazN1c2N2ajAwMDBndXNvNHhpbmo0MjUiLCJ1c2VybmFtZSI6Imtha2FiZXNvbG8iLCJpYXQiOjE3Njc3ODA0MTYsImV4cCI6MTc2Nzc4MTMxNn0.tC8hhtLJsKEiEwIwC3YN_U_6B9hFs0-1UzczVs5nxeE
+
+{
+    "username": "candriam",
+    "firstName": "Juvence",
+    "lastName": "Candriam"
+}
+
+### delete user
+DELETE http://localhost:3000/api/v1/users/cmjy6ibds00009bsotnmm36xo
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtank2aWJkczAwMDA5YnNvdG5tbTM2eG8iLCJ1c2VybmFtZSI6Imtha2FiZXNvbG8iLCJpYXQiOjE3Njc0MzcyNzMsImV4cCI6MTc2NzQzODE3M30.hR2yvf5WRLGb5GeS4Wj1pze3hKKO8pfNUe5j-hbHt38
+
+### logout user
+POST http://localhost:3000/api/v1/logout
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtank2czhtZzAwMDE5YnNvaHdydWxwZ2YiLCJ1c2VybmFtZSI6ImNhbmRyaWFtIiwiaWF0IjoxNzY3NDM3OTg1LCJleHAiOjE3Njc0Mzg4ODV9.363tR1gxleGDTWvEK01aVO86a7A6oi4Yw1T5mq7JiWU
+
+{
+    "refreshToken": "2922168b8f809630f0309fb2733439d3a4c0bf074d1f37710a9b34a2e456ef666e62a64382c2eb42a5c1656766bd3ba589269cd070f079bdb32beace3c73c6c3"
+}
+
+### create category
+### 1. Apéritifs
+POST http://localhost:3000/api/v1/categories
+Content-Type: application/json
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+
+{
+  "name": "Apéritifs",
+  "iconName": "wine-glass",
+  "color": "#FF6B6B",
+  "sortOrder": 1
+}
+
+### 2. Entrées
+POST http://localhost:3000/api/v1/categories
+Content-Type: application/json
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+
+{
+  "name": "Entrées",
+  "iconName": "bowl-food",
+  "color": "#4ECDC4",
+  "sortOrder": 2
+}
+
+### 3. Plats Principaux
+POST http://localhost:3000/api/v1/categories
+Content-Type: application/json
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+
+{
+  "name": "Plats Principaux",
+  "iconName": "utensils",
+  "color": "#1A535C",
+  "sortOrder": 3
+}
+
+### 4. Desserts
+POST http://localhost:3000/api/v1/categories
+Content-Type: application/json
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+
+{
+  "name": "Desserts",
+  "iconName": "ice-cream",
+  "color": "#FF9F1C",
+  "sortOrder": 4
+}
+
+### 5. Accompagnements
+POST http://localhost:3000/api/v1/categories
+Content-Type: application/json
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+
+{
+  "name": "Accompagnements",
+  "iconName": "carrot",
+  "color": "#9BC53D",
+  "sortOrder": 5
+}
+
+### 6. Boissons
+POST http://localhost:3000/api/v1/categories
+Content-Type: application/json
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+
+{
+  "name": "Boissons",
+  "iconName": "mug-hot",
+  "color": "#5D576B",
+  "sortOrder": 6
+}
+
+### 7. Petit-Déjeuner
+POST http://localhost:3000/api/v1/categories
+Content-Type: application/json
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+
+{
+  "name": "Petit-Déjeuner",
+  "iconName": "egg",
+  "color": "#F7B801",
+  "sortOrder": 7
+}
+
+### 8. Boulangerie
+POST http://localhost:3000/api/v1/categories
+Content-Type: application/json
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+
+{
+  "name": "Boulangerie",
+  "iconName": "bread-slice",
+  "color": "#8D5B4C",
+  "sortOrder": 8
+}
+
+### 9. Sauces
+POST http://localhost:3000/api/v1/categories
+Content-Type: application/json
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+
+{
+  "name": "Sauces & Bases",
+  "iconName": "jar",
+  "color": "#A5A58D",
+  "sortOrder": 9
+}
+
+### 10. Snacks
+POST http://localhost:3000/api/v1/categories
+Content-Type: application/json
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+
+{
+  "name": "Snacks",
+  "iconName": "hamburger",
+  "color": "#FF6B6B",
+  "sortOrder": 10
+}
+
+### Read category
+GET http://localhost:3000/api/v1/categories
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+
+
+### Read category by id
+GET http://localhost:3000/api/v1/categories/:id
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+
+
+### Read category by slug
+GET http://localhost:3000/api/v1/categories/by-slug/:slug
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+
+
+### Update category
+PUT http://localhost:3000/api/v1/categories/:id
+Content-Type: application/json
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+
+
+{
+  "name": "Plats Principaux",
+  "iconName": "utensils",
+  "color": "#1A535C",
+  "sortOrder": 3
+}
+
+### Delete category
+DELETE http://localhost:3000/api/v1/categories/:id
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+
+
+### Create recipe
+POST http://localhost:3000/api/v1/recipes
+Content-Type: application/json
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtazN1c2N2ajAwMDBndXNvNHhpbmo0MjUiLCJ1c2VybmFtZSI6ImNhbmRyaWFtIiwiaWF0IjoxNzY3NzgyMDMxLCJleHAiOjE3Njc3ODI5MzF9.bTVfhGRfcc5_L7si7jeZ2qWfsUV3YdosyYlmUQFo-bM
+
+{
+    "title": "Poulet Tikka Masala",
+    "description": "Un délicieux plat indien crémeux et épicé, parfait pour un dîner en famille. Le poulet est mariné dans des épices et du yaourt, puis cuit dans une sauce tomate onctueuse.",
+    "prepTime": 30,
+    "cookTime": 45,
+    "servings": 4,
+    "difficulty": "MEDIUM",
+    "isPublished": true,
+    "authorId": "cmk3uscvj0000guso4xinj425",
+    "categoryId": "cmk3vqj710002zqsobnkfcbgk",
+    "ingredients": [
+        { "name": "Poulet", "quantityText": "500g", "isOptional": false },
+        { "name": "Yaourt nature", "quantityText": "200g", "isOptional": false },
+        { "name": "Crème fraîche", "quantityText": "200ml", "isOptional": false },
+        { "name": "Tomates concassées", "quantityText": "400g", "isOptional": false },
+        { "name": "Oignon", "quantityText": "1 gros", "isOptional": false },
+        { "name": "Ail", "quantityText": "3 gousses", "isOptional": false },
+        { "name": "Gingembre", "quantityText": "2 cm", "isOptional": false },
+        { "name": "Épices tikka masala", "quantityText": "2 c.s", "isOptional": false },
+        { "name": "Curcuma", "quantityText": "1 c.c", "isOptional": false },
+        { "name": "Coriandre fraîche", "quantityText": "1 bouquet", "isOptional": true }
+    ],
+    "instructions": [
+        { "stepNumber": 1, "description": "Couper le poulet en morceaux et le faire mariner dans le yaourt avec les épices pendant 2 heures minimum." },
+        { "stepNumber": 2, "description": "Émincer l'oignon, hacher l'ail et le gingembre." },
+        { "stepNumber": 3, "description": "Dans une poêle, faire revenir l'oignon jusqu'à ce qu'il soit doré." },
+        { "stepNumber": 4, "description": "Ajouter l'ail et le gingembre, cuire 1 minute." },
+        { "stepNumber": 5, "description": "Ajouter le poulet mariné et le faire dorer de tous les côtés." },
+        { "stepNumber": 6, "description": "Incorporer les tomates concassées et les épices restantes. Laisser mijoter 20 minutes." },
+        { "stepNumber": 7, "description": "Ajouter la crème fraîche, mélanger et cuire encore 5 minutes." },
+        { "stepNumber": 8, "description": "Servir chaud avec du riz basmati, garni de coriandre fraîche." }
+    ]
+}
+
+### Read recipe
+GET http://localhost:3000/api/v1/recipes
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+
+### Read recipe by id
+GET http://localhost:3000/api/v1/recipes/cmjszimle0000basb038vuo92
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+
+### Read recipe by slug
+GET http://localhost:3000/api/v1/recipes/by-slug/poulet-tikka-masala
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+
+
+### Delete recipe
+DELETE http://localhost:3000/api/v1/recipes/:id
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+
+
+### Update recipe
+PUT http://localhost:3000/api/v1/recipes/cmjszimle0000basb038vuo92
+Content-Type: application/json
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+
+{
+    "title": "Poulet Tikka Masala",
+    "description": "Un délicieux plat indien crémeux et épicé, parfait pour un dîner en famille. Le poulet est mariné dans des épices et du yaourt, puis cuit dans une sauce tomate onctueuse.",
+    "prepTime": 30,
+    "cookTime": 45,
+    "servings": 4,
+    "difficulty": "MEDIUM",
+    "isPublished": true,
+    "categoryId": "cmjsndf9h00026dsog3ffvpcd",
+    "ingredients": [
+        { "name": "Poulet", "quantityText": "500g", "isOptional": false },
+        { "name": "Yaourt nature", "quantityText": "200g", "isOptional": false },
+        { "name": "Crème fraîche", "quantityText": "200ml", "isOptional": false },
+        { "name": "Tomates concassées", "quantityText": "400g", "isOptional": false },
+        { "name": "Oignon", "quantityText": "1 gros", "isOptional": false },
+        { "name": "Ail", "quantityText": "3 gousses", "isOptional": false },
+        { "name": "Gingembre", "quantityText": "2 cm", "isOptional": false },
+        { "name": "Épices tikka masala", "quantityText": "2 c.s", "isOptional": false },
+        { "name": "Curcuma", "quantityText": "1 c.c", "isOptional": false },
+        { "name": "Coriandre fraîche", "quantityText": "1 bouquet", "isOptional": true }
+    ],
+    "instructions": [
+        { "stepNumber": 1, "description": "Couper le poulet en morceaux et le faire mariner dans le yaourt avec les épices pendant 2 heures minimum." },
+        { "stepNumber": 2, "description": "Émincer l'oignon, hacher l'ail et le gingembre." },
+        { "stepNumber": 3, "description": "Dans une poêle, faire revenir l'oignon jusqu'à ce qu'il soit doré." },
+        { "stepNumber": 4, "description": "Ajouter l'ail et le gingembre, cuire 1 minute." },
+        { "stepNumber": 5, "description": "Ajouter le poulet mariné et le faire dorer de tous les côtés." },
+        { "stepNumber": 6, "description": "Incorporer les tomates concassées et les épices restantes. Laisser mijoter 20 minutes." },
+        { "stepNumber": 7, "description": "Ajouter la crème fraîche, mélanger et cuire encore 5 minutes." },
+        { "id": "cmjszinic000ibasbnaftgkqc", "stepNumber": 8, "description": "Servir chaud avec du riz, garni de coriandre fraîche." }
+    ]
+}
+
+
+### Create recipe rate by id
+POST http://localhost:3000/api/v1/recipes/cmjszimle0000basb038vuo92/rate
+Content-Type: application/json
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+
+{
+    "userId": "cmjsz9roe0000gosbdk82ahkw",
+    "score": 4
+}
+
+
+### Read recipe rate by id
+GET http://localhost:3000/api/v1/recipes/:id/rate
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+
+
+### Delete recipe rate by id
+DELETE http://localhost:3000/api/v1/recipes/:id/rate
+Content-Type: application/json
+x-gateway-api-key: AGK.HoFjbrdgHblJbv6vjIls4-E-Bq-NTUfb-fisS5M3qY_D9dyQz2CBRY4b7BVvHcTpga7KoFshpXphNu8orNZ0BlLfUkr6TE1dQL6xhOB5FCWVGGZU_TXfI4shu6VPQl3CyZ4qvdpodZrL2nOOkRxkbM_tWJMgNUQUU9KlkubOrdIRrTuD0ssIG6K5E0Ptg3NZuZtCct_r4flt9j7MZqLigUKhmV2eYk56W35JmDBaSAGWL7jeryOHS_nUE4OzUxzJ1kUX-RcQQncNdR5H6jPqIUZiZLNkCDeL_jHxQ9L24X3KMR3R7h_TP6BAnJ-ugVeMezt8fjyBjtt4X8iXMcpsZA
+
+{
+    "userId": ""
+}

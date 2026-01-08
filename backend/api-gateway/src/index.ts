@@ -1,29 +1,52 @@
-import dotenv from "dotenv"
-import path from "path"
+import dotenv from "dotenv";
 import { authMiddleware } from "./middleware/auth.middleware";
 import fastify from "fastify";
 import { registerRateLimiter } from "./middleware/rateLimiter.middleware";
 import { recipesRoutes } from "./routes/recipes.routes";
-import dbPlugin from "./utils/dbPlugin";
+import { usersRoutes } from "./routes/users.routes";
 import swagger from "@fastify/swagger";
 import swaggerUi from "@fastify/swagger-ui";
-// import fs from 'fs';
+import { authRoutes } from "./routes/auth.routes";
+import { globalErrorHandler } from "@transcendence/common";
+import cookie from "@fastify/cookie";
+import path from "path";
 
-dotenv.config();
+dotenv.config({
+  path: path.resolve(__dirname, "../../.env"),
+});
+
+// dotenv.config();
+
 
 const key = process.env.API_GATEWAY_KEY;
 
 if (!key) {
   throw new Error("API_GATEWAY_KEY is not defined");
 }
+
+const INTERNAL_API_KEY = process.env.INTERNAL_API_KEY;
+if (!
+  INTERNAL_API_KEY) {
+  throw new Error("INTERNAL_API_KEY is not defined");
+}
+
 export const app = fastify();
 
-// const apiGatewaySpec = JSON.parse(fs.readFileSync('../../docs/api/apiGateway.json', 'utf-8'));
+app.setErrorHandler(globalErrorHandler);
+const COOKIE_SECRET = process.env.COOKIE_SECRET;
+
+if (!COOKIE_SECRET) {
+  throw new Error("COOKIE_SECRET is not defined");
+}
+
+app.register(cookie, {
+  secret: COOKIE_SECRET,
+  parseOptions: {}
+});
 
 const start = async () => {
   try {
     await registerRateLimiter(app);
-    app.register(dbPlugin);
     await app.register(swagger, {
       openapi:
       {
@@ -34,11 +57,11 @@ const start = async () => {
         },
         servers: [
           {
-            url: "http://{environment}:{port}/api/{version}",
+            url: "https://{environment}/api/{version}",
             description: "Local development server",
             variables: {
               environment: {
-                default: "localhost"
+                default: "cookshare.me"
               },
               port: {
                 default: "3000"
@@ -53,7 +76,7 @@ const start = async () => {
           securitySchemes: {
             apiKeyAuth: {
               type: "apiKey",
-              name: "x-api-key",
+              name: "x-gateway-api-key",
               in: "header"
             }
           }
@@ -68,15 +91,15 @@ const start = async () => {
     await app.register(swaggerUi, { routePrefix: "/documentation" });
     app.register(async (api) => {
       api.addHook("preHandler", authMiddleware);
+      api.register(authRoutes, { prefix: '/api/v1' });
       api.register(recipesRoutes, { prefix: '/api/v1' });
+      api.register(usersRoutes, { prefix: '/api/v1' });
     })
-    // console.log("Database connected");
-    // app.addHook("preHandler", authMiddleware);
-    // console.log("Auth middleware registered");
-    // app.register(recipesRoutes, { prefix: '/api/v1' });
-    // console.log("Recipes routes registered");
-    await app.listen({ port: 3000, host: "0.0.0.0" });
-    // console.log("Server started on port 3000");
+    const port = Number(process.env.API_GATEWAY_PORT);
+    await app.listen({ port: port, host: "0.0.0.0" });
+    const api_gateway_url = `${process.env.DOMAIN}:${port}`;
+    console.log(`API Gateway running on ${api_gateway_url}`);
+
   } catch (err) {
     app.log.error(err);
     process.exit(1);

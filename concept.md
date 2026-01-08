@@ -21,7 +21,7 @@ Pour réaliser cette tâche, vous devez maîtriser 4 piliers :
 Une façon standardisée d'organiser les interactions (GET = Lire, POST = Créer, PUT = Mettre à jour, DELETE = Supprimer).
 
 **B. L'Authentification par Clé API**
-Un "badge" (Header `X-API-KEY`) pour sécuriser l'accès et identifier qui appelle le serveur.
+Un "badge" (Header `x-gateway-api-key`) pour sécuriser l'accès et identifier qui appelle le serveur.
 
 **C. La Limitation de Débit (Rate Limiting)**
 Une protection pour éviter qu'un utilisateur n'inonde le serveur de requêtes (ex: max 100 requêtes/15min).
@@ -45,7 +45,7 @@ C'est un "hameçon" qui attrape la requête juste avant le traitement final.
 **Instructions Logiques (Pas à pas)** :
 
 1. **L'Interception (`addHook`)** : On dit à Fastify : "Ajoute ce contrôle de sécurité (`preHandler`) sur mes routes". La fonction reçoit deux outils : `request` (la demande du visiteur) et `reply` (notre outil pour répondre).
-2. **L'Inspection (`request.headers`)** : Le serveur regarde l'enveloppe de la requête (les *Headers*). Il cherche une ligne spécifique, souvent nommée `x-api-key`.
+2. **L'Inspection (`request.headers`)** : Le serveur regarde l'enveloppe de la requête (les *Headers*). Il cherche une ligne spécifique, souvent nommée `x-gateway-api-key`.
 3. **Le Réflexe de Sécurité (Absence)** :
     * *Si* le champ est vide ou n'existe pas : **STOP**.
     * *Action* : On utilise `reply.code(403)` (Interdit) et on envoie une erreur. Le visiteur ne passe pas.
@@ -126,7 +126,7 @@ En Fastify, on ne réinvente pas la roue. On utilise des "plugins" officiels.
    ⬇️
 [Plugin Swagger] (Note la requête pour la doc)
    ⬇️
-[Hook PreHandler] (Vérifie la clé API Headers['x-api-key'])
+[Hook PreHandler] (Vérifie la clé API Headers['x-gateway-api-key'])
    ⬇️
 [Validation Schema] (Vérifie le format des données JSON)
    ⬇️
@@ -162,8 +162,8 @@ Nous devons d'abord nous assurer que le serveur peut lire les secrets.
 
 1.  **Fonction d'Interception** :
     *   **Détail** : On crée une fonction asynchrone qui prend `request` et `reply`.
-2.  **Vérification (`x-api-key`)** :
-    *   **Détail** : On lit `request.headers['x-api-key']`.
+2.  **Vérification (`x-gateway-api-key`)** :
+    *   **Détail** : On lit `request.headers['x-gateway-api-key']`.
 3.  **Comparaison via `process.env`** :
     *   **Détail** : On vérifie : `apiKey !== process.env.API_GATEWAY_KEY`.
     *   **Logique** : Si la clé est manquante OU si elle est différente de celle du `.env`, c'est un échec.
