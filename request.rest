@@ -3,8 +3,8 @@
 ### ============================================
 
 @baseUrl = http://localhost:3000
-@gatewayKey = AGK.ZbOuUn3D1JzHH7JhLAo8aL67eXCbSFiMDIChBw5V1Fs
-@jwtToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MWEzMjRjLTQ3ZmItNGI2MS1hYWE1LWFhZTc4M2RjOTRjMyIsInVzZXJuYW1lIjoiY2FuZHJpYW0iLCJpYXQiOjE3Njc4NDgxOTUsImV4cCI6MTc2Nzg0OTA5NX0.xoJK6ycYXa6eKE_4-M8V5-uP1gwIYRmaU6TCVWN9AZo
+@gatewayKey = AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+@jwtToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MWEzMjRjLTQ3ZmItNGI2MS1hYWE1LWFhZTc4M2RjOTRjMyIsInVzZXJuYW1lIjoiY2FuZHJpYW0iLCJpYXQiOjE3Njc4NzE5NTAsImV4cCI6MTc2Nzg3Mjg1MH0.xJ_YkY8-AzOcSGrshQAWontQ-oanp0NX8NFkFbcy1cM
 @userApiKey = cs_661a324c-47fb-4b61-aaa5-aae783dc94c3_1767848230_df0465c5.5goFIdr2_1YSREeT2aUaPxPQKPGGJshe
 @id = 661a324c-47fb-4b61-aaa5-aae783dc94c3
 ### 1. Register a new user (requires email verification)
@@ -222,7 +222,7 @@ Authorization: Bearer {{jwtToken}}
 }
 
 ### delete user
-DELETE {{baseUrl}}/api/v1/users/cmk4yz96q00009jsow3g4wzk1
+DELETE {{baseUrl}}/api/v1/users/{{id}}
 x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer {{jwtToken}}
 ### logout user

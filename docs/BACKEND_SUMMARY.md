@@ -7,7 +7,7 @@
 
 ## 📁 Structure des Dossiers
 
-```
+```Python
 backend/
 ├── .env                          # Variables d'environnement partagées
 ├── package.json                  # Workspace principal
@@ -181,7 +181,7 @@ backend/
 
 ---
 
-## �🏗️ Architecture Générale
+## 🏗️ Architecture Générale
 
 Le backend suit une architecture **microservices** avec les services suivants :
 
@@ -271,7 +271,7 @@ Bibliothèque partagée entre tous les services, située dans `backend/common/`.
 
 ### 📁 Structure des Fichiers
 
-```
+```Python
 common/src/
 ├── index.ts                      # Point d'entrée - exports de tous les modules
 ├── config/                       # Configurations partagées

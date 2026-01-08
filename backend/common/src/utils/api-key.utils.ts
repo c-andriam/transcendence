@@ -5,9 +5,7 @@ const API_KEY_PREFIX = "cs_";
 export function generateApiKey(userId: string, secret: string): string {
   const timestamp = Math.floor(Date.now() / 1000);
   const random = crypto.randomBytes(4).toString("hex");
-
   const payload = `${API_KEY_PREFIX}${userId}_${timestamp}_${random}`;
-
   const signature = crypto
     .createHmac("sha256", secret)
     .update(payload)
@@ -64,7 +62,6 @@ export function validateApiKey(
   const random = payloadParts.pop()!;
   const timestampStr = payloadParts.pop()!;
   const userId = payloadParts.join("_");
-
   const timestamp = parseInt(timestampStr, 10);
   if (isNaN(timestamp)) {
     return { valid: false };
@@ -98,9 +95,7 @@ export function extractUserIdFromApiKey(apiKey: string): string | null {
   if (payloadParts.length < 3) {
     return null;
   }
-
   payloadParts.pop();
   payloadParts.pop();
-
   return payloadParts.join("_") || null;
 }
