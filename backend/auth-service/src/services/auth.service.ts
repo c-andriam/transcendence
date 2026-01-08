@@ -132,9 +132,10 @@ export async function forgotPasswordByEmailIdentifier(email: string) {
     });
     const result = await response.json();
 
-    if (result.status === 'error') {
-        return ;
+    if (result.status === 'error' || !result.data) {
+        return;
     }
+    
     const { user, resetToken } = result.data;
     await fetch(`${NOTIFICATION_SERVICE_URL}/api/v1/internal/send-reset-email`, {
         method: 'POST',
