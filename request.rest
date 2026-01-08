@@ -2,10 +2,15 @@
 ### AUTHENTICATION FLOWS TESTS
 ### ============================================
 
+@baseUrl = http://localhost:3000
+@gatewayKey = AGK.ZbOuUn3D1JzHH7JhLAo8aL67eXCbSFiMDIChBw5V1Fs
+@jwtToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtazR2eDc0YjAwMDA4MnNvMG8yZ3QxZTUiLCJ1c2VybmFtZSI6ImNhbmRyaWFtIiwiaWF0IjoxNzY3ODQ3Mjc5LCJleHAiOjE3Njc4NDgxNzl9.YLieo0cB43G6q1fydxd_8V3cvQ0NyGUiY_4SeBjcxCM
+@userApiKey = cs_cmk4vx74b000082so0o2gt1e5_1767847327_e66faed1.gyhLfKdCZTRKTJhMNUpFKyjcILhtN1x-
+
 ### 1. Register a new user (requires email verification)
-POST http://localhost:3000/api/v1/register
+POST {{baseUrl}}/api/v1/register
 Content-Type: application/json
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+x-gateway-api-key: {{gatewayKey}}
 
 {
     "email": "juvence00@gmail.com",
@@ -16,18 +21,18 @@ x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
 }
 
 ### 2. Verify email (use token from email sent during registration)
-POST http://localhost:3000/api/v1/verify-email
+POST {{baseUrl}}/api/v1/verify-email
 Content-Type: application/json
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+x-gateway-api-key: {{gatewayKey}}
 
 {
     "token": "e671930f023b51334f59ab31d03dee42918056d8da1eff02ec3886bd86c8e54dd5565369e99a82f800b748c799905b2c152544cf3c8d1879362388c862b10a45"
 }
 
 ### 3. Login with verified user
-POST http://localhost:3000/api/v1/login
+POST {{baseUrl}}/api/v1/login
 Content-Type: application/json
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+x-gateway-api-key: {{gatewayKey}}
 
 {
     "identifier": "candriam",
@@ -35,18 +40,18 @@ x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
 }
 
 ### 4. Forgot password (initiate reset)
-POST http://localhost:3000/api/v1/forgot-password
+POST {{baseUrl}}/api/v1/forgot-password
 Content-Type: application/json
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+x-gateway-api-key: {{gatewayKey}}
 
 {
     "email": "juvence00@gmail.com"
 }
 
 ### 5. Reset password (use token from email)
-POST http://localhost:3000/api/v1/reset-password
+POST {{baseUrl}}/api/v1/reset-password
 Content-Type: application/json
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+x-gateway-api-key: {{gatewayKey}}
 
 {
     "token": "b1dff52420aaef63de97ad7cd3853e78e0321e726f90c557fcfafa9403522c237cdb58f71bc170389d6c6e0879dd103f75a39e602aab0e8700ac85ce21300345",
@@ -54,9 +59,9 @@ x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
 }
 
 ### 6. Resend verification email
-POST http://localhost:3000/api/v1/resend-verification
+POST {{baseUrl}}/api/v1/resend-verification
 Content-Type: application/json
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+x-gateway-api-key: {{gatewayKey}}
 
 {
     "email": "juvence00@gmail.com"
@@ -67,18 +72,18 @@ x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
 ### ============================================
 
 ### Invalid verification token
-POST http://localhost:3000/api/v1/verify-email
+POST {{baseUrl}}/api/v1/verify-email
 Content-Type: application/json
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+x-gateway-api-key: {{gatewayKey}}
 
 {
     "token": "invalid_token"
 }
 
 ### Invalid reset token
-POST http://localhost:3000/api/v1/reset-password
+POST {{baseUrl}}/api/v1/reset-password
 Content-Type: application/json
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+x-gateway-api-key: {{gatewayKey}}
 
 {
     "token": "invalid_reset_token",
@@ -86,29 +91,52 @@ x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
 }
 
 ### Forgot password for non-existent email
-POST http://localhost:3000/api/v1/forgot-password
+POST {{baseUrl}}/api/v1/forgot-password
 Content-Type: application/json
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+x-gateway-api-key: {{gatewayKey}}
 
 {
     "email": "nonexistent@example.com"
 }
 
 ### Resend verification for non-existent email
-POST http://localhost:3000/api/v1/resend-verification
+POST {{baseUrl}}/api/v1/resend-verification
 Content-Type: application/json
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+x-gateway-api-key: {{gatewayKey}}
 
 {
     "email": "nonexistent@example.com"
 }
 
 ### ============================================
+### PUBLIC API KEY TESTS
+### ============================================
+
+### Generate API Key for authenticated user
+# Requires JWT token from login
+POST {{baseUrl}}/api/v1/api-key/generate
+Authorization: Bearer {{jwtToken}}
+x-gateway-api-key: {{gatewayKey}}
+
+### Test API with user's signed API key (cs_ prefix)
+# Replace {{userApiKey}} with the generated key from above
+GET {{baseUrl}}/api/v1/recipes
+x-gateway-api-key: {{userApiKey}}
+
+### Test GET users with user API key
+GET {{baseUrl}}/api/v1/users
+x-gateway-api-key: {{userApiKey}}
+
+### Test GET single recipe with user API key
+GET {{baseUrl}}/api/v1/recipes/cmk3vthae000azqsoe0yfn0e4
+x-gateway-api-key: {{userApiKey}}
+
+### ============================================
 
 ### create user
-POST http://localhost:3000/api/v1/users
+POST {{baseUrl}}/api/v1/users
 Content-Type: application/json
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+x-gateway-api-key: {{gatewayKey}}
 
 {
     "email": "juvence@gmail.com",
@@ -119,9 +147,9 @@ x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
 }
 
 ### register user
-POST http://localhost:3000/api/v1/register
+POST {{baseUrl}}/api/v1/register
 Content-Type: application/json
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+x-gateway-api-key: {{gatewayKey}}
 
 {
     "email": "juvence00@gmail.com",
@@ -132,9 +160,9 @@ x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
 }
 
 ### login user
-POST http://localhost:3000/api/v1/login
+POST {{baseUrl}}/api/v1/login
 Content-Type: application/json
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+x-gateway-api-key: {{gatewayKey}}
 
 {
     "identifier": "candriam",
@@ -147,9 +175,9 @@ x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
 
 ### 1. Login (récupère le cookie refreshToken)
 # @name login
-POST http://localhost:3000/api/v1/login
+POST {{baseUrl}}/api/v1/login
 Content-Type: application/json
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+x-gateway-api-key: {{gatewayKey}}
 
 {
     "identifier": "candriam",
@@ -158,33 +186,33 @@ x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
 
 ### 2. Refresh Token (envoyer le cookie manuellement)
 # Copiez la valeur du cookie refreshToken depuis les headers de la réponse login
-POST http://localhost:3000/api/v1/refresh
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+POST {{baseUrl}}/api/v1/refresh
+x-gateway-api-key: {{gatewayKey}}
 Cookie: refreshToken=98f1fd70e538ad1bcc2ac3d2ebe1881333993eb40930fcf5e098b687927f7f16662e98832db75e3a4faf8de6e3555a02c350d274502649457903328a96ad9b1f
 
 ### 3. Logout (avec cookie)
-POST http://localhost:3000/api/v1/logout
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+POST {{baseUrl}}/api/v1/logout
+x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtazEya3MzMDAwMDBkMXNvZnI2c3pkODgiLCJ1c2VybmFtZSI6ImNhbmRyaWFtIiwiaWF0IjoxNzY3NzYzNjMyLCJleHAiOjE3Njc3NjQ1MzJ9.Cgj_sbtD3GUcbuadH06tXP03kW_6r0g1AfdIp9SjWfM
 Cookie: refreshToken=e16abf77d6ec537eab811be79bd5bd26f30048e2da3c848f85eca5014e183f65a88a0b502a0b9543b24e1cb1e4f8570a8cbaa4a69a0c82d618e980a3f282c3e5
 
 ### get my profile (protected route - requires accessToken from login)
-GET http://localhost:3000/api/v1/me
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+GET {{baseUrl}}/api/v1/me
+x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtank2aWJkczAwMDA5YnNvdG5tbTM2eG8iLCJ1c2VybmFtZSI6Imtha2FiZXNvbG8iLCJpYXQiOjE3Njc0MzcyNzMsImV4cCI6MTc2NzQzODE3M30.hR2yvf5WRLGb5GeS4Wj1pze3hKKO8pfNUe5j-hbHt38
 
 ### read user
-GET http://localhost:3000/api/v1/users
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+GET {{baseUrl}}/api/v1/users
+x-gateway-api-key: {{gatewayKey}}
 
 ### read user by id
-GET http://localhost:3000/api/v1/users/cmjxz8a2j0000wusoljkgx5tu
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+GET {{baseUrl}}/api/v1/users/cmjxz8a2j0000wusoljkgx5tu
+x-gateway-api-key: {{gatewayKey}}
 
 ### update user
-PUT http://localhost:3000/api/v1/users/cmk3uscvj0000guso4xinj425
+PUT {{baseUrl}}/api/v1/users/cmk3uscvj0000guso4xinj425
 Content-Type: application/json
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtazN1c2N2ajAwMDBndXNvNHhpbmo0MjUiLCJ1c2VybmFtZSI6Imtha2FiZXNvbG8iLCJpYXQiOjE3Njc3ODA0MTYsImV4cCI6MTc2Nzc4MTMxNn0.tC8hhtLJsKEiEwIwC3YN_U_6B9hFs0-1UzczVs5nxeE
 
 {
@@ -194,13 +222,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtazN1c2N2a
 }
 
 ### delete user
-DELETE http://localhost:3000/api/v1/users/cmk463jim00007pso3basnugy
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+DELETE {{baseUrl}}/api/v1/users/cmk463jim00007pso3basnugy
+x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtazQ2M2ppbTAwMDA3cHNvM2Jhc251Z3kiLCJ1c2VybmFtZSI6ImNhbmRyaWFtIiwiaWF0IjoxNzY3ODQyNjc2LCJleHAiOjE3Njc4NDM1NzZ9.m2DvJG1udRDbCyUSzhv93sqcZINa2Vt3oaCoqL2lY60
 
 ### logout user
-POST http://localhost:3000/api/v1/logout
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+POST {{baseUrl}}/api/v1/logout
+x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtank2czhtZzAwMDE5YnNvaHdydWxwZ2YiLCJ1c2VybmFtZSI6ImNhbmRyaWFtIiwiaWF0IjoxNzY3NDM3OTg1LCJleHAiOjE3Njc0Mzg4ODV9.363tR1gxleGDTWvEK01aVO86a7A6oi4Yw1T5mq7JiWU
 
 {
@@ -209,9 +237,9 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtank2czhtZ
 
 ### create category
 ### 1. Apéritifs
-POST http://localhost:3000/api/v1/categories
+POST {{baseUrl}}/api/v1/categories
 Content-Type: application/json
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+x-gateway-api-key: {{gatewayKey}}
 
 {
   "name": "Apéritifs",
@@ -221,9 +249,9 @@ x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
 }
 
 ### 2. Entrées
-POST http://localhost:3000/api/v1/categories
+POST {{baseUrl}}/api/v1/categories
 Content-Type: application/json
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+x-gateway-api-key: {{gatewayKey}}
 
 {
   "name": "Entrées",
@@ -233,9 +261,9 @@ x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
 }
 
 ### 3. Plats Principaux
-POST http://localhost:3000/api/v1/categories
+POST {{baseUrl}}/api/v1/categories
 Content-Type: application/json
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+x-gateway-api-key: {{gatewayKey}}
 
 {
   "name": "Plats Principaux",
@@ -245,9 +273,9 @@ x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
 }
 
 ### 4. Desserts
-POST http://localhost:3000/api/v1/categories
+POST {{baseUrl}}/api/v1/categories
 Content-Type: application/json
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+x-gateway-api-key: {{gatewayKey}}
 
 {
   "name": "Desserts",
@@ -257,9 +285,9 @@ x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
 }
 
 ### 5. Accompagnements
-POST http://localhost:3000/api/v1/categories
+POST {{baseUrl}}/api/v1/categories
 Content-Type: application/json
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+x-gateway-api-key: {{gatewayKey}}
 
 {
   "name": "Accompagnements",
@@ -269,9 +297,9 @@ x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
 }
 
 ### 6. Boissons
-POST http://localhost:3000/api/v1/categories
+POST {{baseUrl}}/api/v1/categories
 Content-Type: application/json
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+x-gateway-api-key: {{gatewayKey}}
 
 {
   "name": "Boissons",
@@ -281,9 +309,9 @@ x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
 }
 
 ### 7. Petit-Déjeuner
-POST http://localhost:3000/api/v1/categories
+POST {{baseUrl}}/api/v1/categories
 Content-Type: application/json
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+x-gateway-api-key: {{gatewayKey}}
 
 {
   "name": "Petit-Déjeuner",
@@ -293,9 +321,9 @@ x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
 }
 
 ### 8. Boulangerie
-POST http://localhost:3000/api/v1/categories
+POST {{baseUrl}}/api/v1/categories
 Content-Type: application/json
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+x-gateway-api-key: {{gatewayKey}}
 
 {
   "name": "Boulangerie",
@@ -305,9 +333,9 @@ x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
 }
 
 ### 9. Sauces
-POST http://localhost:3000/api/v1/categories
+POST {{baseUrl}}/api/v1/categories
 Content-Type: application/json
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+x-gateway-api-key: {{gatewayKey}}
 
 {
   "name": "Sauces & Bases",
@@ -317,9 +345,9 @@ x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
 }
 
 ### 10. Snacks
-POST http://localhost:3000/api/v1/categories
+POST {{baseUrl}}/api/v1/categories
 Content-Type: application/json
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+x-gateway-api-key: {{gatewayKey}}
 
 {
   "name": "Snacks",
@@ -329,24 +357,24 @@ x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
 }
 
 ### Read category
-GET http://localhost:3000/api/v1/categories
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+GET {{baseUrl}}/api/v1/categories
+x-gateway-api-key: {{gatewayKey}}
 
 
 ### Read category by id
-GET http://localhost:3000/api/v1/categories/:id
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+GET {{baseUrl}}/api/v1/categories/:id
+x-gateway-api-key: {{gatewayKey}}
 
 
 ### Read category by slug
-GET http://localhost:3000/api/v1/categories/by-slug/:slug
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+GET {{baseUrl}}/api/v1/categories/by-slug/:slug
+x-gateway-api-key: {{gatewayKey}}
 
 
 ### Update category
-PUT http://localhost:3000/api/v1/categories/:id
+PUT {{baseUrl}}/api/v1/categories/:id
 Content-Type: application/json
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+x-gateway-api-key: {{gatewayKey}}
 
 
 {
@@ -357,14 +385,14 @@ x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
 }
 
 ### Delete category
-DELETE http://localhost:3000/api/v1/categories/:id
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+DELETE {{baseUrl}}/api/v1/categories/:id
+x-gateway-api-key: {{gatewayKey}}
 
 
 ### Create recipe
-POST http://localhost:3000/api/v1/recipes
+POST {{baseUrl}}/api/v1/recipes
 Content-Type: application/json
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtazN1c2N2ajAwMDBndXNvNHhpbmo0MjUiLCJ1c2VybmFtZSI6ImNhbmRyaWFtIiwiaWF0IjoxNzY3NzgyMDMxLCJleHAiOjE3Njc3ODI5MzF9.bTVfhGRfcc5_L7si7jeZ2qWfsUV3YdosyYlmUQFo-bM
 
 {
@@ -402,27 +430,27 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtazN1c2N2a
 }
 
 ### Read recipe
-GET http://localhost:3000/api/v1/recipes
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+GET {{baseUrl}}/api/v1/recipes
+x-gateway-api-key: {{gatewayKey}}
 
 ### Read recipe by id
-GET http://localhost:3000/api/v1/recipes/cmjszimle0000basb038vuo92
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+GET {{baseUrl}}/api/v1/recipes/cmjszimle0000basb038vuo92
+x-gateway-api-key: {{gatewayKey}}
 
 ### Read recipe by slug
-GET http://localhost:3000/api/v1/recipes/by-slug/poulet-tikka-masala
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+GET {{baseUrl}}/api/v1/recipes/by-slug/poulet-tikka-masala
+x-gateway-api-key: {{gatewayKey}}
 
 
 ### Delete recipe
-DELETE http://localhost:3000/api/v1/recipes/:id
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+DELETE {{baseUrl}}/api/v1/recipes/:id
+x-gateway-api-key: {{gatewayKey}}
 
 
 ### Update recipe
-PUT http://localhost:3000/api/v1/recipes/cmjszimle0000basb038vuo92
+PUT {{baseUrl}}/api/v1/recipes/cmjszimle0000basb038vuo92
 Content-Type: application/json
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+x-gateway-api-key: {{gatewayKey}}
 
 {
     "title": "Poulet Tikka Masala",
@@ -459,9 +487,9 @@ x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
 
 
 ### Create recipe rate by id
-POST http://localhost:3000/api/v1/recipes/cmjszimle0000basb038vuo92/rate
+POST {{baseUrl}}/api/v1/recipes/cmjszimle0000basb038vuo92/rate
 Content-Type: application/json
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+x-gateway-api-key: {{gatewayKey}}
 
 {
     "userId": "cmjsz9roe0000gosbdk82ahkw",
@@ -470,14 +498,14 @@ x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
 
 
 ### Read recipe rate by id
-GET http://localhost:3000/api/v1/recipes/:id/rate
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+GET {{baseUrl}}/api/v1/recipes/:id/rate
+x-gateway-api-key: {{gatewayKey}}
 
 
 ### Delete recipe rate by id
-DELETE http://localhost:3000/api/v1/recipes/:id/rate
+DELETE {{baseUrl}}/api/v1/recipes/:id/rate
 Content-Type: application/json
-x-gateway-api-key: AGK.5rpj469CrRWWxfxqxXwzpRFS3N9vN9BfB94MXwCN90Q
+x-gateway-api-key: {{gatewayKey}}
 
 {
     "userId": ""

@@ -47,6 +47,12 @@ CHAT_DATABASE_URL=
 API_GATEWAY_KEY=${generateSecretBase64("AGK", 32)}
 
 # ===============================
+# API Master Secret (pour signer les clés API utilisateurs)
+# ===============================
+API_MASTER_SECRET=${generateSecretBase64("AMS", 32)}
+API_KEY_MAX_AGE_SECONDS=31536000
+
+# ===============================
 # Internal API Key
 # ===============================
 INTERNAL_API_KEY=${generateSecretBase64("IAK", 32)}

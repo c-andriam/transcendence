@@ -18,7 +18,8 @@ import { sendSuccess,
     stripPassword,
     NotFoundError,
     authMiddleware,
-    ForbiddenError
+    ForbiddenError,
+    generateApiKey
 } from "@transcendence/common";
 
 export async function userRoutes(app: FastifyInstance) {
@@ -137,5 +138,35 @@ export async function userRoutes(app: FastifyInstance) {
         const { token } = request.body as { token: string };
         const user = await verifyEmailToken(token);
         sendSuccess(reply, user, 'Token verified');
+    });
+
+    app.post("/api-key/generate", { preHandler: authMiddleware }, async (request, reply) => {
+        const userId = request.user!.id;
+        const user = await getUserById(userId);
+
+        if (!user) {
+            throw new NotFoundError('User not found');
+        }
+
+        if (!user.isEmailVerified) {
+            throw new ForbiddenError('Email must be verified to generate an API key');
+        }
+
+        const masterSecret = process.env.API_MASTER_SECRET;
+        if (!masterSecret) {
+            throw new Error('API_MASTER_SECRET not configured');
+        }
+
+        const apiKey = generateApiKey(userId, masterSecret);
+
+        sendCreated(reply, {
+            apiKey,
+            userId,
+            message: 'Store this API key securely. It will not be shown again.',
+            usage: {
+                header: 'x-gateway-api-key',
+                example: `curl -H "x-gateway-api-key: ${apiKey}" https://api.cookshare.me/api/v1/recipes`
+            }
+        }, 'API Key generated');
     });
 }
