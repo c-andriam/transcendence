@@ -2,9 +2,6 @@ import crypto from "crypto";
 
 const API_KEY_PREFIX = "cs_";
 
-/**
- * Format: cs_<userId>_<timestamp>_<random>.<signature>
- */
 export function generateApiKey(userId: string, secret: string): string {
   const timestamp = Math.floor(Date.now() / 1000);
   const random = crypto.randomBytes(4).toString("hex");
