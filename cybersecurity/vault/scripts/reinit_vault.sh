@@ -5,8 +5,8 @@ VAULT_CONTAINER="vault" #name of the container
 VAULT_TOKEN="root"      #token admin (access to all)
 VAULT_ADDR="http://127.0.0.1:8200" #address of the vault server
 VAULT_ENV="-e VAULT_TOKEN=$VAULT_TOKEN -e VAULT_ADDR=$VAULT_ADDR" #environment variables
-SECURE_DB_SECRET=$(head -c 32 /dev/urandom | base64)
-SECURE_KEY=$(head -c 32 /dev/urandom | base64)
+SECURE_DB_SECRET=$(openssl rand -base64 64)
+SECURE_KEY=$(openssl rand -base64 64)
 
 # Waiting for vault to start before any action
 echo "Waiting for vault to start..."
