@@ -13,9 +13,9 @@ const NavigationButton = ({ children, to, variant = 'primary', width, height, on
     const navigate = useNavigate();
 
     const variants = {
-        primary: 'bg-orange-500 hover:bg-white hover:text-orange-500 text-white text-lg',
-        secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-800',
-        outline: 'border-2 border-blue-600 text-blue-600 hover:bg-blue-50'
+        primary: 'bg-orange-500 hover:bg-white hover:text-orange-500 text-white text-lg rounded-lg',
+        secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg',
+        outline: 'text-blue-600 hover:underline hover:decoration-blue-600 hover:underline-offset-2'
     };
 
     const handleClick = () => {
@@ -30,7 +30,7 @@ const NavigationButton = ({ children, to, variant = 'primary', width, height, on
     return (
         <button
             onClick={handleClick}
-            className={` ${width} ${height} text-center rounded-lg transition ${variants[variant]}`}
+            className={`${width} ${height} text-center transition ${variants[variant]}`}
         >
             {children}
         </button>

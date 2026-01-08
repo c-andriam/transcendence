@@ -8,9 +8,12 @@ const Footer = () => {
         { name: 'Contact us', href: '/Contact' },
     ]
     return (
-        <footer className='mt-6'>
+        <footer>
+            <div className='flex justify-center mb-4' >
+                <div className="w-1/3 h-px bg-gray-600"></div>
+            </div>
             {/* Afficher chaque lien en utilisant map() */}
-            <nav className='flex flex-wrap justify-center pb-4 gap-8'>
+            <nav className='flex flex-wrap justify-center pb-2 gap-8'>
                 {links.map((link) => (
                     <a
                         key={link.href}
@@ -21,7 +24,6 @@ const Footer = () => {
                     </a>
                 ))}
             </nav>
-
             {/* Copyright */}
             <p className="text-gray-600 text-xs text-center">
                 &copy; {new Date().getFullYear()} CookShare. All rights reserved.
