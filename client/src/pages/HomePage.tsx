@@ -3,6 +3,7 @@ import Footer from '../components/Footer'
 import Pollaroide from '../components/Pollaroide'
 import homePageData from '../data/homePageData.json'
 import NavigationButton from '../components/NavigationButton'
+import Title from '../components/Title'
 
 const { usersImages: UsersImages, recipeImages, usersName: UsersName, recipeNames } = homePageData;
 
@@ -19,7 +20,7 @@ const HomePage = () => {
     useEffect(() => {
         const interval = setInterval(() => {
             increaseIndex();
-        }, 5000); // 5 secondes
+        }, 2000); // 5 secondes
 
         // Cleanup: clear interval when component unmounts
         return () => clearInterval(interval);
@@ -29,14 +30,10 @@ const HomePage = () => {
         <>
             {/* Header: Logo + Slogan */}
             <nav className="flex flex-row justify-between m-2 mx-12">
-                <div className="flex flex-col justify-center items-center gap-1">
-                    <h1 className="text-4xl font-bold text-left"><span className='text-orange-500'>Cook</span>Share</h1>
-                    <p className="text-lg text-gray-600 text-left">Cooking, sharing, love!</p>
-                </div>
+                <Title slogan="primary" variant="primary" />
                 <div>
                     <NavigationButton to="/login" variant="primary" width='w-32' height='h-12'>Sign In</NavigationButton>
                 </div>
-
             </nav>
             <section className="grid grid-cols-2 gap-24 m-2 mx-12">
                 {/* Section gauche */}
@@ -94,7 +91,7 @@ const HomePage = () => {
                                 currentIndex === index ? (
                                     <div
                                         key={index}
-                                        className="w-3 h-3 bg-blue-600 rounded-full cursor-pointer"
+                                        className="w-1 h-1 bg-orange-500 rounded-full cursor-pointer"
                                     ></div>
                                 ) : (
                                     <div

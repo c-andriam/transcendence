@@ -38,7 +38,7 @@ h1 {
   line-height: 1.1;
 }
 
-button:focus,
+/* button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
@@ -56,7 +56,7 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
-}
+} */
 
 .carousel-item {
   position: absolute;

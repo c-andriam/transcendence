@@ -15,7 +15,7 @@ const NavigationButton = ({ children, to, variant = 'primary', width, height, on
     const variants = {
         primary: 'bg-orange-500 hover:bg-white hover:text-orange-500 text-white text-lg rounded-lg',
         secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg',
-        outline: 'text-orange-500 hover:underline hover:decoration-orange-500 hover:underline-offset-2'
+        outline: 'text-orange-500 hover:underline hover:decoration-orange-500 focus:outline-none hover:underline-offset-2'
     };
 
     const handleClick = () => {
