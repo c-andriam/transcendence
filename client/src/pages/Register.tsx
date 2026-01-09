@@ -1,6 +1,6 @@
 import React from "react";
 import LottieAnimation from "../components/LottieAnimation";
-import Lot1 from "../../public/lotties/Food prep.json"
+import Lot1 from "../../public/lotties/Cooking.json"
 import NavigationButton from "../components/NavigationButton";
 import Footer from "../components/Footer";
 import GoogleLogo from "../../public/logo/google-logo-png-29534.png"
@@ -17,7 +17,7 @@ const Register = () => {
                         <div className="w-full max-w-md">
                             <div>
                                 <p className="text-2xl font-bold">Create your account</p>
-                                <p className="text-lg text-gray-600 text-left">Cooking, sharing, love!</p>
+                                <p className="text-lg text-gray-600">Cooking, sharing, love!</p>
                             </div>
                             <form action="">
                                 <div>
@@ -26,6 +26,7 @@ const Register = () => {
                                         type="text"
                                         placeholder="John"
                                         id="firstName"
+                                        className="placeholder:text-gray-700 w-full px-4 py-3 border border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
                                     />
                                 </div>
                                 <div>
@@ -34,6 +35,7 @@ const Register = () => {
                                         type="text"
                                         placeholder="Doe"
                                         id="lastName"
+                                        className="placeholder:text-gray-700 w-full px-4 py-3 border border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
                                     />
                                 </div>
                                 <div>
@@ -42,22 +44,25 @@ const Register = () => {
                                         type="email"
                                         placeholder="example@gmail.com"
                                         id="email"
+                                        className="placeholder:text-gray-700 w-full px-4 py-3 border border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
                                     />
                                 </div>
                                 <div>
                                     <label htmlFor="password">Password</label>
                                     <input
                                         type="password"
-                                        value="••••••••••"
+                                        placeholder="••••••••••"
                                         id="password"
+                                        className="placeholder:text-gray-700 w-full px-4 py-3 border border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
                                     />
                                 </div>
                                 <div>
                                     <label htmlFor="confirmPassword">Confirm Password</label>
                                     <input
                                         type="password"
-                                        value="••••••••••"
+                                        placeholder="••••••••••"
                                         id="confirmPassword"
+                                        className="placeholder:text-gray-700 w-full px-4 py-3 border border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
                                     />
                                 </div>
                                 <button type="submit">Let's cooking</button>
