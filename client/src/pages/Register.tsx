@@ -19,64 +19,123 @@ const Register = () => {
                                 <p className="text-2xl font-bold">Create your account</p>
                                 <p className="text-lg text-gray-600">Cooking, sharing, love!</p>
                             </div>
-                            <form action="">
-                                <div>
-                                    <label htmlFor="firstName">First name</label>
+                            <form action="" className='space-y-5'>
+                                <div className="relative">
                                     <input
                                         type="text"
-                                        placeholder="John"
+                                        placeholder=" "
                                         id="firstName"
-                                        className="placeholder:text-gray-700 w-full px-4 py-3 border border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+                                        className="peer w-full px-4 pt-6 pb-2 border-2 border-gray-600
+                                            rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
                                     />
+                                    <label
+                                        htmlFor="firstName"
+                                        className="absolute left-4 top-4 text-gray-600 transition-all duration-200
+                                            peer-placeholder-shown:top-4 peer-placeholder-shown:text-base
+                                            peer-focus:top-2 peer-focus:text-xs peer-focus:text-orange-500
+                                            text-sm font-medium mb-2
+                                            peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-xs"
+                                    >
+                                        First name
+                                    </label>
                                 </div>
-                                <div>
-                                    <label htmlFor="lastName">Last name</label>
+                                <div className="relative">
                                     <input
                                         type="text"
-                                        placeholder="Doe"
+                                        placeholder=" "
                                         id="lastName"
-                                        className="placeholder:text-gray-700 w-full px-4 py-3 border border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+                                        className="peer w-full px-4 pt-6 pb-2 border-2 border-gray-600
+                                            rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
                                     />
+                                    <label
+                                        htmlFor="lastName"
+                                        className="absolute left-4 top-4 text-gray-600 transition-all duration-200
+                                            peer-placeholder-shown:top-4 peer-placeholder-shown:text-base
+                                            peer-focus:top-2 peer-focus:text-xs peer-focus:text-orange-500
+                                            text-sm font-medium mb-2
+                                            peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-xs"
+                                    >
+                                        Last name
+                                    </label>
                                 </div>
-                                <div>
-                                    <label htmlFor="email">Email</label>
+                                <div className="relative">
                                     <input
                                         type="email"
-                                        placeholder="example@gmail.com"
+                                        placeholder=" "
                                         id="email"
-                                        className="placeholder:text-gray-700 w-full px-4 py-3 border border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+                                        className="peer w-full px-4 pt-6 pb-2 border-2 border-gray-600
+                                            rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
                                     />
+                                    <label
+                                        htmlFor="email"
+                                        className="absolute left-4 top-4 text-gray-600 transition-all duration-200
+                                            peer-placeholder-shown:top-4 peer-placeholder-shown:text-base
+                                            peer-focus:top-2 peer-focus:text-xs peer-focus:text-orange-500
+                                            text-sm font-medium mb-2
+                                            peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-xs"
+                                    >
+                                        Email
+                                    </label>
                                 </div>
-                                <div>
-                                    <label htmlFor="password">Password</label>
+                                <div className="relative">
                                     <input
                                         type="password"
-                                        placeholder="••••••••••"
+                                        placeholder=" "
                                         id="password"
-                                        className="placeholder:text-gray-700 w-full px-4 py-3 border border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
-                                    />
+                                        className="peer w-full px-4 pt-6 pb-2 border-2 border-gray-600
+                                            rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"                                    />
+                                    <label
+                                        htmlFor="password"
+                                        className="absolute left-4 top-4 text-gray-600 transition-all duration-200
+                                            peer-placeholder-shown:top-4 peer-placeholder-shown:text-base
+                                            peer-focus:top-2 peer-focus:text-xs peer-focus:text-orange-500
+                                            text-sm font-medium mb-2
+                                            peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-xs"
+                                    >
+                                        Password
+                                    </label>
                                 </div>
-                                <div>
-                                    <label htmlFor="confirmPassword">Confirm Password</label>
+                                <div className="relative">
                                     <input
                                         type="password"
-                                        placeholder="••••••••••"
+                                        placeholder=" "
                                         id="confirmPassword"
-                                        className="placeholder:text-gray-700 w-full px-4 py-3 border border-gray-600 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition"
+                                        className="peer w-full px-4 pt-6 pb-2 border-2 border-gray-600
+                                            rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
                                     />
+                                    <label
+                                        htmlFor="confirmPassword"
+                                        className="absolute left-4 top-4 text-gray-600 transition-all duration-200
+                                            peer-placeholder-shown:top-4 peer-placeholder-shown:text-base
+                                            peer-focus:top-2 peer-focus:text-xs peer-focus:text-orange-500
+                                            text-sm font-medium mb-2
+                                            peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-xs"
+                                    >
+                                        Confirm Password
+                                    </label>
                                 </div>
-                                <button type="submit">Let's cooking</button>
+                                <button
+                                    type="submit"
+                                    className="w-full bg-orange-400 text-white py-3 rounded-lg
+                                        hover:bg-orange-600 transition duration-200
+                                        shadow-lg hover:shadow-xl font-semibold"
+                                >
+                                    Let's cooking
+                                </button>
                                 <div className="flex flex-col gap-2">
-                                    <div className="flex flex-row gap-2 items-center">
-                                        <div className="w-[100px] h-px bg-gray-600"></div>
+                                    <div className="flex flex-row gap-2 items-center justify-center">
+                                        <div className="w-[180px] h-px bg-gray-600"></div>
                                         <p className="text-center text-gray-600">OR</p>
-                                        <div className="w-[100px] h-px bg-gray-600"></div>
+                                        <div className="w-[180px] h-px bg-gray-600"></div>
                                     </div>
-                                    <div>
-                                        <button>
-                                            <img style={{ width: "20px", height: "20px" }} src={GoogleLogo} />Login with Googles
-                                        </button>
-                                    </div>
+                                    <button
+                                        type="submit"
+                                        className="w-full bg-white/90 border text-gray-600 text-center
+                                            py-2.5 rounded-lg font-semibold hover:bg-orange-400
+                                            transition duration-200 flex items-center justify-center gap-3 my-2"
+                                    >
+                                        <img style={{ width: "30px", height: "30px" }} src={GoogleLogo} />Login with Google
+                                    </button>
                                     <div>
                                         <p>Have an account?
                                             <NavigationButton to="/login" variant="outline">

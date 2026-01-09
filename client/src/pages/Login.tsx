@@ -92,7 +92,7 @@ const Login = () => {
                                             py-2.5 rounded-lg font-semibold hover:bg-orange-400
                                             transition duration-200 flex items-center justify-center gap-3 my-2"
                                     >
-                                        <img style={{ width: "30px", height: "30px" }} src={GoogleLogo} />Login with Googles
+                                        <img style={{ width: "30px", height: "30px" }} src={GoogleLogo} />Login with Google
                                     </button>
                                     <div>
                                         <p
@@ -109,7 +109,7 @@ const Login = () => {
                     </section>
                 </div>
             </div>
-            <footer className="mt-auto">
+            <footer>
                 <Footer />
             </footer>
         </>
