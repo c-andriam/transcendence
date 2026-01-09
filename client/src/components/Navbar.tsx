@@ -8,15 +8,19 @@ import pdp from "../../public/vite.svg";
 
 const Navbar = () => {
     return (
-        <div className="navbar bg-base-100 shadow-sm">
-            <Title pos='navbar-start' slogan="secondary" variant="secondary" />
+        <div className="navbar bg-base-100 shadow-lg flex flex-row justify-between items-center m-2 p-6 pl-12 pr-12">
+            <div className="navbar-start">
+                <Title pos=' ' slogan="secondary" variant="secondary" />
+            </div>
             <div className="navbar-center">
                 <Search />
             </div>
             <div className="navbar-end">
-                <NotificationUI />
-                <MessageUI />
-                <Account profilePicture={pdp} />
+                <div className="grid grid-cols-3 gap-4">
+                    <NotificationUI />
+                    <MessageUI />
+                    <Account profilePicture={pdp} />
+                </div>
             </div>
         </div>
     );

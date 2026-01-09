@@ -32,7 +32,7 @@ const MessageUI = () => {
 
             {/* Menu déroulant */}
             {isOpen && (
-                <div className="absolute px-4 right-0 mt-2 w-128 bg-[#121212] border border-gray-800 rounded-xl shadow-2xl z-50 animate-in fade-in zoom-in duration-200">
+                <div className="absolute px-4 right-0 mt-2 w-116 bg-[#121212] border border-gray-800 rounded-xl shadow-2xl z-50 animate-in fade-in zoom-in duration-200">
                     <div className="flex justify-center items-center">
                         <div className="p-4 font-bold text-xl text-white tracking-wider">Discussions</div>
                     </div>
@@ -43,4 +43,5 @@ const MessageUI = () => {
         </div>
     );
 }
+
 export default MessageUI

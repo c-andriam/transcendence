@@ -28,15 +28,13 @@ const Search = () => {
                     <input
                         type="text"
                         placeholder="Search"
-                        className="placeholder:text-gray-500 pl-10 pr-4 py-2
-                    w-full border border-gray-500 text-white/70
+                        className="w-full placeholder:text-gray-500 pl-10 pr-4 py-2
+                        border border-gray-500 text-white/70
                         focus:outline-none focus:rings-0
                         rounded-lg transition"
                         onFocus={() => setIsOpen(true)}
                     />
                 </div>
-                {/* Panneau d'historique / Résumé */}
-                {/* En React, tu utiliseras un état (ex: isOpen) pour l'afficher */}
                 {isOpen && (
                     <div className="absolute top-full left-0 w-full mt-2 bg-[#1a1a1a] border border-gray-800 
                         rounded-xl shadow-2xl overflow-hidden z-50">

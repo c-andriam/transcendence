@@ -44,7 +44,7 @@ const Account = ({ profilePicture }: AccountProps) => {
                             className="flex flex-row mx-2 mb-2 gap-8
                                 justify-start items-center"
                         >
-                            <img className='rounded-full' src={profilePicture} width={44} height={44} alt="Profile" />
+                            <img className='rounded-full' src={profilePicture} width={40} height={40} alt="Profile" />
                             <p className='text-white/70 font-bold text-xl tracking-wider'>Username</p>
                         </div>
                         <button
