@@ -357,42 +357,191 @@ export async function removeRecipeRating(recipeId: string, userId: string) {
 }
 
 export async function getAllRecipesBySearch(
-    page: number,
-    limit: number,
+    page: number = 1,
+    limit: number = 10,
     categoryId?: string,
     difficulty?: 'EASY' | 'MEDIUM' | 'HARD',
     search?: string,
-    isPublished?: boolean) {
+    isPublished?: boolean,
+    authorId?: string,
+    sortBy: 'createdAt' | 'title' | 'prepTime' | 'cookTime' | 'viewCount' = 'createdAt',
+    sortOrder: 'asc' | 'desc' = 'desc',
+    minPrepTime?: number,
+    maxPrepTime?: number,
+    minCookTime?: number,
+    maxCookTime?: number,
+    servings?: number
+) {
     const where: any = {};
+    
     if (categoryId) {
         where.categoryId = categoryId;
     }
     if (difficulty) {
         where.difficulty = difficulty;
     }
+    if (authorId) {
+        where.authorId = authorId;
+    }
     if (search) {
         where.OR = [
             { title: { contains: search, mode: 'insensitive' } },
             { description: { contains: search, mode: 'insensitive' } },
+            { ingredients: { some: { name: { contains: search, mode: 'insensitive' } } } }
         ];
     }
     if (isPublished !== undefined) {
         where.isPublished = isPublished;
-    }
-    else
+    } else {
         where.isPublished = true;
-    const recipes = await db.recipe.findMany({
-        where: where,
-        skip: (page - 1) * limit,
-        take: limit,
-        include: {
-            ingredients: true,
-            instructions: { orderBy: { stepNumber: 'asc' } },
-            category: true,
-        },
-        orderBy: {
-            createdAt: 'desc'
-        },
+    }
+    if (minPrepTime !== undefined) {
+        where.prepTime = { ...where.prepTime, gte: minPrepTime };
+    }
+    if (maxPrepTime !== undefined) {
+        where.prepTime = { ...where.prepTime, lte: maxPrepTime };
+    }
+    if (minCookTime !== undefined) {
+        where.cookTime = { ...where.cookTime, gte: minCookTime };
+    }
+    if (maxCookTime !== undefined) {
+        where.cookTime = { ...where.cookTime, lte: maxCookTime };
+    }
+    if (servings !== undefined) {
+        where.servings = servings;
+    }
+
+    const [recipes, total] = await Promise.all([
+        db.recipe.findMany({
+            where,
+            skip: (page - 1) * limit,
+            take: limit,
+            include: {
+                ingredients: true,
+                instructions: { orderBy: { stepNumber: 'asc' } },
+                category: true,
+                ratings: true,
+            },
+            orderBy: {
+                [sortBy]: sortOrder,
+            },
+        }),
+        db.recipe.count({ where })
+    ]);
+
+    const recipesWithRatings = recipes.map(recipe => {
+        const ratingCount = recipe.ratings.length;
+        const totalScore = recipe.ratings.reduce((total, rating) => total + rating.score, 0);
+        const averageScore = ratingCount > 0 ? Math.round((totalScore / ratingCount) * 10) / 10 : 0;
+        const { ratings, ...recipeWithoutRatings } = recipe;
+        
+        return {
+            ...recipeWithoutRatings,
+            averageScore,
+            ratingCount,
+        };
     });
-    return recipes;
+
+    return {
+        recipes: recipesWithRatings,
+        pagination: {
+            page,
+            limit,
+            total,
+            totalPages: Math.ceil(total / limit),
+            hasNext: page < Math.ceil(total / limit),
+            hasPrev: page > 1,
+        }
+    };
+}
+
+export async function getRecipesByCategory(
+    categoryId: string,
+    page: number = 1,
+    limit: number = 10
+) {
+    return getAllRecipesBySearch(page, limit, categoryId);
+}
+
+export async function getRecipesByAuthor(
+    authorId: string,
+    page: number = 1,
+    limit: number = 10,
+    includeUnpublished: boolean = false
+) {
+    return getAllRecipesBySearch(
+        page,
+        limit,
+        undefined,
+        undefined,
+        undefined,
+        includeUnpublished ? undefined : true,
+        authorId
+    );
+}
+
+export async function getRecipesByDifficulty(
+    difficulty: 'EASY' | 'MEDIUM' | 'HARD',
+    page: number = 1,
+    limit: number = 10
+) {
+    return getAllRecipesBySearch(
+        page,
+        limit,
+        undefined,
+        difficulty
+    );
+}
+
+export async function getMyRecipes(
+    userId: string,
+    page: number = 1,
+    limit: number = 10,
+    publishedOnly: boolean = false
+) {
+    const where: any = {
+        authorId: userId
+    };
+    if (publishedOnly) {
+        where.isPublished = true;
+    }
+    const [recipes, total] = await Promise.all([
+        db.recipe.findMany({
+            where,
+            skip: (page - 1) * limit,
+            take: limit,
+            include: {
+                ingredients: true,
+                instructions: { orderBy: { stepNumber: 'asc' } },
+                category: true,
+                ratings: true,
+            },
+            orderBy: {
+                createdAt: 'desc',
+            },
+        }),
+        db.recipe.count({ where })
+    ]);
+    const recipesWithRatings = recipes.map(recipe => {
+        const ratingCount = recipe.ratings.length;
+        const totalScore = recipe.ratings.reduce((total, rating) => total + rating.score, 0);
+        const averageScore = ratingCount > 0 ? Math.round((totalScore / ratingCount) * 10) / 10 : 0;
+        const { ratings, ...recipeWithoutRatings } = recipe;
+        return {
+            ...recipeWithoutRatings,
+            averageScore,
+            ratingCount,
+        };
+    });
+    return {
+        recipes: recipesWithRatings,
+        pagination: {
+            page,
+            limit,
+            total,
+            totalPages: Math.ceil(total / limit),
+            hasNext: page < Math.ceil(total / limit),
+            hasPrev: page > 1,
+        }
+    };
 }

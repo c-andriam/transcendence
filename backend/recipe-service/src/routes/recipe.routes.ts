@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { createRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, getRecipeBySlug, rateRecipe, getRecipeRatings, removeRecipeRating } from "../services/recipe.service";
+import { createRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, getRecipeBySlug, rateRecipe, getRecipeRatings, removeRecipeRating, getAllRecipesBySearch } from "../services/recipe.service";
 import { sendSuccess, sendCreated, sendDeleted, ForbiddenError, NotFoundError } from "@transcendence/common";
 import { authMiddleware } from "@transcendence/common";
 
@@ -61,6 +61,68 @@ export async function recipesRoutes(app: FastifyInstance) {
             throw new Error('Recipe not found');
         }
         sendSuccess(reply, recipe, 'Recipe found');
+    });
+
+    app.get("/recipes/search", async (request, reply) => {
+        const {
+            q,
+            categoryId,
+            difficulty,
+            page,
+            limit,
+            sortBy,
+            sortOrder,
+            minPrepTime,
+            maxPrepTime,
+            minCookTime,
+            maxCookTime,
+            servings
+        } = request.query as {
+            q?: string;
+            categoryId?: string;
+            difficulty?: string;
+            page?: string;
+            limit?: string;
+            sortBy?: string;
+            sortOrder?: string;
+            minPrepTime?: string;
+            maxPrepTime?: string;
+            minCookTime?: string;
+            maxCookTime?: string;
+            servings?: string;
+        }
+        const pageNum = page ? parseInt(page, 10) : 1;
+        const limitNum = limit ? parseInt(limit, 10) : 10;
+        const minPrepTimeNum = minPrepTime ? parseInt(minPrepTime, 10) : undefined;
+        const maxPrepTimeNum = maxPrepTime ? parseInt(maxPrepTime, 10) : undefined;
+        const minCookTimeNum = minCookTime ? parseInt(minCookTime, 10) : undefined;
+        const maxCookTimeNum = maxCookTime ? parseInt(maxCookTime, 10) : undefined;
+        const servingsNum = servings ? parseInt(servings, 10) : undefined;
+        const validDifficulties = ['EASY', 'MEDIUM', 'HARD'];
+        const difficultyEnum = difficulty && validDifficulties.includes(difficulty.toUpperCase()) 
+            ? difficulty.toUpperCase() as 'EASY' | 'MEDIUM' | 'HARD'
+            : undefined;
+        const validSortBy = ['createdAt', 'title', 'prepTime', 'cookTime', 'viewCount'] as const; 
+        const sortByValidated = sortBy && validSortBy.includes(sortBy as any) ? sortBy as typeof validSortBy[number] : 'createdAt';
+        const validSortOrder = ['asc', 'desc'] as const;
+        const sortOrderValidated = sortOrder && validSortOrder.includes(sortOrder as any) ? sortOrder as typeof validSortOrder[number] : 'desc';
+        const data = await getAllRecipesBySearch(
+            pageNum,
+            limitNum,
+            categoryId,
+            difficultyEnum,
+            q,
+            undefined,
+            undefined,
+            sortByValidated,
+            sortOrderValidated,
+            minPrepTimeNum,
+            maxPrepTimeNum,
+            minCookTimeNum,
+            maxCookTimeNum,
+            servingsNum
+        );
+        sendSuccess(reply, data, 'Recipes found');
     });
 
     // ========== ROUTES RATINGS ==========

@@ -509,3 +509,41 @@ x-gateway-api-key: {{gatewayKey}}
 {
     "userId": ""
 }
+
+### ============================================
+### RECIPE SEARCH & FILTER TESTS
+### ============================================
+
+### Search recipes by text (title, description, ingredients)
+GET {{baseUrl}}/api/v1/recipes/search?q=poulet
+x-gateway-api-key: {{gatewayKey}}
+
+### Search with pagination
+GET {{baseUrl}}/api/v1/recipes/search?q=poulet&page=1&limit=5
+x-gateway-api-key: {{gatewayKey}}
+
+### Search with difficulty filter
+GET {{baseUrl}}/api/v1/recipes/search?difficulty=MEDIUM
+x-gateway-api-key: {{gatewayKey}}
+
+### Search with category filter (replace with actual category ID)
+GET {{baseUrl}}/api/v1/recipes/search?categoryId=cmk3vqj710002zqsobnkfcbgk
+x-gateway-api-key: {{gatewayKey}}
+
+### Search with multiple filters
+GET {{baseUrl}}/api/v1/recipes/search?q=poulet&difficulty=MEDIUM&minPrepTime=10&maxPrepTime=60
+x-gateway-api-key: {{gatewayKey}}
+
+### Search with sorting
+GET {{baseUrl}}/api/v1/recipes/search?sortBy=prepTime&sortOrder=asc&page=1&limit=10
+x-gateway-api-key: {{gatewayKey}}
+
+### Search with servings filter
+GET {{baseUrl}}/api/v1/recipes/search?servings=4
+x-gateway-api-key: {{gatewayKey}}
+
+### Search with time filters
+GET {{baseUrl}}/api/v1/recipes/search?minCookTime=15&maxCookTime=60
+x-gateway-api-key: {{gatewayKey}}
+
+### ============================================
