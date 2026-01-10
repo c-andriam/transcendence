@@ -442,8 +442,9 @@ x-gateway-api-key: {{gatewayKey}}
 
 
 ### Delete recipe
-DELETE {{baseUrl}}/api/v1/recipes/:id
+DELETE {{baseUrl}}/api/v1/recipes/cmk3vthae000azqsoe0yfn0e4
 x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
 
 
 ### Update recipe
@@ -507,7 +508,7 @@ Content-Type: application/json
 x-gateway-api-key: {{gatewayKey}}
 
 {
-    "userId": ""
+    "userId": "cmk3uscvj0000guso4xinj425"
 }
 
 ### ============================================

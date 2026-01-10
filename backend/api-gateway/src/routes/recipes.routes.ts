@@ -89,4 +89,27 @@ export async function recipesRoutes(app: FastifyInstance) {
         const { id } = request.params as { id: string };
         return proxyHydrate(app, request, reply, `/api/v1/categories/${id}`, RECIPE_SERVICE_URL);
     });
+
+    app.get("/recipes/search", async (request, reply) => {
+        return proxyHydrate(app, request, reply, "/api/v1/recipes/search", RECIPE_SERVICE_URL);
+    });
+
+    app.get("/recipes/category/:categoryId", async (request, reply) => {
+        const { categoryId } = request.params as { categoryId: string };
+        return proxyHydrate(app, request, reply, `/api/v1/recipes/category/${categoryId}`, RECIPE_SERVICE_URL);
+    });
+
+    app.get("/recipes/author/:authorId", async (request, reply) => {
+        const { authorId } = request.params as { authorId: string };
+        return proxyHydrate(app, request, reply, `/api/v1/recipes/author/${authorId}`, RECIPE_SERVICE_URL);
+    });
+
+    app.get("/recipes/difficulty/:difficulty", async (request, reply) => {
+        const { difficulty } = request.params as { difficulty: string };
+        return proxyHydrate(app, request, reply, `/api/v1/recipes/difficulty/${difficulty}`, RECIPE_SERVICE_URL);
+    });
+
+    app.get("/recipes/me", async (request, reply) => {
+        return proxyHydrate(app, request, reply, "/api/v1/recipes/me", RECIPE_SERVICE_URL);
+    });
 }
