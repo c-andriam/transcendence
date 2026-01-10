@@ -458,16 +458,30 @@ export async function getAllRecipesBySearch(
 export async function getRecipesByCategory(
     categoryId: string,
     page: number = 1,
-    limit: number = 10
+    limit: number = 10,
+    sortBy?: 'createdAt' | 'title' | 'prepTime' | 'cookTime' | 'viewCount',
+    sortOrder?: 'asc' | 'desc'
 ) {
-    return getAllRecipesBySearch(page, limit, categoryId);
+    return getAllRecipesBySearch(
+        page,
+        limit,
+        categoryId,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        sortBy,
+        sortOrder
+    );
 }
 
 export async function getRecipesByAuthor(
     authorId: string,
     page: number = 1,
     limit: number = 10,
-    includeUnpublished: boolean = false
+    includeUnpublished: boolean = false,
+    sortBy?: 'createdAt' | 'title' | 'prepTime' | 'cookTime' | 'viewCount',
+    sortOrder?: 'asc' | 'desc'
 ) {
     return getAllRecipesBySearch(
         page,
@@ -476,20 +490,29 @@ export async function getRecipesByAuthor(
         undefined,
         undefined,
         includeUnpublished ? undefined : true,
-        authorId
+        authorId,
+        sortBy,
+        sortOrder
     );
 }
 
 export async function getRecipesByDifficulty(
     difficulty: 'EASY' | 'MEDIUM' | 'HARD',
     page: number = 1,
-    limit: number = 10
+    limit: number = 10,
+    sortBy?: 'createdAt' | 'title' | 'prepTime' | 'cookTime' | 'viewCount',
+    sortOrder?: 'asc' | 'desc'
 ) {
     return getAllRecipesBySearch(
         page,
         limit,
         undefined,
-        difficulty
+        difficulty,
+        undefined,
+        true,
+        undefined,
+        sortBy,
+        sortOrder
     );
 }
 
@@ -497,7 +520,9 @@ export async function getMyRecipes(
     userId: string,
     page: number = 1,
     limit: number = 10,
-    publishedOnly: boolean = false
+    publishedOnly: boolean = false,
+    sortBy?: 'createdAt' | 'title' | 'prepTime' | 'cookTime' | 'viewCount',
+    sortOrder?: 'asc' | 'desc'
 ) {
     const where: any = {
         authorId: userId
@@ -517,7 +542,7 @@ export async function getMyRecipes(
                 ratings: true,
             },
             orderBy: {
-                createdAt: 'desc',
+                [sortBy || 'createdAt']: sortOrder || 'desc',
             },
         }),
         db.recipe.count({ where })

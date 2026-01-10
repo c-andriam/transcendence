@@ -1,7 +1,8 @@
 import { FastifyInstance } from "fastify";
-import { createRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, getRecipeBySlug, rateRecipe, getRecipeRatings, removeRecipeRating, getAllRecipesBySearch } from "../services/recipe.service";
+import { createRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, getRecipeBySlug, rateRecipe, getRecipeRatings, removeRecipeRating, getAllRecipesBySearch, getRecipesByCategory, getRecipesByAuthor, getRecipesByDifficulty, getMyRecipes } from "../services/recipe.service";
 import { sendSuccess, sendCreated, sendDeleted, ForbiddenError, NotFoundError } from "@transcendence/common";
 import { authMiddleware } from "@transcendence/common";
+import { getCategoryById } from "../services/category.service";
 
 export async function recipesRoutes(app: FastifyInstance) {
 
@@ -123,6 +124,134 @@ export async function recipesRoutes(app: FastifyInstance) {
             servingsNum
         );
         sendSuccess(reply, data, 'Recipes found');
+    });
+
+    app.get("/recipes/category/:categoryId", async (request, reply) => {
+        const { categoryId } = request.params as { categoryId: string };
+        const existCategoryId = await getCategoryById(categoryId);
+        if (!existCategoryId) {
+            throw new NotFoundError('Category not found');
+        }
+        const {
+            page,
+            limit,
+            sortBy,
+            sortOrder
+        } = request.query as {
+            page?: string;
+            limit?: string;
+            sortBy?: string;
+            sortOrder?: string;
+        }
+        const pageNum = page ? parseInt(page, 10) : 1;
+        const limitNum = limit ? parseInt(limit, 10) : 10;
+        const validSortBy = ['createdAt', 'title', 'prepTime', 'cookTime', 'viewCount'] as const; 
+        const sortByValidated = sortBy && validSortBy.includes(sortBy as any) ? sortBy as typeof validSortBy[number] : 'createdAt';
+        const validSortOrder = ['asc', 'desc'] as const;
+        const sortOrderValidated = sortOrder && validSortOrder.includes(sortOrder as any) ? sortOrder as typeof validSortOrder[number] : 'desc';
+        const data = await getRecipesByCategory(
+            categoryId,
+            pageNum,
+            limitNum,
+            sortByValidated,
+            sortOrderValidated,
+        );
+        sendSuccess(reply, data, 'Recipes found');
+    });
+
+    app.get("/recipes/author/:authorId", async (request, reply) => {
+        const { authorId } = request.params as { authorId: string };
+        const {
+            page,
+            limit,
+            sortBy,
+            sortOrder
+        } = request.query as {
+            page?: string;
+            limit?: string;
+            sortBy?: string;
+            sortOrder?: string;
+        }
+        const pageNum = page ? parseInt(page, 10) : 1;
+        const limitNum = limit ? parseInt(limit, 10) : 10;
+        const validSortBy = ['createdAt', 'title', 'prepTime', 'cookTime', 'viewCount'] as const; 
+        const sortByValidated = sortBy && validSortBy.includes(sortBy as any) ? sortBy as typeof validSortBy[number] : 'createdAt';
+        const validSortOrder = ['asc', 'desc'] as const;
+        const sortOrderValidated = sortOrder && validSortOrder.includes(sortOrder as any) ? sortOrder as typeof validSortOrder[number] : 'desc';
+        const data = await getRecipesByAuthor(
+            authorId,
+            pageNum,
+            limitNum,
+            undefined,
+            sortByValidated,
+            sortOrderValidated
+        );
+        sendSuccess(reply, data, 'Recipes found');
+    });
+
+    app.get("/recipes/difficulty/:difficulty", async (request, reply) => {
+        const { difficulty } = request.params as { difficulty: string };
+        const {
+            page,
+            limit,
+            sortBy,
+            sortOrder
+        } = request.query as {
+            page?: string;
+            limit?: string;
+            sortBy?: string;
+            sortOrder?: string;
+        }
+        const pageNum = page ? parseInt(page, 10) : 1;
+        const limitNum = limit ? parseInt(limit, 10) : 10;
+        const validSortBy = ['createdAt', 'title', 'prepTime', 'cookTime', 'viewCount'] as const; 
+        const sortByValidated = sortBy && validSortBy.includes(sortBy as any) ? sortBy as typeof validSortBy[number] : 'createdAt';
+        const validSortOrder = ['asc', 'desc'] as const;
+        const sortOrderValidated = sortOrder && validSortOrder.includes(sortOrder as any) ? sortOrder as typeof validSortOrder[number] : 'desc';
+        const validDifficulties = ['EASY', 'MEDIUM', 'HARD'] as const;
+        if (!validDifficulties.includes(difficulty as any)) {
+            throw new NotFoundError('Invalid difficulty level');
+        }
+        const data = await getRecipesByDifficulty(
+            difficulty as 'EASY' | 'MEDIUM' | 'HARD',
+            pageNum,
+            limitNum,
+            sortByValidated,
+            sortOrderValidated
+        );
+        sendSuccess(reply, data, 'Recipes found');
+    });
+
+    app.get("/recipes/me", { preHandler: authMiddleware },  async (request, reply) => {
+        const {
+            page,
+            limit,
+            sortBy,
+            sortOrder,
+            publishedOnly
+        } = request.query as {
+            page?: string;
+            limit?: string;
+            sortBy?: string;
+            sortOrder?: string;
+            publishedOnly?: string;
+        };
+        const pageNum = page ? parseInt(page, 10) : 1;
+        const limitNum = limit ? parseInt(limit, 10) : 10;
+        const validSortBy = ['createdAt', 'title', 'prepTime', 'cookTime', 'viewCount'] as const; 
+        const sortByValidated = sortBy && validSortBy.includes(sortBy as any) ? sortBy as typeof validSortBy[number] : 'createdAt';
+        const validSortOrder = ['asc', 'desc'] as const;
+        const sortOrderValidated = sortOrder && validSortOrder.includes(sortOrder as any) ? sortOrder as typeof validSortOrder[number] : 'desc';
+        const publishedOnlyBool = publishedOnly === 'true' ? true : false;
+        const data = await getMyRecipes(
+            request.user!.id,
+            pageNum,
+            limitNum,
+            publishedOnlyBool,
+            sortByValidated,
+            sortOrderValidated
+        )
+        sendSuccess(reply, data, 'Your recipes retrieved');
     });
 
     // ========== ROUTES RATINGS ==========

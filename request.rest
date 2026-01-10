@@ -547,3 +547,50 @@ GET {{baseUrl}}/api/v1/recipes/search?minCookTime=15&maxCookTime=60
 x-gateway-api-key: {{gatewayKey}}
 
 ### ============================================
+### NEW RECIPE FILTER ROUTES TESTS
+### ============================================
+
+### Get recipes by category (with sorting and pagination)
+GET {{baseUrl}}/api/v1/recipes/category/cmk3vqj710002zqsobnkfcbgk?sortBy=prepTime&sortOrder=asc&page=1&limit=10
+x-gateway-api-key: {{gatewayKey}}
+
+### Get recipes by category (default sorting)
+GET {{baseUrl}}/api/v1/recipes/category/cmk3vqj710002zqsobnkfcbgk?page=1&limit=5
+x-gateway-api-key: {{gatewayKey}}
+
+### Get recipes by author (with sorting and pagination)
+GET {{baseUrl}}/api/v1/recipes/author/cmk3uscvj0000guso4xinj425?sortBy=createdAt&sortOrder=desc&page=1&limit=10
+x-gateway-api-key: {{gatewayKey}}
+
+### Get recipes by author (default sorting)
+GET {{baseUrl}}/api/v1/recipes/author/cmk3uscvj0000guso4xinj425?page=1&limit=5
+x-gateway-api-key: {{gatewayKey}}
+
+### Get recipes by difficulty (with sorting and pagination)
+GET {{baseUrl}}/api/v1/recipes/difficulty/MEDIUM?sortBy=cookTime&sortOrder=asc&page=1&limit=10
+x-gateway-api-key: {{gatewayKey}}
+
+### Get recipes by difficulty EASY
+GET {{baseUrl}}/api/v1/recipes/difficulty/EASY?page=1&limit=5
+x-gateway-api-key: {{gatewayKey}}
+
+### Get recipes by difficulty HARD
+GET {{baseUrl}}/api/v1/recipes/difficulty/HARD?sortBy=servings&sortOrder=desc&page=1&limit=10
+x-gateway-api-key: {{gatewayKey}}
+
+### Get my recipes (authenticated user, with sorting and pagination)
+GET {{baseUrl}}/api/v1/recipes/me?sortBy=updatedAt&sortOrder=desc&page=1&limit=10&publishedOnly=false
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Get my published recipes only
+GET {{baseUrl}}/api/v1/recipes/me?publishedOnly=true&page=1&limit=5
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Get my recipes (default settings)
+GET {{baseUrl}}/api/v1/recipes/me
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### ============================================
