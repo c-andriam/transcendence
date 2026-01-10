@@ -3,6 +3,8 @@ import { createRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe,
 import { sendSuccess, sendCreated, sendDeleted, ForbiddenError, NotFoundError } from "@transcendence/common";
 import { authMiddleware } from "@transcendence/common";
 import { getCategoryById } from "../services/category.service";
+import { request } from "node:http";
+import { getComments, createCommentHandler, updateCommentHandler, deleteCommentHandler, createReplyHandler } from "../controllers/comment.controller";
 
 export async function recipesRoutes(app: FastifyInstance) {
 
@@ -55,7 +57,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         sendDeleted(reply, recipe, 'Recipe deleted successfully');
     });
 
-    app.get("/recipes/slug/:slug", async (request, reply) => {
+    app.get("/recipes/by-slug/:slug", async (request, reply) => {
         const { slug } = request.params as { slug: string };
         const recipe = await getRecipeBySlug(slug);
         if (!recipe) {
@@ -274,5 +276,37 @@ export async function recipesRoutes(app: FastifyInstance) {
         const { id } = request.params as { id: string };
         const result = await removeRecipeRating(id, request.user!.id);
         sendSuccess(reply, result, 'Rating removed successfully');
+    });
+
+    // ================= ROUTES COMMENTS =================
+
+    app.get("/recipes/:id/comments", async (request, reply) => {
+        const { id } = request.params as { id: string };
+        const comments = await getComments(request, reply);
+        sendSuccess(reply, comments, "Comments retrieved successfully");
+    });
+
+    app.post("/recipes/:id/comments", { preHandler: authMiddleware }, async (request, reply) => {
+        const { id } = request.params as { id: string };
+        const comment = await createCommentHandler(request, reply);
+        sendCreated(reply, comment, "Comment created successfully");
+    });
+
+    app.put("/recipes/:id/comments/:commentId", { preHandler: authMiddleware }, async (request, reply) => {
+        const { id, commentId } = request.params as { id: string; commentId: string };
+        const comment = await updateCommentHandler(request, reply);
+        sendSuccess(reply, comment, "Comment updated successfully");
+    });
+
+    app.delete("/recipes/:id/comments/:commentId", { preHandler: authMiddleware }, async (request, reply) => {
+        const { id, commentId } = request.params as { id: string; commentId: string };
+        const result = await deleteCommentHandler(request, reply);
+        sendSuccess(reply, result, "Comment deleted successfully");
+    });
+
+    app.post("/recipes/:id/comments/:commentId/replies", { preHandler: authMiddleware }, async (request, reply) => {
+        const { id, commentId } = request.params as { id: string; commentId: string };
+        const replyComment = await createReplyHandler(request, reply);
+        sendCreated(reply, replyComment, "Reply created successfully");
     });
 }
