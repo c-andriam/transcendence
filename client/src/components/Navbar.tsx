@@ -8,7 +8,11 @@ import pdp from "../../public/vite.svg";
 
 const Navbar = () => {
     return (
-        <div className="navbar bg-base-100 shadow-lg flex flex-row justify-between items-center m-2 p-6 pl-12 pr-12">
+        <div className="navbar bg-[#18191a]
+                rounded-lg shadow-lg flex flex-row
+                justify-between items-center
+                m-2 p-6 pl-12 pr-12"
+        >
             <div className="navbar-start">
                 <Title pos=' ' slogan="secondary" variant="secondary" />
             </div>

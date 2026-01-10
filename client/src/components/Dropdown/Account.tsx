@@ -38,7 +38,7 @@ const Account = ({ profilePicture }: AccountProps) => {
                 />
             </button>
             {isOpen && (
-                <div className="absolute px-4 py-4 right-0 mt-2 w-84 bg-[#121212] border border-gray-800 rounded-xl shadow-2xl z-50 animate-in fade-in zoom-in duration-200">
+                <div className="absolute px-4 py-4 right-0 mt-2 w-84 bg-[#18191a] border border-gray-800 rounded-xl shadow-2xl z-50 animate-in fade-in zoom-in duration-200">
                     <div className="grid grid-rows-1 gap-2">
                         <div
                             className="flex flex-row mx-2 mb-2 gap-8
