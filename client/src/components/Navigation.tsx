@@ -9,7 +9,7 @@ const Navigation = () => {
     const [active, setActive] = useState('home');
 
     return (
-        <div className="navigation m-2 p-2 h-[78vh] shadow-lg bg-[#18191a] rounded-lg flex flex-col gap-2">
+        <div className="navigation m-2 p-2 h-[78vh] shadow-lg bg-[#18191a] rounded-lg flex flex-col gap-2 z-1000">
             <div className='mt-6'>
                 <button
                     onClick={() => setActive('home')}
