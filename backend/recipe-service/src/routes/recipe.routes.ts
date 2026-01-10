@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { createRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, getRecipeBySlug, rateRecipe, getRecipeRatings, removeRecipeRating, getAllRecipesBySearch, getRecipesByCategory, getRecipesByAuthor, getRecipesByDifficulty, getMyRecipes } from "../services/recipe.service";
+import { createRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, getRecipeBySlug, rateRecipe, getRecipeRatings, removeRecipeRating, getAllRecipesBySearch, getRecipesByCategory, getRecipesByAuthor, getRecipesByDifficulty, getMyRecipes, addToFavorites, removeFromFavorites, getUserFavorites } from "../services/recipe.service";
 import { sendSuccess, sendCreated, sendDeleted, ForbiddenError, NotFoundError } from "@transcendence/common";
 import { authMiddleware } from "@transcendence/common";
 import { getCategoryById } from "../services/category.service";
@@ -115,7 +115,6 @@ export async function recipesRoutes(app: FastifyInstance) {
             categoryId,
             difficultyEnum,
             q,
-            undefined,
             undefined,
             sortByValidated,
             sortOrderValidated,
@@ -308,5 +307,29 @@ export async function recipesRoutes(app: FastifyInstance) {
         const { id, commentId } = request.params as { id: string; commentId: string };
         const replyComment = await createReplyHandler(request, reply);
         sendCreated(reply, replyComment, "Reply created successfully");
+    });
+
+    // ================= ROUTES FAVORITES =================
+
+    app.post("/recipes/:id/favorite", { preHandler: authMiddleware }, async (request, reply) => {
+        const { id } = request.params as { id: string };
+        const favorite = await addToFavorites(request.user!.id, id);
+        sendCreated(reply, favorite, "Recipe added to favorites");
+    });
+
+    app.delete("/recipes/:id/favorite", { preHandler: authMiddleware }, async (request, reply) => {
+        const { id } = request.params as { id: string };
+        const result = await removeFromFavorites(request.user!.id, id);
+        sendSuccess(reply, result, "Recipe removed from favorites");
+    });
+
+    app.get("/me/favorites", { preHandler: authMiddleware }, async (request, reply) => {
+        const query = request.query as { page?: string; limit?: string; sortBy?: string; sortOrder?: string };
+        const page = parseInt(query.page || '1');
+        const limit = parseInt(query.limit || '10');
+        const sortBy = query.sortBy || 'createdAt';
+        const sortOrder = query.sortOrder === 'asc' ? 'asc' : 'desc';
+        const favorites = await getUserFavorites(request.user!.id, page, limit, sortBy, sortOrder);
+        sendSuccess(reply, favorites, "User favorites retrieved successfully");
     });
 }

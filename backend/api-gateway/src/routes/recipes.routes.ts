@@ -137,4 +137,18 @@ export async function recipesRoutes(app: FastifyInstance) {
         const { id, commentId } = request.params as { id: string; commentId: string };
         return proxyHydrate(app, request, reply, `/api/v1/recipes/${id}/comments/${commentId}/replies`, RECIPE_SERVICE_URL);
     });
+
+    app.post("/recipes/:id/favorite", async (request, reply) => {
+        const { id } = request.params as { id: string };
+        return proxyHydrate(app, request, reply, `/api/v1/recipes/${id}/favorite`, RECIPE_SERVICE_URL);
+    });
+
+    app.delete("/recipes/:id/favorite", async (request, reply) => {
+        const { id } = request.params as { id: string };
+        return proxyHydrate(app, request, reply, `/api/v1/recipes/${id}/favorite`, RECIPE_SERVICE_URL);
+    });
+
+    app.get("/me/favorites", async (request, reply) => {
+        return proxyHydrate(app, request, reply, "/api/v1/me/favorites", RECIPE_SERVICE_URL);
+    });
 }
