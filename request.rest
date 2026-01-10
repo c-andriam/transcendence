@@ -4,9 +4,15 @@
 
 @baseUrl = http://localhost:3000
 @gatewayKey = AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
-@jwtToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MWEzMjRjLTQ3ZmItNGI2MS1hYWE1LWFhZTc4M2RjOTRjMyIsInVzZXJuYW1lIjoiY2FuZHJpYW0iLCJpYXQiOjE3Njc4NzE5NTAsImV4cCI6MTc2Nzg3Mjg1MH0.xJ_YkY8-AzOcSGrshQAWontQ-oanp0NX8NFkFbcy1cM
+@jwtToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM1ZDFlMWYxLTM0ZDgtNGM5Yy1hZmRlLTU5ZmVkN2Q5MzM4MSIsInVzZXJuYW1lIjoiY2FuZHJpYW0iLCJpYXQiOjE3NjgwNDY4NzUsImV4cCI6MTc2ODA0Nzc3NX0.i8uAhQwx4d29ah3kK2eOOfsPckSeyjQVx3p5tYT1jlY
+@refreshToken = 42c909bc8c09703efe8bf1b1b45d361fbb0cbc762671fbb39ef639cab067188103b644973042a890ea526af1cbbf132f0af0ab9dcd3a286d7dd15de5e407da48
 @userApiKey = cs_661a324c-47fb-4b61-aaa5-aae783dc94c3_1767848230_df0465c5.5goFIdr2_1YSREeT2aUaPxPQKPGGJshe
-@id = 661a324c-47fb-4b61-aaa5-aae783dc94c3
+@authorId = 35d1e1f1-34d8-4c9c-afde-59fed7d93381
+@categoryId = 76201871-6a2c-4060-a112-e91dee221b75
+@recipeId = efabc8cf-6e97-4519-b2fb-efc7624978d0
+@commentId = cc5aa65e-7489-43d2-bb90-bba6d83be01e
+@replyCommentId1 = 3c6c246c-551e-42d8-9b81-4583c6f3658a
+@replyCommentId2 = 5d059a4f-67f2-41b7-a5bd-6833e89ad48a
 ### 1. Register a new user (requires email verification)
 POST {{baseUrl}}/api/v1/register
 Content-Type: application/json
@@ -26,7 +32,7 @@ Content-Type: application/json
 x-gateway-api-key: {{gatewayKey}}
 
 {
-    "token": "141a4a80ac85d17380f00893aca95920059ca34461c8fb1cf0099255a19a28fa9c1c12d5ae25a7107ce32d977a9a401f9d1b28d951b44d6f7b47ecde48016c85"
+    "token": "ab4caf96508e23898575191d84436fb109deeea58240df6e51aa71a94a968318630c62b39e6cbe60a6e78e5d881bc30cede4ff13a209a1ddccda33c29c0589ac"
 }
 
 ### 3. Login with verified user
@@ -222,7 +228,7 @@ Authorization: Bearer {{jwtToken}}
 }
 
 ### delete user
-DELETE {{baseUrl}}/api/v1/users/{{id}}
+DELETE {{baseUrl}}/api/v1/users/{{authorId}}
 x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer {{jwtToken}}
 ### logout user
@@ -392,7 +398,7 @@ x-gateway-api-key: {{gatewayKey}}
 POST {{baseUrl}}/api/v1/recipes
 Content-Type: application/json
 x-gateway-api-key: {{gatewayKey}}
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtazN1c2N2ajAwMDBndXNvNHhpbmo0MjUiLCJ1c2VybmFtZSI6ImNhbmRyaWFtIiwiaWF0IjoxNzY3NzgyMDMxLCJleHAiOjE3Njc3ODI5MzF9.bTVfhGRfcc5_L7si7jeZ2qWfsUV3YdosyYlmUQFo-bM
+Authorization: Bearer {{jwtToken}}
 
 {
     "title": "Poulet Tikka Masala",
@@ -402,8 +408,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtazN1c2N2a
     "servings": 4,
     "difficulty": "MEDIUM",
     "isPublished": true,
-    "authorId": "cmk3uscvj0000guso4xinj425",
-    "categoryId": "cmk3vqj710002zqsobnkfcbgk",
+    "authorId": "35d1e1f1-34d8-4c9c-afde-59fed7d93381",
+    "categoryId": "76201871-6a2c-4060-a112-e91dee221b75",
     "ingredients": [
         { "name": "Poulet", "quantityText": "500g", "isOptional": false },
         { "name": "Yaourt nature", "quantityText": "200g", "isOptional": false },
@@ -433,7 +439,7 @@ GET {{baseUrl}}/api/v1/recipes
 x-gateway-api-key: {{gatewayKey}}
 
 ### Read recipe by id
-GET {{baseUrl}}/api/v1/recipes/cmjszimle0000basb038vuo92
+GET {{baseUrl}}/api/v1/recipes/{{recipeId}}
 x-gateway-api-key: {{gatewayKey}}
 
 ### Read recipe by slug
@@ -442,15 +448,16 @@ x-gateway-api-key: {{gatewayKey}}
 
 
 ### Delete recipe
-DELETE {{baseUrl}}/api/v1/recipes/cmk3vthae000azqsoe0yfn0e4
+DELETE {{baseUrl}}/api/v1/recipes/{{recipeId}}
 x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer {{jwtToken}}
 
 
 ### Update recipe
-PUT {{baseUrl}}/api/v1/recipes/cmjszimle0000basb038vuo92
+PUT {{baseUrl}}/api/v1/recipes/{{recipeId}}
 Content-Type: application/json
 x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
 
 {
     "title": "Poulet Tikka Masala",
@@ -460,7 +467,7 @@ x-gateway-api-key: {{gatewayKey}}
     "servings": 4,
     "difficulty": "MEDIUM",
     "isPublished": true,
-    "categoryId": "cmjsndf9h00026dsog3ffvpcd",
+    "categoryId": "{{categoryId}}",
     "ingredients": [
         { "name": "Poulet", "quantityText": "500g", "isOptional": false },
         { "name": "Yaourt nature", "quantityText": "200g", "isOptional": false },
@@ -481,34 +488,35 @@ x-gateway-api-key: {{gatewayKey}}
         { "stepNumber": 5, "description": "Ajouter le poulet mariné et le faire dorer de tous les côtés." },
         { "stepNumber": 6, "description": "Incorporer les tomates concassées et les épices restantes. Laisser mijoter 20 minutes." },
         { "stepNumber": 7, "description": "Ajouter la crème fraîche, mélanger et cuire encore 5 minutes." },
-        { "id": "cmjszinic000ibasbnaftgkqc", "stepNumber": 8, "description": "Servir chaud avec du riz, garni de coriandre fraîche." }
+        { "id": "5c7b4ebb-f915-4b2e-bf07-9a50529f89d8", "stepNumber": 8, "description": "Servir chaud avec du riz, garni de coriandre fraîche." }
     ]
 }
 
 
 ### Create recipe rate by id
-POST {{baseUrl}}/api/v1/recipes/cmjszimle0000basb038vuo92/rate
+POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/rate
 Content-Type: application/json
 x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
 
 {
-    "userId": "cmjsz9roe0000gosbdk82ahkw",
+    "userId": "{{authorId}}",
     "score": 4
 }
 
 
 ### Read recipe rate by id
-GET {{baseUrl}}/api/v1/recipes/:id/rate
+GET {{baseUrl}}/api/v1/recipes/{{recipeId}}/rate
 x-gateway-api-key: {{gatewayKey}}
 
 
 ### Delete recipe rate by id
-DELETE {{baseUrl}}/api/v1/recipes/:id/rate
+DELETE {{baseUrl}}/api/v1/recipes/{{recipeId}}/rate
 Content-Type: application/json
 x-gateway-api-key: {{gatewayKey}}
 
 {
-    "userId": "cmk3uscvj0000guso4xinj425"
+    "userId": "{{authorId}}"
 }
 
 ### ============================================
@@ -528,7 +536,7 @@ GET {{baseUrl}}/api/v1/recipes/search?difficulty=MEDIUM
 x-gateway-api-key: {{gatewayKey}}
 
 ### Search with category filter (replace with actual category ID)
-GET {{baseUrl}}/api/v1/recipes/search?categoryId=cmk3vqj710002zqsobnkfcbgk
+GET {{baseUrl}}/api/v1/recipes/search?categoryId={{categoryId}}
 x-gateway-api-key: {{gatewayKey}}
 
 ### Search with multiple filters
@@ -552,19 +560,19 @@ x-gateway-api-key: {{gatewayKey}}
 ### ============================================
 
 ### Get recipes by category (with sorting and pagination)
-GET {{baseUrl}}/api/v1/recipes/category/cmk3vqj710002zqsobnkfcbgk?sortBy=prepTime&sortOrder=asc&page=1&limit=10
+GET {{baseUrl}}/api/v1/recipes/category/{{categoryId}}?sortBy=prepTime&sortOrder=asc&page=1&limit=10
 x-gateway-api-key: {{gatewayKey}}
 
 ### Get recipes by category (default sorting)
-GET {{baseUrl}}/api/v1/recipes/category/cmk3vqj710002zqsobnkfcbgk?page=1&limit=5
+GET {{baseUrl}}/api/v1/recipes/category/{{categoryId}}?page=1&limit=5
 x-gateway-api-key: {{gatewayKey}}
 
 ### Get recipes by author (with sorting and pagination)
-GET {{baseUrl}}/api/v1/recipes/author/cmk3uscvj0000guso4xinj425?sortBy=createdAt&sortOrder=desc&page=1&limit=10
+GET {{baseUrl}}/api/v1/recipes/author/{{authorId}}?sortBy=createdAt&sortOrder=desc&page=1&limit=10
 x-gateway-api-key: {{gatewayKey}}
 
 ### Get recipes by author (default sorting)
-GET {{baseUrl}}/api/v1/recipes/author/cmk3uscvj0000guso4xinj425?page=1&limit=5
+GET {{baseUrl}}/api/v1/recipes/author/{{authorId}}?page=1&limit=5
 x-gateway-api-key: {{gatewayKey}}
 
 ### Get recipes by difficulty (with sorting and pagination)
@@ -593,5 +601,49 @@ Authorization: Bearer {{jwtToken}}
 GET {{baseUrl}}/api/v1/recipes/me
 x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer {{jwtToken}}
+
+### ============================================
+### RECIPE COMMENTS TESTS
+### ============================================
+
+### Get comments for a recipe (paginated)
+GET {{baseUrl}}/api/v1/recipes/{{recipeId}}/comments?page=1&limit=10
+x-gateway-api-key: {{gatewayKey}}
+
+### Create a new comment on a recipe (requires authentication)
+@name createComment
+POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/comments
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+{
+    "content": "Cette recette est délicieuse ! Merci pour le partage."
+}
+
+### Update a comment (requires authentication and ownership)
+PUT {{baseUrl}}/api/v1/recipes/{{recipeId}}/comments/{{commentId}}
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+{
+    "content": "Cette recette est vraiment délicieuse ! Merci pour le partage."
+}
+
+### Delete a comment (requires authentication and ownership)
+DELETE {{baseUrl}}/api/v1/recipes/{{recipeId}}/comments/{{commentId}}
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Create a reply to a comment (requires authentication)
+POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/comments/{{replyCommentId2}}/replies
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+{
+    "content": "Merci, c'est gentil !"
+}
 
 ### ============================================
