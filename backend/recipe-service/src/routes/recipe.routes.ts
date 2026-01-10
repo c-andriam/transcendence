@@ -1,10 +1,41 @@
 import { FastifyInstance } from "fastify";
-import { createRecipe, getAllRecipes, getRecipeById, updateRecipe, deleteRecipe, getRecipeBySlug, rateRecipe, getRecipeRatings, removeRecipeRating, getAllRecipesBySearch, getRecipesByCategory, getRecipesByAuthor, getRecipesByDifficulty, getMyRecipes, addToFavorites, removeFromFavorites, getUserFavorites } from "../services/recipe.service";
-import { sendSuccess, sendCreated, sendDeleted, ForbiddenError, NotFoundError } from "@transcendence/common";
+import {
+    createRecipe,
+    getAllRecipes,
+    getRecipeById,
+    updateRecipe,
+    deleteRecipe,
+    getRecipeBySlug,
+    rateRecipe,
+    getRecipeRatings,
+    removeRecipeRating,
+    getAllRecipesBySearch,
+    addToFavorites,
+    removeFromFavorites,
+    getUserFavorites,
+    getRecipesByCategory,
+    getRecipesByAuthor,
+    getRecipesByDifficulty,
+    getMyRecipes
+} from "../services/recipe.service";
+
+import {
+    sendSuccess,
+    sendCreated,
+    sendDeleted,
+    ForbiddenError,
+    NotFoundError
+} from "@transcendence/common";
 import { authMiddleware } from "@transcendence/common";
 import { getCategoryById } from "../services/category.service";
 import { request } from "node:http";
-import { getComments, createCommentHandler, updateCommentHandler, deleteCommentHandler, createReplyHandler } from "../controllers/comment.controller";
+import {
+    getComments,
+    createCommentHandler,
+    updateCommentHandler,
+    deleteCommentHandler,
+    createReplyHandler
+} from "../controllers/comment.controller";
 
 export async function recipesRoutes(app: FastifyInstance) {
 
@@ -115,6 +146,7 @@ export async function recipesRoutes(app: FastifyInstance) {
             categoryId,
             difficultyEnum,
             q,
+            undefined,
             undefined,
             sortByValidated,
             sortOrderValidated,
