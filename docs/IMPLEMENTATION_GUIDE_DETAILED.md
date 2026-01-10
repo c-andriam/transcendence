@@ -298,7 +298,7 @@ Votre fichier `schema.prisma` définit la structure de votre base de données.
 
 ```prisma
 model User {
-  id        String   @id @default(cuid())   // Clé primaire, générée automatiquement
+  id        String   @id @default(uuid())   // Clé primaire, générée automatiquement
   email     String   @unique                 // Doit être unique dans la table
   password  String                           // Champ obligatoire
   firstName String?                          // Le ? = champ optionnel (peut être null)

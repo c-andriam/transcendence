@@ -33,11 +33,6 @@ const DOMAIN = "http://localhost";
 // ===============================
 const env = `
 # ===============================
-# API Gateway
-# ===============================
-API_GATEWAY_KEY=${generateSecretBase64("AGK", 256)}
-
-# ===============================
 # Database
 # ===============================
 AUTH_DATABASE_URL="postgresql://postgres.mufeesdzdecsncjbcoyr:Database42@aws-1-eu-west-1.pooler.supabase.com:5432/postgres?schema=auth_service"
@@ -47,24 +42,42 @@ NOTIFICATION_DATABASE_URL=
 CHAT_DATABASE_URL=
 
 # ===============================
+# API Gateway
+# ===============================
+API_GATEWAY_KEY=${generateSecretBase64("AGK", 32)}
+
+# ===============================
+# API Master Secret (pour signer les clés API utilisateurs)
+# ===============================
+API_MASTER_SECRET=${generateSecretBase64("AMS", 32)}
+API_KEY_MAX_AGE_SECONDS=31536000
+
+# ===============================
 # Internal API Key
 # ===============================
-INTERNAL_API_KEY=${generateSecretBase64("IAK", 256)}
+INTERNAL_API_KEY=${generateSecretBase64("IAK", 32)}
 
 # ===============================
 # JWT
 # ===============================
-JWT_SECRET=${generateSecretBase64("JWT-S", 256)}
+JWT_SECRET=${generateSecretBase64("JWT-S", 32)}
 
 # ===============================
 # Secret pour signer les cookies
 # ===============================
-COOKIE_SECRET=${generateSecretBase64("CS", 256)}
+COOKIE_SECRET=${generateSecretBase64("CS", 32)}
 
 # ===============================
-# Sendgrid API Key
+# Resend API Key
 # ===============================
-SENDGRID_API_KEY=${generateSecretBase64("SG", 256)}
+RESEND_API_KEY=re_3KEBkuqx_FYTTwGXxuL6jBm5SNZn87MXk
+
+# ===============================
+# Mailbox Key
+# ===============================
+#MAILBOX_KEY=${generateSecretBase64("MBK", 20)}
+MAILBOX_KEY=MBK.i0h3wXzVkecQybvgdUGDyh_0Fi0
+MAILBOX_ADDRESS="cookshare@cookshare.me"
 
 # ===============================
 # Ports

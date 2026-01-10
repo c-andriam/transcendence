@@ -98,4 +98,17 @@ export async function usersRoutes(app: FastifyInstance) {
             });
         }
     });
+
+    app.post("/api-key/generate", async (request, reply) => {
+        try {
+            const { statusCode, body } = await proxyRequest(request, reply, "/api/v1/api-key/generate", USER_SERVICE_URL);
+            return reply.status(statusCode).send(body);
+        } catch (error) {
+            app.log.error(error);
+            return reply.status(500).send({
+                status: "error",
+                message: "User service is unavailable"
+            });
+        }
+    });
 }

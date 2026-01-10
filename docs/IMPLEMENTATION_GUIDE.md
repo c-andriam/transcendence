@@ -274,7 +274,7 @@ Le fichier `schema.prisma` définit vos tables :
 
 ```prisma
 model User {
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   email     String   @unique
   username  String   @unique
   password  String
