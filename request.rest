@@ -647,16 +647,87 @@ Authorization: Bearer {{jwtToken}}
 }
 
 ### Add a recipe to favorites
-POST http://localhost:3000/api/v1/recipes/{{recipeId}}/favorite
+POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/favorite
 x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer {{jwtToken}}
 
 ### Remove a recipe from favorites
-DELETE http://localhost:3000/api/v1/recipes/{{recipeId}}/favorite
+DELETE {{baseUrl}}/api/v1/recipes/{{recipeId}}/favorite
 x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer {{jwtToken}}
 
 ### Get user favorites (with pagination and sorting)
-GET http://localhost:3000/api/v1/me/favorites?page=1&limit=10&sortBy=createdAt&sortOrder=desc
+GET {{baseUrl}}/api/v1/me/favorites?page=1&limit=10&sortBy=createdAt&sortOrder=desc
 x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer {{jwtToken}}
+
+### ============================================
+### FAVORITES TESTS - CAS D'ERREUR ET VARIATIONS
+### ============================================
+
+### Ajouter une recette aux favoris (succès)
+POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/favorite
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Ajouter la même recette aux favoris (doit échouer - déjà en favoris)
+POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/favorite
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Retirer une recette des favoris (succès)
+DELETE {{baseUrl}}/api/v1/recipes/{{recipeId}}/favorite
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Retirer une recette non favorite (doit échouer - pas en favoris)
+DELETE {{baseUrl}}/api/v1/recipes/{{recipeId}}/favorite
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Ajouter aux favoris une recette inexistante (doit échouer)
+POST {{baseUrl}}/api/v1/recipes/00000000-0000-0000-0000-000000000000/favorite
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Retirer des favoris une recette inexistante (doit échouer)
+DELETE {{baseUrl}}/api/v1/recipes/00000000-0000-0000-0000-000000000000/favorite
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Récupérer les favoris de l'utilisateur (tri par date d'ajout décroissante)
+GET {{baseUrl}}/api/v1/me/favorites?page=1&limit=10&sortBy=createdAt&sortOrder=desc
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Récupérer les favoris (tri par titre croissant)
+GET {{baseUrl}}/api/v1/me/favorites?page=1&limit=5&sortBy=title&sortOrder=asc
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Récupérer les favoris (tri par temps de préparation)
+GET {{baseUrl}}/api/v1/me/favorites?page=1&limit=10&sortBy=prepTime&sortOrder=asc
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Récupérer les favoris (tri par temps de cuisson décroissant)
+GET {{baseUrl}}/api/v1/me/favorites?page=2&limit=5&sortBy=cookTime&sortOrder=desc
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Récupérer les favoris (tri par nombre de vues)
+GET {{baseUrl}}/api/v1/me/favorites?page=1&limit=10&sortBy=viewCount&sortOrder=desc
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Récupérer les favoris sans authentification (doit échouer)
+GET {{baseUrl}}/api/v1/me/favorites
+x-gateway-api-key: {{gatewayKey}}
+
+### Ajouter aux favoris sans authentification (doit échouer)
+POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/favorite
+x-gateway-api-key: {{gatewayKey}}
+
+### Retirer des favoris sans authentification (doit échouer)
+DELETE {{baseUrl}}/api/v1/recipes/{{recipeId}}/favorite
+x-gateway-api-key: {{gatewayKey}}
