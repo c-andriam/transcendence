@@ -1,0 +1,3 @@
+apis:
+  docs/api/API Documentation/OpenAPI Spec/category.yaml:
+    alias: category
