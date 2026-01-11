@@ -1,0 +1,27 @@
+meta {
+  name: resend-verification-email
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost:3000/api/v1/resend-verification
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  x-gateway-api-key: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+}
+
+body:json {
+  {
+      "email": "juvence00@gmail.com"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

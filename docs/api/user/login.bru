@@ -1,0 +1,28 @@
+meta {
+  name: login
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:3000/api/v1/login
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  x-gateway-api-key: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+}
+
+body:json {
+  {
+      "identifier": "candriam",
+      "password": "password123"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

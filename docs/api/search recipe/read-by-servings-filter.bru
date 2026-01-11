@@ -1,0 +1,24 @@
+meta {
+  name: read-by-servings-filter
+  type: http
+  seq: 8
+}
+
+get {
+  url: http://localhost:3000/api/v1/recipes/search?servings=4
+  body: none
+  auth: inherit
+}
+
+params:query {
+  servings: 4
+}
+
+headers {
+  x-gateway-api-key: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

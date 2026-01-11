@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "favorite recipe",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

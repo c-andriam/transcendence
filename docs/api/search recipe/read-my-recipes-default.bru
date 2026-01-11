@@ -1,0 +1,24 @@
+meta {
+  name: read-my-recipes-default
+  type: http
+  seq: 19
+}
+
+get {
+  url: http://localhost:3000/api/v1/recipes/me
+  body: none
+  auth: bearer
+}
+
+headers {
+  x-gateway-api-key: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM1ZDFlMWYxLTM0ZDgtNGM5Yy1hZmRlLTU5ZmVkN2Q5MzM4MSIsInVzZXJuYW1lIjoiY2FuZHJpYW0iLCJpYXQiOjE3NjgwOTAzMTcsImV4cCI6MTc2ODA5MTIxN30.MG9YAgSEp9T6tjSM6MMOXWs_qG9jzRNu_DqvHaVNzEs
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

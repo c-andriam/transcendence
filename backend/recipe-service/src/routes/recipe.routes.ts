@@ -24,11 +24,13 @@ import {
     sendCreated,
     sendDeleted,
     ForbiddenError,
-    NotFoundError
+    NotFoundError,
+    paramValidator
 } from "@transcendence/common";
-import { authMiddleware } from "@transcendence/common";
+import { authMiddleware, bodyValidator } from "@transcendence/common";
 import { getCategoryById } from "../services/category.service";
 import { request } from "node:http";
+import { z } from "zod";
 import {
     getComments,
     createCommentHandler,
@@ -133,10 +135,10 @@ export async function recipesRoutes(app: FastifyInstance) {
         const maxCookTimeNum = maxCookTime ? parseInt(maxCookTime, 10) : undefined;
         const servingsNum = servings ? parseInt(servings, 10) : undefined;
         const validDifficulties = ['EASY', 'MEDIUM', 'HARD'];
-        const difficultyEnum = difficulty && validDifficulties.includes(difficulty.toUpperCase()) 
+        const difficultyEnum = difficulty && validDifficulties.includes(difficulty.toUpperCase())
             ? difficulty.toUpperCase() as 'EASY' | 'MEDIUM' | 'HARD'
             : undefined;
-        const validSortBy = ['createdAt', 'title', 'prepTime', 'cookTime', 'viewCount'] as const; 
+        const validSortBy = ['createdAt', 'title', 'prepTime', 'cookTime', 'viewCount'] as const;
         const sortByValidated = sortBy && validSortBy.includes(sortBy as any) ? sortBy as typeof validSortBy[number] : 'createdAt';
         const validSortOrder = ['asc', 'desc'] as const;
         const sortOrderValidated = sortOrder && validSortOrder.includes(sortOrder as any) ? sortOrder as typeof validSortOrder[number] : 'desc';
@@ -178,7 +180,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         }
         const pageNum = page ? parseInt(page, 10) : 1;
         const limitNum = limit ? parseInt(limit, 10) : 10;
-        const validSortBy = ['createdAt', 'title', 'prepTime', 'cookTime', 'viewCount'] as const; 
+        const validSortBy = ['createdAt', 'title', 'prepTime', 'cookTime', 'viewCount'] as const;
         const sortByValidated = sortBy && validSortBy.includes(sortBy as any) ? sortBy as typeof validSortBy[number] : 'createdAt';
         const validSortOrder = ['asc', 'desc'] as const;
         const sortOrderValidated = sortOrder && validSortOrder.includes(sortOrder as any) ? sortOrder as typeof validSortOrder[number] : 'desc';
@@ -207,7 +209,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         }
         const pageNum = page ? parseInt(page, 10) : 1;
         const limitNum = limit ? parseInt(limit, 10) : 10;
-        const validSortBy = ['createdAt', 'title', 'prepTime', 'cookTime', 'viewCount'] as const; 
+        const validSortBy = ['createdAt', 'title', 'prepTime', 'cookTime', 'viewCount'] as const;
         const sortByValidated = sortBy && validSortBy.includes(sortBy as any) ? sortBy as typeof validSortBy[number] : 'createdAt';
         const validSortOrder = ['asc', 'desc'] as const;
         const sortOrderValidated = sortOrder && validSortOrder.includes(sortOrder as any) ? sortOrder as typeof validSortOrder[number] : 'desc';
@@ -237,7 +239,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         }
         const pageNum = page ? parseInt(page, 10) : 1;
         const limitNum = limit ? parseInt(limit, 10) : 10;
-        const validSortBy = ['createdAt', 'title', 'prepTime', 'cookTime', 'viewCount'] as const; 
+        const validSortBy = ['createdAt', 'title', 'prepTime', 'cookTime', 'viewCount'] as const;
         const sortByValidated = sortBy && validSortBy.includes(sortBy as any) ? sortBy as typeof validSortBy[number] : 'createdAt';
         const validSortOrder = ['asc', 'desc'] as const;
         const sortOrderValidated = sortOrder && validSortOrder.includes(sortOrder as any) ? sortOrder as typeof validSortOrder[number] : 'desc';
@@ -255,7 +257,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         sendSuccess(reply, data, 'Recipes found');
     });
 
-    app.get("/recipes/me", { preHandler: authMiddleware },  async (request, reply) => {
+    app.get("/recipes/me", { preHandler: authMiddleware }, async (request, reply) => {
         const {
             page,
             limit,
@@ -271,7 +273,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         };
         const pageNum = page ? parseInt(page, 10) : 1;
         const limitNum = limit ? parseInt(limit, 10) : 10;
-        const validSortBy = ['createdAt', 'title', 'prepTime', 'cookTime', 'viewCount'] as const; 
+        const validSortBy = ['createdAt', 'title', 'prepTime', 'cookTime', 'viewCount'] as const;
         const sortByValidated = sortBy && validSortBy.includes(sortBy as any) ? sortBy as typeof validSortBy[number] : 'createdAt';
         const validSortOrder = ['asc', 'desc'] as const;
         const sortOrderValidated = sortOrder && validSortOrder.includes(sortOrder as any) ? sortOrder as typeof validSortOrder[number] : 'desc';
@@ -289,7 +291,13 @@ export async function recipesRoutes(app: FastifyInstance) {
 
     // ========== ROUTES RATINGS ==========
 
-    app.post("/recipes/:id/rate", { preHandler: authMiddleware }, async (request, reply) => {
+    app.post("/recipes/:id/rate", {
+        preHandler: [authMiddleware, paramValidator(z.object({
+            id: z.string().min(1)
+        })), bodyValidator(z.object({
+            score: z.number().min(1).max(5)
+        }))]
+    }, async (request, reply) => {
         const { id } = request.params as { id: string };
         const { score } = request.body as { score: number };
 
@@ -297,13 +305,35 @@ export async function recipesRoutes(app: FastifyInstance) {
         sendCreated(reply, rating, 'Rating added successfully');
     });
 
-    app.get("/recipes/:id/ratings", async (request, reply) => {
+    app.put("/recipes/:id/ratings", {
+        preHandler: [authMiddleware, paramValidator(z.object({
+            id: z.string().min(1)
+        })), bodyValidator(z.object({
+            score: z.number().min(1).max(5)
+        }))]
+    }, async (request, reply) => {
+        const { id } = request.params as { id: string };
+        const { score } = request.body as { score: number };
+
+        const rating = await rateRecipe(id, request.user!.id, score);
+        sendSuccess(reply, rating, 'Rating updated successfully');
+    });
+
+    app.get("/recipes/:id/ratings", {
+        preHandler: [paramValidator(z.object({
+            id: z.string().min(1)
+        }))]
+    }, async (request, reply) => {
         const { id } = request.params as { id: string };
         const ratings = await getRecipeRatings(id);
         sendSuccess(reply, ratings, 'Ratings retrieved');
     });
 
-    app.delete("/recipes/:id/ratings", { preHandler: authMiddleware }, async (request, reply) => {
+    app.delete("/recipes/:id/ratings", {
+        preHandler: [authMiddleware, paramValidator(z.object({
+            id: z.string().min(1)
+        }))]
+    }, async (request, reply) => {
         const { id } = request.params as { id: string };
         const result = await removeRecipeRating(id, request.user!.id);
         sendSuccess(reply, result, 'Rating removed successfully');

@@ -1,0 +1,24 @@
+meta {
+  name: read-by-difficulty-filter
+  type: http
+  seq: 4
+}
+
+get {
+  url: http://localhost:3000/api/v1/recipes/search?difficulty=MEDIUM
+  body: none
+  auth: inherit
+}
+
+params:query {
+  difficulty: MEDIUM
+}
+
+headers {
+  x-gateway-api-key: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

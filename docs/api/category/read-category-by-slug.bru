@@ -1,0 +1,30 @@
+meta {
+  name: read-category-by-slug
+  type: http
+  seq: 5
+}
+
+get {
+  url: http://localhost:3000/api/v1/categories/by-slug/plats-principaux
+  body: none
+  auth: inherit
+}
+
+headers {
+  x-gateway-api-key: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+  ~Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Apéritifs",
+    "iconName": "wine-glass",
+    "color": "#FF6B6B",
+    "sortOrder": 1
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

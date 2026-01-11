@@ -1,0 +1,30 @@
+meta {
+  name: read-my-recipes-published-only
+  type: http
+  seq: 18
+}
+
+get {
+  url: http://localhost:3000/api/v1/recipes/me?publishedOnly=true&page=1&limit=5
+  body: none
+  auth: bearer
+}
+
+params:query {
+  publishedOnly: true
+  page: 1
+  limit: 5
+}
+
+headers {
+  x-gateway-api-key: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM1ZDFlMWYxLTM0ZDgtNGM5Yy1hZmRlLTU5ZmVkN2Q5MzM4MSIsInVzZXJuYW1lIjoiY2FuZHJpYW0iLCJpYXQiOjE3NjgwOTAzMTcsImV4cCI6MTc2ODA5MTIxN30.MG9YAgSEp9T6tjSM6MMOXWs_qG9jzRNu_DqvHaVNzEs
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

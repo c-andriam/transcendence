@@ -506,14 +506,26 @@ Authorization: Bearer {{jwtToken}}
 
 
 ### Read recipe rate by id
-GET {{baseUrl}}/api/v1/recipes/{{recipeId}}/rate
+GET {{baseUrl}}/api/v1/recipes/{{recipeId}}/ratings
 x-gateway-api-key: {{gatewayKey}}
+
+
+### Update recipe rate by id
+PUT {{baseUrl}}/api/v1/recipes/{{recipeId}}/ratings
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+{
+    "score": 4
+}
 
 
 ### Delete recipe rate by id
-DELETE {{baseUrl}}/api/v1/recipes/{{recipeId}}/rate
+DELETE {{baseUrl}}/api/v1/recipes/{{recipeId}}/ratings
 Content-Type: application/json
 x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
 
 {
     "userId": "{{authorId}}"
