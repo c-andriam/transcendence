@@ -10,7 +10,7 @@ dotenv.config({
 });
 
 const connectionString = `${process.env.RECIPE_DATABASE_URL}`;
-const pool = new Pool({ connectionString, connectionTimeoutMillis: 2000 });
+const pool = new Pool({ connectionString, connectionTimeoutMillis: 10000 });
 pool.on('connect', (client) => {
   client.query('SET search_path TO recipe_service');
 });
