@@ -1,5 +1,6 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { hydrateRecipes } from "./hydration";
+import { HttpStatus, sendError } from "@transcendence/common";
 import dotenv from "dotenv";
 import path from "path";
 
@@ -72,12 +73,9 @@ export async function proxyHydrate(
         }
         return reply.status(statusCode).send(body);
     } catch (error) {
-        const status = (error as any).status || 500;
+        const status = (error as any).status || HttpStatus.INTERNAL_SERVER_ERROR;
         const message = (error as any).data?.message || "Internal server error";
-        reply.status(status).send({
-            status: "error",
-            message
-        });
+        sendError(reply, message, status);
     }
 }
 
@@ -171,9 +169,6 @@ export async function proxyMultipart(
         return reply.status(responseData.statusCode).send(responseData.body);
     } catch (error: any) {
         console.error('Multipart proxy error:', error);
-        return reply.status(500).send({
-            status: "error",
-            message: error.message || "Internal server error"
-        });
+        return sendError(reply, error.message || "Internal server error", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

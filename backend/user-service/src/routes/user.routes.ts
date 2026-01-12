@@ -1,5 +1,6 @@
 import { FastifyInstance } from "fastify";
-import { createEmailVerificationToken,
+import {
+    createEmailVerificationToken,
     createUser,
     deleteUser,
     getAllUsers,
@@ -12,14 +13,16 @@ import { createEmailVerificationToken,
     verifyResetToken,
     verifyEmailToken
 } from "../services/user.service";
-import { sendSuccess,
+import {
+    sendSuccess,
     sendCreated,
     sendDeleted,
     stripPassword,
-    NotFoundError,
     authMiddleware,
-    ForbiddenError,
-    generateApiKey
+    generateApiKey,
+    sendNotFound,
+    sendForbidden,
+    sendError
 } from "@transcendence/common";
 
 export async function userRoutes(app: FastifyInstance) {
@@ -33,7 +36,7 @@ export async function userRoutes(app: FastifyInstance) {
         const { id } = request.params as { id: string };
         const user = await getUserById(id);
         if (!user) {
-            throw new NotFoundError('User not found');
+            return sendNotFound(reply, 'User not found');
         }
         sendSuccess(reply, stripPassword(user), 'User found');
     });
@@ -64,7 +67,7 @@ export async function userRoutes(app: FastifyInstance) {
         const userId = request.user!.id;
         const user = await getUserById(userId);
         if (!user) {
-            throw new NotFoundError('User not found');
+            return sendNotFound(reply, 'User not found');
         }
         sendSuccess(reply, stripPassword(user), 'Profile retrieved');
     });
@@ -72,7 +75,7 @@ export async function userRoutes(app: FastifyInstance) {
     app.put("/users/:id", { preHandler: authMiddleware }, async (request, reply) => {
         const { id } = request.params as { id: string };
         if (request.user!.id !== id) {
-            throw new ForbiddenError('You can only update your own profile');
+            return sendForbidden(reply, 'You can only update your own profile');
         }
         const body = request.body as {
             username?: string;
@@ -88,7 +91,7 @@ export async function userRoutes(app: FastifyInstance) {
     app.delete("/users/:id", { preHandler: authMiddleware }, async (request, reply) => {
         const { id } = request.params as { id: string };
         if (request.user!.id !== id) {
-            throw new ForbiddenError('You can only delete your own profile');
+            return sendForbidden(reply, 'You can only delete your own profile');
         }
         const user = await deleteUser(id);
         sendDeleted(reply, stripPassword(user), 'User deleted');
@@ -105,7 +108,7 @@ export async function userRoutes(app: FastifyInstance) {
         const { identifier } = request.params as { identifier: string };
         const user = await getUserByIdentifier(identifier);
         if (!user) {
-            throw new NotFoundError('User not found');
+            return sendNotFound(reply, 'User not found');
         }
         sendSuccess(reply, user, 'User found');
     });
@@ -145,16 +148,16 @@ export async function userRoutes(app: FastifyInstance) {
         const user = await getUserById(userId);
 
         if (!user) {
-            throw new NotFoundError('User not found');
+            return sendNotFound(reply, 'User not found');
         }
 
         if (!user.isEmailVerified) {
-            throw new ForbiddenError('Email must be verified to generate an API key');
+            return sendForbidden(reply, 'Email must be verified to generate an API key');
         }
 
         const masterSecret = process.env.API_MASTER_SECRET;
         if (!masterSecret) {
-            throw new Error('API_MASTER_SECRET not configured');
+            return sendError(reply, 'API_MASTER_SECRET not configured');
         }
 
         const apiKey = generateApiKey(userId, masterSecret);
