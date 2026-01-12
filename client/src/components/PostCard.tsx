@@ -8,10 +8,21 @@ import { AiOutlineTags } from "react-icons/ai";
 import { BiTimeFive } from "react-icons/bi";
 import { PiChefHat } from "react-icons/pi";
 import { TbChartBar } from "react-icons/tb";
+import { RiMessengerLine } from "react-icons/ri";
+import { MdFlatware } from "react-icons/md";
 
 const PostCard = () => {
     const [isFollowing, setIsFollowing] = useState(false);
-
+    const [isLiked, setIsLiked] = useState(false);
+    const ingredients = [
+        '500g Pasta',
+        'Pesto Sauce',
+        'Parmesan',
+        'Fresh Basil',
+        'Olive Oil',
+        'Garlic',
+        'Pine Nuts'
+    ];
     return (
         <div className="post-card grid grid-cols-12 border-2 border-white/10 rounded-lg shadow-lg">
             <section
@@ -59,14 +70,78 @@ const PostCard = () => {
                 </div>
             </section>
             <section
-                className="post-card-center bg-blue-900 col-span-4"
+                className="post-card-center col-span-4 p-6 bg-slate-900/50 backdrop-blur-md border-x border-white/5 flex flex-col"
             >
-                <div>
-                    <img src="../../public/images/users/Tom.png" alt="" className='rounded-full border bg-white/10 w-12 h-12' />
-                    <p>User-name</p>
-                    <button onClick={() => setIsFollowing(!isFollowing)}>
-                        {isFollowing ? <SlUserFollowing size={24} /> : <SlUserFollow size={24} />}
+                {/* User Header */}
+                <div className='flex flex-row items-center mb-6 justify-between'>
+                    <div className='flex flex-row gap-3 items-center'>
+                        <div className="relative">
+                            <img src="../../public/images/users/Tom.png" alt="User" className='rounded-full border-2 border-orange-400/30 w-12 h-12 object-cover shadow-lg shadow-orange-500/10' />
+                            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-slate-900 rounded-full"></div>
+                        </div>
+                        <div className='flex flex-col'>
+                            <p className='text-sm font-bold text-white tracking-tight'>Chef Thomas R.</p>
+                            <p className='text-[10px] uppercase tracking-widest text-slate-400 font-medium'>27 MARS 2026</p>
+                        </div>
+                    </div>
+                    <button
+                        onClick={() => setIsFollowing(!isFollowing)}
+                        className={`flex flex-row gap-2 items-center justify-center px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 ${isFollowing
+                            ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20'
+                            : 'bg-orange-500 text-white hover:bg-orange-600 shadow-lg shadow-orange-500/20'
+                            }`}
+                    >
+                        {isFollowing ? <SlUserFollowing size={14} /> : <SlUserFollow size={14} />}
+                        <span>{isFollowing ? 'Following' : 'Follow'}</span>
                     </button>
+                </div>
+
+                {/* Recipe Summary & Ingredients */}
+                <div className='flex flex-col gap-6 flex-grow'>
+                    <div className='space-y-4'>
+                        <div className='flex items-center gap-2 text-orange-400'>
+                            <MdFlatware size={20} />
+                            <h3 className='text-xs font-bold uppercase tracking-[0.2em] text-orange-400/80'>Ingrédients</h3>
+                        </div>
+                        <ul className='grid grid-cols-2 gap-y-3 gap-x-4'>
+                            {ingredients.map((ingredient, i) => (
+                                <li key={i} className='flex items-center gap-2 group'>
+                                    <span className='w-1.5 h-1.5 rounded-full bg-orange-400/40 group-hover:bg-orange-400 transition-colors'></span>
+                                    <span className='text-sm text-slate-300 group-hover:text-white transition-colors'>{ingredient}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+
+                {/* Action Bar */}
+                <div className='mt-8 pt-6 border-t border-white/5 flex items-center justify-between'>
+                    <button
+                        onClick={() => setIsLiked(!isLiked)}
+                        className='flex items-center gap-2 group transition-all'
+                    >
+                        <div className={`p-2.5 rounded-xl transition-all duration-300 ${isLiked
+                            ? 'bg-red-500/10 text-red-500'
+                            : 'bg-white/5 text-slate-400 group-hover:bg-white/10 group-hover:text-white'
+                            }`}>
+                            {isLiked ? <GoHeartFill size={24} /> : <GoHeart size={24} />}
+                        </div>
+                        <div className='flex flex-col items-start'>
+                            <span className={`text-sm font-bold ${isLiked ? 'text-white' : 'text-slate-400'}`}>1.2k</span>
+                            <span className='text-[10px] text-slate-500 font-medium uppercase tracking-tighter'>Likes</span>
+                        </div>
+                    </button>
+
+                    <div className='flex gap-3'>
+                        <button className='p-2.5 rounded-xl bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white transition-all duration-300 group relative' title="Instructions">
+                            <PiChefHat size={24} />
+                            <span className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 text-[10px] text-white rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-white/10">Instruction</span>
+                        </button>
+                        <button className='p-2.5 rounded-xl bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white transition-all duration-300 group relative' title="Discuter">
+                            <RiMessengerLine size={24} />
+                            <span className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 text-[10px] text-white rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-white/10">Discuter</span>
+                        </button>
+                    </div>
                 </div>
             </section>
             <section
