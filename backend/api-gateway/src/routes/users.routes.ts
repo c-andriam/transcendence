@@ -1,10 +1,11 @@
 import { FastifyInstance } from "fastify";
 import { proxyRequest } from "../utils/proxy";
+import { HttpStatus, sendError } from "@transcendence/common";
 import dotenv from "dotenv";
 import path from "path";
 
 dotenv.config({
-  path: path.resolve(__dirname, "../../../.env"),
+    path: path.resolve(__dirname, "../../../.env"),
 });
 
 const DOMAIN = process.env.DOMAIN;
@@ -17,17 +18,14 @@ if (!USER_SERVICE_URL) {
 }
 
 export async function usersRoutes(app: FastifyInstance) {
-    
+
     app.get("/me", async (request, reply) => {
         try {
             const { statusCode, body } = await proxyRequest(request, reply, "/api/v1/me", USER_SERVICE_URL);
             return reply.status(statusCode).send(body);
         } catch (error) {
             app.log.error(error);
-            return reply.status(500).send({
-                status: "error",
-                message: "User service is unavailable"
-            });
+            return sendError(reply, "User service is unavailable", HttpStatus.SERVICE_UNAVAILABLE);
         }
     });
 
@@ -37,10 +35,7 @@ export async function usersRoutes(app: FastifyInstance) {
             return reply.status(statusCode).send(body);
         } catch (error) {
             app.log.error(error);
-            return reply.status(500).send({
-                status: "error",
-                message: "User service is unavailable"
-            });
+            return sendError(reply, "User service is unavailable", HttpStatus.SERVICE_UNAVAILABLE);
         }
     });
 
@@ -51,10 +46,7 @@ export async function usersRoutes(app: FastifyInstance) {
             return reply.status(statusCode).send(body);
         } catch (error) {
             app.log.error(error);
-            return reply.status(500).send({
-                status: "error",
-                message: "User service is unavailable"
-            });
+            return sendError(reply, "User service is unavailable", HttpStatus.SERVICE_UNAVAILABLE);
         }
     });
 
@@ -64,10 +56,7 @@ export async function usersRoutes(app: FastifyInstance) {
             return reply.status(statusCode).send(body);
         } catch (error) {
             app.log.error(error);
-            return reply.status(500).send({
-                status: "error",
-                message: "User service is unavailable"
-            });
+            return sendError(reply, "User service is unavailable", HttpStatus.SERVICE_UNAVAILABLE);
         }
     });
 
@@ -78,10 +67,7 @@ export async function usersRoutes(app: FastifyInstance) {
             return reply.status(statusCode).send(body);
         } catch (error) {
             app.log.error(error);
-            return reply.status(500).send({
-                status: "error",
-                message: "User service is unavailable"
-            });
+            return sendError(reply, "User service is unavailable", HttpStatus.SERVICE_UNAVAILABLE);
         }
     });
 
@@ -92,10 +78,7 @@ export async function usersRoutes(app: FastifyInstance) {
             return reply.status(statusCode).send(body);
         } catch (error) {
             app.log.error(error);
-            return reply.status(500).send({
-                status: "error",
-                message: "User service is unavailable"
-            });
+            return sendError(reply, "User service is unavailable", HttpStatus.SERVICE_UNAVAILABLE);
         }
     });
 
@@ -105,10 +88,7 @@ export async function usersRoutes(app: FastifyInstance) {
             return reply.status(statusCode).send(body);
         } catch (error) {
             app.log.error(error);
-            return reply.status(500).send({
-                status: "error",
-                message: "User service is unavailable"
-            });
+            return sendError(reply, "User service is unavailable", HttpStatus.SERVICE_UNAVAILABLE);
         }
     });
 }

@@ -3,12 +3,14 @@ import fastify from 'fastify';
 import db from './utils/db';
 import { recipesRoutes } from './routes/recipe.routes';
 import { categoryRoutes } from './routes/category.routes';
+import { imageRoutes } from './routes/image.routes';
 import { globalErrorHandler, internalApiKeyMiddleware } from '@transcendence/common';
 import fastifyJwt from '@fastify/jwt';
+import fastifyMultipart from '@fastify/multipart';
 import path from "path";
 
 dotenv.config({
-  path: path.resolve(__dirname, "../../.env"),
+    path: path.resolve(__dirname, "../../.env"),
 });
 
 // dotenv.config();
@@ -33,12 +35,20 @@ app.register(fastifyJwt, {
     secret: JWT_SECRET
 });
 
+app.register(fastifyMultipart, {
+    limits: {
+        fileSize: 10 * 1024 * 1024,
+        files: 10
+    }
+});
+
 const start = async () => {
     try {
         app.decorate('prisma', db);
         app.addHook("preHandler", internalApiKeyMiddleware);
         await app.register(recipesRoutes, { prefix: '/api/v1' });
         await app.register(categoryRoutes, { prefix: '/api/v1' });
+        await app.register(imageRoutes, { prefix: '/api/v1' });
         const port = Number(process.env.RECIPE_SERVICE_PORT);
         await app.listen({
             port: port,

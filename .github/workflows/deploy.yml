@@ -1,0 +1,73 @@
+name: Deploy Documentation
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/api/API Documentation/HTML format/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Prepare documentation
+        run: |
+          mkdir -p _site/documentation
+          cp -r "docs/api/API Documentation/HTML format/"* _site/documentation/
+          # Create an index.html that lists all documentation files
+          echo '<!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>API Documentation - CookShare</title>
+            <style>
+              body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+              h1 { color: #333; }
+              ul { list-style: none; padding: 0; }
+              li { margin: 10px 0; }
+              a { color: #0066cc; text-decoration: none; padding: 10px 15px; display: inline-block; border: 1px solid #ddd; border-radius: 5px; }
+              a:hover { background: #f5f5f5; }
+            </style>
+          </head>
+          <body>
+            <h1>🍳 CookShare API Documentation</h1>
+            <ul>' > _site/documentation/index.html
+          for file in _site/documentation/*.html; do
+            if [ "$(basename "$file")" != "index.html" ]; then
+              name=$(basename "$file" .html | sed 's/-/ /g' | sed 's/\b\(.\)/\u\1/g')
+              echo "      <li><a href=\"$(basename "$file")\">$name</a></li>" >> _site/documentation/index.html
+            fi
+          done
+          echo '    </ul>
+          </body>
+          </html>' >> _site/documentation/index.html
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '_site'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

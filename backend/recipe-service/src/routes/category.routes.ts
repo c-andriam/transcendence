@@ -1,5 +1,6 @@
 import { FastifyInstance } from "fastify";
 import { createCategory, deleteCategory, getAllCategories, getCategoryById, getCategoryBySlug, updateCategory } from "../services/category.service";
+import { HttpStatus, sendConflict, sendError, sendNotFound, sendCreated, sendSuccess } from "@transcendence/common";
 
 export async function categoryRoutes(app: FastifyInstance) {
     app.post("/categories", async (request, reply) => {
@@ -11,36 +12,21 @@ export async function categoryRoutes(app: FastifyInstance) {
         };
         try {
             const category = await createCategory(body);
-            reply.status(201).send({
-                status: "success",
-                data: category
-            });
+            return sendCreated(reply, category);
         } catch (error) {
             if ((error as any).code === "P2002") {
-                return reply.status(409).send({
-                    status: "error",
-                    message: "Category name already exists"
-                });
+                return sendConflict(reply, "Category name already exists");
             }
-            reply.status(500).send({
-                status: "error",
-                message: "Internal server error"
-            });
+            sendError(reply, "Internal server error");
         }
     });
 
     app.get("/categories", async (request, reply) => {
         try {
             const categories = await getAllCategories();
-            reply.status(200).send({
-                status: "success",
-                data: categories
-            });
+            return sendSuccess(reply, categories);
         } catch (error) {
-            reply.status(500).send({
-                status: "error",
-                message: "Internal server error"
-            });
+            sendError(reply, "Internal server error");
         }
     });
 
@@ -49,20 +35,11 @@ export async function categoryRoutes(app: FastifyInstance) {
         try {
             const category = await getCategoryById(id);
             if (!category) {
-                return reply.status(404).send({
-                    status: "error",
-                    message: "Category not found"
-                });
+                return sendNotFound(reply, "Category not found");
             }
-            reply.status(200).send({
-                status: "success",
-                data: category
-            });
+            return sendSuccess(reply, category);
         } catch (error) {
-            reply.status(500).send({
-                status: "error",
-                message: "Internal server error"
-            });
+            sendError(reply, "Internal server error");
         }
     });
 
@@ -71,20 +48,11 @@ export async function categoryRoutes(app: FastifyInstance) {
         try {
             const category = await getCategoryBySlug(slug);
             if (!category) {
-                return reply.status(404).send({
-                    status: "error",
-                    message: "Category not found"
-                });
+                return sendNotFound(reply, "Category not found");
             }
-            reply.status(200).send({
-                status: "success",
-                data: category
-            });
+            return sendSuccess(reply, category);
         } catch (error) {
-            reply.status(500).send({
-                status: "error",
-                message: "Internal server error"
-            });
+            sendError(reply, "Internal server error");
         }
     });
 
@@ -99,26 +67,14 @@ export async function categoryRoutes(app: FastifyInstance) {
         try {
             const category = await updateCategory(id, body);
             if (!category) {
-                return reply.status(404).send({
-                    status: "error",
-                    message: "Category not found"
-                });
+                return sendNotFound(reply, "Category not found");
             }
-            reply.status(200).send({
-                status: "success",
-                data: category
-            });
+            return sendSuccess(reply, category);
         } catch (error) {
             if ((error as any).code === "P2025") {
-                return reply.status(404).send({
-                    status: "error",
-                    message: "Category not found"
-                });
+                return sendNotFound(reply, "Category not found");
             }
-            reply.status(500).send({
-                status: "error",
-                message: "Internal server error"
-            });
+            sendError(reply, "Internal server error");
         }
     });
 
@@ -127,26 +83,14 @@ export async function categoryRoutes(app: FastifyInstance) {
         try {
             const category = await deleteCategory(id);
             if (!category) {
-                return reply.status(404).send({
-                    status: "error",
-                    message: "Category not found"
-                });
+                return sendNotFound(reply, "Category not found");
             }
-            reply.status(200).send({
-                status: "success",
-                data: category
-            });
+            return sendSuccess(reply, category);
         } catch (error) {
             if ((error as any).code === "P2025") {
-                return reply.status(404).send({
-                    status: "error",
-                    message: "Category not found"
-                });
+                return sendNotFound(reply, "Category not found");
             }
-            reply.status(500).send({
-                status: "error",
-                message: "Internal server error"
-            });
+            sendError(reply, "Internal server error");
         }
     });
 }

@@ -1,0 +1,28 @@
+meta {
+  name: add-recipe-image-url
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3000/api/v1/recipes/efabc8cf-6e97-4519-b2fb-efc7624978d0/images/url
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+  x-gateway-api-key: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM1ZDFlMWYxLTM0ZDgtNGM5Yy1hZmRlLTU5ZmVkN2Q5MzM4MSIsInVzZXJuYW1lIjoiY2FuZHJpYW0iLCJpYXQiOjE3NjgyMTUzNTYsImV4cCI6MTc2ODIxNjI1Nn0.Voj5F7SxPZYaBmKJFZ9nmDDdKf816fB8I0DwWLQGxaY
+}
+
+body:json {
+  {
+      "imageUrl": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=800",
+      "altText": "Délicieux plat indien",
+      "isPrimary": false
+  }
+}
