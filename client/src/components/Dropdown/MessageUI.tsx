@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import { AiOutlineMessage } from "react-icons/ai";
+import MessageLine from "./MessageLine";
 
 const MessageUI = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -32,11 +33,29 @@ const MessageUI = () => {
 
             {/* Menu déroulant */}
             {isOpen && (
-                <div className="absolute px-4 right-0 mt-2 w-116 bg-[#18191a] border border-gray-800 rounded-xl shadow-2xl z-50 animate-in fade-in zoom-in duration-200">
+                <div
+                    className="absolute px-4 right-0 mt-2 w-116
+                        md:w-[450px] bg-[#18191a] border border-gray-800
+                        rounded-xl shadow-2xl z-50 animate-in
+                        fade-in zoom-in duration-200 py-4"
+                >
                     <div className="flex justify-center items-center">
                         <div className="p-4 font-bold text-xl text-white tracking-wider">Discussions</div>
                     </div>
-                    <div className="w-full h-px bg-gray-600"></div>
+                    <div className="w-full h-px bg-gray-600" />
+                    <div className='max-h-[400px] overflow-y-auto custom-scrollbar'>
+                        <div className='flex flex-col gap-1'>
+                            <MessageLine username="Chef Thomas R." userprofil="/images/users/Emily_Davis.png" message="Je viens de tester votre recette mais peut-on changer le poivre ?" />
+                            <MessageLine username="Chef Thomas R." userprofil="/images/users/Emily_Davis.png" message="Je viens de tester votre recette mais peut-on changer le poivre ?" />
+                            <MessageLine username="Chef Thomas R." userprofil="/images/users/Emily_Davis.png" message="Je viens de tester votre recette mais peut-on changer le poivre ?" />
+                            <MessageLine username="Chef Thomas R." userprofil="/images/users/Emily_Davis.png" message="Je viens de tester votre recette mais peut-on changer le poivre ?" />
+                            <MessageLine username="Chef Thomas R." userprofil="/images/users/Emily_Davis.png" message="Je viens de tester votre recette mais peut-on changer le poivre ?" />
+                            <MessageLine username="Chef Thomas R." userprofil="/images/users/Emily_Davis.png" message="Je viens de tester votre recette mais peut-on changer le poivre ?" />
+                            <MessageLine username="Chef Thomas R." userprofil="/images/users/Emily_Davis.png" message="Je viens de tester votre recette mais peut-on changer le poivre ?" />
+                            <MessageLine username="Chef Thomas R." userprofil="/images/users/Emily_Davis.png" message="Je viens de tester votre recette mais peut-on changer le poivre ?" />
+                            <MessageLine username="Chef Thomas R." userprofil="/images/users/Emily_Davis.png" message="Je  ?" />
+                        </div>
+                    </div>
                     <div className="p-4 text-gray-500 text-sm italic">Aucun message...</div>
                 </div>
             )}
