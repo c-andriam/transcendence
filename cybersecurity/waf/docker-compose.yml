@@ -6,10 +6,14 @@ services:
       - "8080:8080"
       - "8443:8443"
     environment:
-      - PARANOIA_LEVEL=2
+      # CRS config
+      - PARANOIA=2
+      - BLOCKING_PARANOIA=2
       - ANOMALY_INBOUND=5
       - ANOMALY_OUTBOUND=4
+      # Backend server
       - BACKEND=http://mock-app:80
+      # ModSecurity engine
       - MODSEC_RULE_ENGINE=On
     volumes:
        - ./conf/modsecurity-custom.conf:/etc/modsecurity.d/owasp-crs/rules/99-custom.conf
