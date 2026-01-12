@@ -115,8 +115,46 @@ jobs:
         run: |
           cd backend/api-gateway
 
-          export API_GATEWAY_KEY="github-actions-doc-generation"
+          # Database
           export DATABASE_URL="${{ steps.postgres.outputs.connection-uri }}"
+          export AUTH_DATABASE_URL="$DATABASE_URL"
+          export RECIPE_DATABASE_URL="$DATABASE_URL"
+          export USER_DATABASE_URL="$DATABASE_URL"
+          export NOTIFICATION_DATABASE_URL="$DATABASE_URL"
+          export CHAT_DATABASE_URL="$DATABASE_URL"
+
+          # Secrets
+          export API_GATEWAY_KEY="github-actions-doc-generation"
+          export API_MASTER_SECRET="github-actions-master-secret"
+          export API_KEY_MAX_AGE_SECONDS=31536000
+          export INTERNAL_API_KEY="github-actions-internal-key"
+          export JWT_SECRET="github-actions-jwt-secret"
+          export COOKIE_SECRET="github-actions-cookie-secret"
+          export RESEND_API_KEY="github-actions-resend-key"
+          export MAILBOX_KEY="github-actions-mailbox-key"
+          export MAILBOX_ADDRESS="cookshare@cookshare.me"
+
+          # Ports
+          export API_GATEWAY_PORT=3000
+          export RECIPE_SERVICE_PORT=3001
+          export AUTH_SERVICE_PORT=3002
+          export USER_SERVICE_PORT=3003
+          export CHAT_SERVICE_PORT=3004
+          export NOTIFICATION_SERVICE_PORT=3005
+
+          # Domain & URLs
+          export DOMAIN="localhost"
+          export API_GATEWAY_URL="http://${DOMAIN}:${API_GATEWAY_PORT}"
+          export RECIPE_SERVICE_URL="http://${DOMAIN}:${RECIPE_SERVICE_PORT}"
+          export AUTH_SERVICE_URL="http://${DOMAIN}:${AUTH_SERVICE_PORT}"
+          export USER_SERVICE_URL="http://${DOMAIN}:${USER_SERVICE_PORT}"
+          export CHAT_SERVICE_URL="http://${DOMAIN}:${CHAT_SERVICE_PORT}"
+          export NOTIFICATION_SERVICE_URL="http://${DOMAIN}:${NOTIFICATION_SERVICE_PORT}"
+
+          # Other
+          export STAGE="development"
+          export DEBUG="true"
+          export DOMAIN_NAME="localhost"
 
           npx prisma migrate deploy || npx prisma db push || true
 
