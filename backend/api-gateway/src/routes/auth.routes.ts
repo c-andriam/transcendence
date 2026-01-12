@@ -3,18 +3,16 @@ import { proxyRequest } from "../utils/proxy";
 import { strictRateLimiter, moderateRateLimiter } from "../middleware/rateLimiter.middleware";
 import dotenv from "dotenv";
 import path from "path";
-import { bodyValidator } from "@transcendence/common";
+import { bodyValidator, HttpStatus, sendError } from "@transcendence/common";
 
 dotenv.config({
-  path: path.resolve(__dirname, "../../../.env"),
+    path: path.resolve(__dirname, "../../../.env"),
 });
 
 const DOMAIN = process.env.DOMAIN;
 const AUTH_SERVICE_PORT = process.env.AUTH_SERVICE_PORT;
 
 const AUTH_SERVICE_URL = `${DOMAIN}:${AUTH_SERVICE_PORT}`;
-
-// console.log("AUTH_SERVICE_URL:", AUTH_SERVICE_URL);
 
 if (!AUTH_SERVICE_URL) {
     throw new Error("AUTH_SERVICE_URL is not defined");
@@ -29,10 +27,7 @@ export async function authRoutes(app: FastifyInstance) {
                 return reply.status(statusCode).send(body);
             } catch (error) {
                 app.log.error(error);
-                return reply.status(500).send({
-                    status: "error",
-                    message: "Authentication service is unavailable"
-                });
+                return sendError(reply, "Authentication service is unavailable", HttpStatus.SERVICE_UNAVAILABLE);
             }
         }
     });
@@ -45,10 +40,7 @@ export async function authRoutes(app: FastifyInstance) {
                 return reply.status(statusCode).send(body);
             } catch (error) {
                 app.log.error(error);
-                return reply.status(500).send({
-                    status: "error",
-                    message: "Authentication service is unavailable"
-                });
+                return sendError(reply, "Authentication service is unavailable", HttpStatus.SERVICE_UNAVAILABLE);
             }
         }
     });
@@ -61,10 +53,7 @@ export async function authRoutes(app: FastifyInstance) {
                 return reply.status(statusCode).send(body);
             } catch (error) {
                 app.log.error(error);
-                return reply.status(500).send({
-                    status: "error",
-                    message: "Authentication service is unavailable"
-                });
+                return sendError(reply, "Authentication service is unavailable", HttpStatus.SERVICE_UNAVAILABLE);
             }
         }
     });
@@ -75,69 +64,58 @@ export async function authRoutes(app: FastifyInstance) {
             return reply.status(statusCode).send(body);
         } catch (error) {
             app.log.error(error);
-            return reply.status(500).send({
-                status: "error",
-                message: "Authentication service is unavailable"
-            });
+            return sendError(reply, "Authentication service is unavailable", HttpStatus.SERVICE_UNAVAILABLE);
         }
     });
 
-    app.post("/forgot-password", { preHandler: [moderateRateLimiter(5, 60000)],
+    app.post("/forgot-password", {
+        preHandler: [moderateRateLimiter(5, 60000)],
         handler: async (request, reply) => {
             try {
                 const { statusCode, body } = await proxyRequest(request, reply, "/forgot-password", AUTH_SERVICE_URL);
                 return reply.status(statusCode).send(body);
             } catch (error) {
                 app.log.error(error);
-                return reply.status(500).send({
-                    status: "error",
-                    message: "Authentication service is unavailable"
-                });
+                return sendError(reply, "Authentication service is unavailable", HttpStatus.SERVICE_UNAVAILABLE);
             }
         }
     });
 
-    app.post("/reset-password", { preHandler: [moderateRateLimiter(5, 60000)],
+    app.post("/reset-password", {
+        preHandler: [moderateRateLimiter(5, 60000)],
         handler: async (request, reply) => {
             try {
                 const { statusCode, body } = await proxyRequest(request, reply, "/reset-password", AUTH_SERVICE_URL);
                 return reply.status(statusCode).send(body);
             } catch (error) {
                 app.log.error(error);
-                return reply.status(500).send({
-                    status: "error",
-                    message: "Authentication service is unavailable"
-                });
+                return sendError(reply, "Authentication service is unavailable", HttpStatus.SERVICE_UNAVAILABLE);
             }
         }
     });
 
-    app.post("/verify-email", { preHandler: [moderateRateLimiter(10, 60000)],
+    app.post("/verify-email", {
+        preHandler: [moderateRateLimiter(10, 60000)],
         handler: async (request, reply) => {
             try {
                 const { statusCode, body } = await proxyRequest(request, reply, "/verify-email", AUTH_SERVICE_URL);
                 return reply.status(statusCode).send(body);
             } catch (error) {
                 app.log.error(error);
-                return reply.status(500).send({
-                    status: "error",
-                    message: "Authentication service is unavailable"
-                });
+                return sendError(reply, "Authentication service is unavailable", HttpStatus.SERVICE_UNAVAILABLE);
             }
         }
     });
 
-    app.post("/resend-verification", { preHandler: [moderateRateLimiter(5, 60000)],
+    app.post("/resend-verification", {
+        preHandler: [moderateRateLimiter(5, 60000)],
         handler: async (request, reply) => {
             try {
                 const { statusCode, body } = await proxyRequest(request, reply, "/resend-verification", AUTH_SERVICE_URL);
                 return reply.status(statusCode).send(body);
             } catch (error) {
                 app.log.error(error);
-                return reply.status(500).send({
-                    status: "error",
-                    message: "Authentication service is unavailable"
-                });
+                return sendError(reply, "Authentication service is unavailable", HttpStatus.SERVICE_UNAVAILABLE);
             }
         }
     });

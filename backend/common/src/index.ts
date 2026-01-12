@@ -5,6 +5,7 @@ export * from './middleware/apikey.middleware';
 export * from './middleware/error-handler.middleware';
 export * from './middleware/validate.middleware';
 export * from './types/api-response.types';
+export * from './types/http-status.enum';
 export * from './types/user.types';
 export * from './utils/password.util';
 export * from './utils/response.util';

@@ -4,7 +4,7 @@
 
 @baseUrl = http://localhost:3000
 @gatewayKey = AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
-@jwtToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM1ZDFlMWYxLTM0ZDgtNGM5Yy1hZmRlLTU5ZmVkN2Q5MzM4MSIsInVzZXJuYW1lIjoiY2FuZHJpYW0iLCJpYXQiOjE3NjgwOTAzMTcsImV4cCI6MTc2ODA5MTIxN30.MG9YAgSEp9T6tjSM6MMOXWs_qG9jzRNu_DqvHaVNzEs
+@jwtToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM1ZDFlMWYxLTM0ZDgtNGM5Yy1hZmRlLTU5ZmVkN2Q5MzM4MSIsInVzZXJuYW1lIjoiY2FuZHJpYW0iLCJpYXQiOjE3NjgyMTUzNTYsImV4cCI6MTc2ODIxNjI1Nn0.Voj5F7SxPZYaBmKJFZ9nmDDdKf816fB8I0DwWLQGxaY
 @refreshToken = 42c909bc8c09703efe8bf1b1b45d361fbb0cbc762671fbb39ef639cab067188103b644973042a890ea526af1cbbf132f0af0ab9dcd3a286d7dd15de5e407da48
 @userApiKey = cs_661a324c-47fb-4b61-aaa5-aae783dc94c3_1767848230_df0465c5.5goFIdr2_1YSREeT2aUaPxPQKPGGJshe
 @authorId = 35d1e1f1-34d8-4c9c-afde-59fed7d93381
@@ -743,3 +743,191 @@ x-gateway-api-key: {{gatewayKey}}
 ### Retirer des favoris sans authentification (doit échouer)
 DELETE {{baseUrl}}/api/v1/recipes/{{recipeId}}/favorite
 x-gateway-api-key: {{gatewayKey}}
+
+### ============================================
+### RECIPE IMAGES TESTS
+### ============================================
+
+@imageId = 9d09945a-473d-4347-9c1c-482c7c144899
+
+### Get all images for a recipe
+GET {{baseUrl}}/api/v1/recipes/{{recipeId}}/images
+x-gateway-api-key: {{gatewayKey}}
+
+### Upload image from URL
+POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/url
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+{
+    "imageUrl": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=800",
+    "altText": "Délicieux plat indien",
+    "isPrimary": false
+}
+
+### Upload local image (use curl or Postman for file upload)
+# POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/upload
+# Content-Type: multipart/form-data
+# x-gateway-api-key: {{gatewayKey}}
+# Authorization: Bearer {{jwtToken}}
+# 
+# file: <select local file>
+# altText: Description de l'image
+# isPrimary: false
+#
+# Exemple avec curl:
+curl -X POST \
+  -H "x-gateway-api-key: {{gatewayKey}}" \
+  -H "Authorization: Bearer {{jwtToken}}" \
+  -F "file=@/home/candriam/Downloads/pasta.jpg" \
+  -F "altText=Description de l'image" \
+  -F "isPrimary=false" \
+  http://localhost:3000/api/v1/recipes/{{recipeId}}/images/upload
+
+###
+POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/uploads
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="pasta.jpg"
+Content-Type: image/jpeg
+
+< /home/candriam/Downloads/pasta.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Update image (altText, isPrimary, sortOrder)
+PUT {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/{{imageId}}
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+{
+    "altText": "Nouveau texte alternatif",
+    "isPrimary": true
+}
+
+### Set image as primary
+POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/{{imageId}}/primary
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Delete an image
+DELETE {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/{{imageId}}
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Reorder images
+PUT {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/reorder
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+{
+    "imageIds": ["9d09945a-473d-4347-9c1c-482c7c144899", "7c5cccd1-8cc7-42f4-a57c-85f3b66563ca"]
+}
+
+### ============================================
+### IMAGES ERROR CASES
+### ============================================
+
+### Upload image without authentication (should fail)
+POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/url
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+
+{
+    "imageUrl": "https://example.com/image.jpg"
+}
+
+### Upload with invalid URL (should fail)
+POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/url
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+{
+    "imageUrl": "not-a-valid-url"
+}
+
+### Delete image without ownership (should fail if different user)
+DELETE {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/00000000-0000-0000-0000-000000000000
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### ============================================
+### MULTIPLE IMAGES OPERATIONS
+### ============================================
+
+### Upload multiple images from URLs (max 10)
+POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/urls
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+{
+    "images": [
+        { "imageUrl": "https://photo-cdn2.icons8.com/t7nTCbPkDTChTYtm6W9dmo5moFDoiU54uApwv2gcLYE/rs:fit:288:192/czM6Ly9pY29uczgu/bW9vc2UtcHJvZC5l/eHRlcm5hbC9hMmE0/Mi83MjBlYjViZDE5/NDg0ZmIzYTIxMDE1/NDFlZWZlZGZhYy5q/cGc.webp", "altText": "Image 1" },
+        { "imageUrl": "https://photo-cdn2.icons8.com/P710xESTB_XsVRKxu6Ir8IMiSUkAgJR--gx7-TtaH7k/rs:fit:288:192/czM6Ly9pY29uczgu/bW9vc2UtcHJvZC5l/eHRlcm5hbC9hMmE0/Mi80ZjM5MzQ2NTlh/MjI0YzZlYTA0Yzhj/OGIxZmU5NjdmYi5q/cGc.webp", "altText": "Image 2" },
+        { "imageUrl": "https://photo-cdn2.icons8.com/xqEhFN_W_RVT4ZTwcy04cKLS6a2Q4dVE8wvwzaTL-TU/rs:fit:288:162/czM6Ly9pY29uczgu/bW9vc2UtcHJvZC5l/eHRlcm5hbC9hMmE0/Mi9hMThjNzZiNGE2/YTg0NjgzYjM1ZGZk/NDc5MTFmY2I3My5q/cGc.webp", "altText": "Image 3" }
+    ]
+}
+
+### Upload multiple local images (use curl)
+POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/uploads
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="pasta.jpg"
+Content-Type: image/jpeg
+
+< /home/candriam/Downloads/pasta.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="plate.jpg"
+Content-Type: image/jpeg
+
+< /home/candriam/Downloads/plate.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="food.jpg"
+Content-Type: image/jpeg
+
+< /home/candriam/Downloads/food.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Delete multiple images
+DELETE {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/bulk
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+{
+    "imageIds": ["9343b333-e135-4db4-81ae-3c311b04cff7", "63fac4c0-da3a-4e95-9b49-4a4a59f31ae1", "e7856aae-995b-44a8-aadb-d8f643d20846"]
+}
+
+### ============================================
+### MULTIPLE IMAGES ERROR CASES
+### ============================================
+
+### Upload multiple with empty array (should fail)
+POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/urls
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+{
+    "images": []
+}
+
+### Delete multiple with empty array (should fail)
+DELETE {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/bulk
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+{
+    "imageIds": []
+}
