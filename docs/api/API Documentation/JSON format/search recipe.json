@@ -1,0 +1,830 @@
+{
+  "info": {
+    "name": "search recipe",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "read-by-author-with-default-sorting",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/recipes/author/35d1e1f1-34d8-4c9c-afde-59fed7d93381?page=1&limit=5",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "recipes",
+            "author",
+            "35d1e1f1-34d8-4c9c-afde-59fed7d93381"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "5"
+            }
+          ],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "read-by-author-with-sorting",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/recipes/author/35d1e1f1-34d8-4c9c-afde-59fed7d93381?sortBy=createdAt&sortOrder=desc&page=1&limit=10",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "recipes",
+            "author",
+            "35d1e1f1-34d8-4c9c-afde-59fed7d93381"
+          ],
+          "query": [
+            {
+              "key": "sortBy",
+              "value": "createdAt"
+            },
+            {
+              "key": "sortOrder",
+              "value": "desc"
+            },
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            }
+          ],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "read-by-category-filter",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/recipes/search?categoryId=eaebd183-a430-4fbc-93ed-7958bcb52330",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "recipes",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "categoryId",
+              "value": "eaebd183-a430-4fbc-93ed-7958bcb52330"
+            }
+          ],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "read-by-category-with-default-sorting",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/recipes/category/eaebd183-a430-4fbc-93ed-7958bcb52330?page=1&limit=5",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "recipes",
+            "category",
+            "eaebd183-a430-4fbc-93ed-7958bcb52330"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "5"
+            }
+          ],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "read-by-category-with-sorting-pagination",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/recipes/category/eaebd183-a430-4fbc-93ed-7958bcb52330?sortBy=prepTime&sortOrder=asc&page=1&limit=10",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "recipes",
+            "category",
+            "eaebd183-a430-4fbc-93ed-7958bcb52330"
+          ],
+          "query": [
+            {
+              "key": "sortBy",
+              "value": "prepTime"
+            },
+            {
+              "key": "sortOrder",
+              "value": "asc"
+            },
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            }
+          ],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "read-by-difficulty-filter",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/recipes/search?difficulty=MEDIUM",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "recipes",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "difficulty",
+              "value": "MEDIUM"
+            }
+          ],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "read-by-difficulty-with-default-sorting",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/recipes/difficulty/EASY?page=1&limit=5",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "recipes",
+            "difficulty",
+            "EASY"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "5"
+            }
+          ],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "read-by-difficulty-with-sorting-pagination",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/recipes/difficulty/MEDIUM?sortBy=cookTime&sortOrder=asc&page=1&limit=10",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "recipes",
+            "difficulty",
+            "MEDIUM"
+          ],
+          "query": [
+            {
+              "key": "sortBy",
+              "value": "cookTime"
+            },
+            {
+              "key": "sortOrder",
+              "value": "asc"
+            },
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            }
+          ],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "read-by-difficulty-with-sorting",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/recipes/difficulty/HARD?sortBy=servings&sortOrder=desc&page=1&limit=10",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "recipes",
+            "difficulty",
+            "HARD"
+          ],
+          "query": [
+            {
+              "key": "sortBy",
+              "value": "servings"
+            },
+            {
+              "key": "sortOrder",
+              "value": "desc"
+            },
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            }
+          ],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "read-by-servings-filter",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/recipes/search?servings=4",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "recipes",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "servings",
+              "value": "4"
+            }
+          ],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "read-by-text-with-multi-filter",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/recipes/search?q=poulet&difficulty=MEDIUM&minPrepTime=10&maxPrepTime=60",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "recipes",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "q",
+              "value": "poulet"
+            },
+            {
+              "key": "difficulty",
+              "value": "MEDIUM"
+            },
+            {
+              "key": "minPrepTime",
+              "value": "10"
+            },
+            {
+              "key": "maxPrepTime",
+              "value": "60"
+            }
+          ],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "read-by-text-with-pagination",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/recipes/search?q=poulet&page=1&limit=5",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "recipes",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "q",
+              "value": "poulet"
+            },
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "5"
+            }
+          ],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "read-by-text",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/recipes/search?q=poulet",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "recipes",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "q",
+              "value": "poulet"
+            }
+          ],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "read-my-recipes-default",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": {
+            "key": "token",
+            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM1ZDFlMWYxLTM0ZDgtNGM5Yy1hZmRlLTU5ZmVkN2Q5MzM4MSIsInVzZXJuYW1lIjoiY2FuZHJpYW0iLCJpYXQiOjE3NjgwOTAzMTcsImV4cCI6MTc2ODA5MTIxN30.MG9YAgSEp9T6tjSM6MMOXWs_qG9jzRNu_DqvHaVNzEs",
+            "type": "string"
+          }
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/recipes/me",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "recipes",
+            "me"
+          ],
+          "query": [],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "read-my-recipes-published-only",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": {
+            "key": "token",
+            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM1ZDFlMWYxLTM0ZDgtNGM5Yy1hZmRlLTU5ZmVkN2Q5MzM4MSIsInVzZXJuYW1lIjoiY2FuZHJpYW0iLCJpYXQiOjE3NjgwOTAzMTcsImV4cCI6MTc2ODA5MTIxN30.MG9YAgSEp9T6tjSM6MMOXWs_qG9jzRNu_DqvHaVNzEs",
+            "type": "string"
+          }
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/recipes/me?publishedOnly=true&page=1&limit=5",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "recipes",
+            "me"
+          ],
+          "query": [
+            {
+              "key": "publishedOnly",
+              "value": "true"
+            },
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "5"
+            }
+          ],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "read-my-recipes",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": {
+            "key": "token",
+            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM1ZDFlMWYxLTM0ZDgtNGM5Yy1hZmRlLTU5ZmVkN2Q5MzM4MSIsInVzZXJuYW1lIjoiY2FuZHJpYW0iLCJpYXQiOjE3NjgwOTAzMTcsImV4cCI6MTc2ODA5MTIxN30.MG9YAgSEp9T6tjSM6MMOXWs_qG9jzRNu_DqvHaVNzEs",
+            "type": "string"
+          }
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/recipes/me?sortBy=updatedAt&sortOrder=desc&page=1&limit=10&publishedOnly=false",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "recipes",
+            "me"
+          ],
+          "query": [
+            {
+              "key": "sortBy",
+              "value": "updatedAt"
+            },
+            {
+              "key": "sortOrder",
+              "value": "desc"
+            },
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            },
+            {
+              "key": "publishedOnly",
+              "value": "false"
+            }
+          ],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "read-with-sorting",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/recipes/search?sortBy=prepTime&sortOrder=asc&page=1&limit=10",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "recipes",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "sortBy",
+              "value": "prepTime"
+            },
+            {
+              "key": "sortOrder",
+              "value": "asc"
+            },
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "10"
+            }
+          ],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "read-with-time-filter",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/recipes/search?minCookTime=15&maxCookTime=60",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "recipes",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "minCookTime",
+              "value": "15"
+            },
+            {
+              "key": "maxCookTime",
+              "value": "60"
+            }
+          ],
+          "variable": []
+        }
+      }
+    }
+  ],
+  "variable": []
+}

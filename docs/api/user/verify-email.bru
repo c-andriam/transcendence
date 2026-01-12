@@ -1,0 +1,27 @@
+meta {
+  name: verify-email
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:3000/api/v1/verify-email
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  x-gateway-api-key: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+}
+
+body:json {
+  {
+      "token": "ab4caf96508e23898575191d84436fb109deeea58240df6e51aa71a94a968318630c62b39e6cbe60a6e78e5d881bc30cede4ff13a209a1ddccda33c29c0589ac"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -1,0 +1,31 @@
+meta {
+  name: register
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3000/api/v1/register
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  x-gateway-api-key: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+}
+
+body:json {
+  {
+      "email": "juvence00@gmail.com",
+      "username": "candriam",
+      "password": "password123",
+      "firstName": "Candriam",
+      "lastName": "Juvence"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import path from "path";
 
 dotenv.config({
-  path: path.resolve(__dirname, "../../../.env"),
+    path: path.resolve(__dirname, "../../../.env"),
 });
 
 const DOMAIN = process.env.DOMAIN;
@@ -51,14 +51,19 @@ export async function recipesRoutes(app: FastifyInstance) {
         return proxyHydrate(app, request, reply, `/api/v1/recipes/${id}/rate`, RECIPE_SERVICE_URL);
     });
 
-    app.get("/recipes/:id/rate", async (request, reply) => {
+    app.get("/recipes/:id/ratings", async (request, reply) => {
         const { id } = request.params as { id: string };
-        return proxyHydrate(app, request, reply, `/api/v1/recipes/${id}/rate`, RECIPE_SERVICE_URL);
+        return proxyHydrate(app, request, reply, `/api/v1/recipes/${id}/ratings`, RECIPE_SERVICE_URL);
     });
 
-    app.delete("/recipes/:id/rate", async (request, reply) => {
+    app.put("/recipes/:id/ratings", async (request, reply) => {
         const { id } = request.params as { id: string };
-        return proxyHydrate(app, request, reply, `/api/v1/recipes/${id}/rate`, RECIPE_SERVICE_URL);
+        return proxyHydrate(app, request, reply, `/api/v1/recipes/${id}/ratings`, RECIPE_SERVICE_URL);
+    });
+
+    app.delete("/recipes/:id/ratings", async (request, reply) => {
+        const { id } = request.params as { id: string };
+        return proxyHydrate(app, request, reply, `/api/v1/recipes/${id}/ratings`, RECIPE_SERVICE_URL);
     });
 
     app.post("/categories", async (request, reply) => {

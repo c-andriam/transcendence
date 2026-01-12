@@ -1,0 +1,60 @@
+meta {
+  name: update-recipe
+  type: http
+  seq: 6
+}
+
+put {
+  url: http://localhost:3000/api/v1/recipes/efabc8cf-6e97-4519-b2fb-efc7624978d0
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+  x-gateway-api-key: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM1ZDFlMWYxLTM0ZDgtNGM5Yy1hZmRlLTU5ZmVkN2Q5MzM4MSIsInVzZXJuYW1lIjoiY2FuZHJpYW0iLCJpYXQiOjE3NjgwOTc0NzYsImV4cCI6MTc2ODA5ODM3Nn0.nG0-54-1ukZqINc1SqWHIMuxHCyh8r9Adl1_lsjCiSs
+}
+
+body:json {
+  {
+      "title": "Poulet Tikka Masala",
+      "description": "Un délicieux plat indien crémeux et épicé, parfait pour un dîner en famille. Le poulet est mariné dans des épices et du yaourt, puis cuit dans une sauce tomate onctueuse.",
+      "prepTime": 30,
+      "cookTime": 45,
+      "servings": 4,
+      "difficulty": "MEDIUM",
+      "isPublished": true,
+      "categoryId": "76201871-6a2c-4060-a112-e91dee221b75",
+      "ingredients": [
+          { "name": "Poulet", "quantityText": "500g", "isOptional": false },
+          { "name": "Yaourt nature", "quantityText": "200g", "isOptional": false },
+          { "name": "Crème fraîche", "quantityText": "200ml", "isOptional": false },
+          { "name": "Tomates concassées", "quantityText": "400g", "isOptional": false },
+          { "name": "Oignon", "quantityText": "1 gros", "isOptional": false },
+          { "name": "Ail", "quantityText": "3 gousses", "isOptional": false },
+          { "name": "Gingembre", "quantityText": "2 cm", "isOptional": false },
+          { "name": "Épices tikka masala", "quantityText": "2 c.s", "isOptional": false },
+          { "name": "Curcuma", "quantityText": "1 c.c", "isOptional": false },
+          { "name": "Coriandre fraîche", "quantityText": "1 bouquet", "isOptional": true }
+      ],
+      "instructions": [
+          { "stepNumber": 1, "description": "Couper le poulet en morceaux et le faire mariner dans le yaourt avec les épices pendant 2 heures minimum." },
+          { "stepNumber": 2, "description": "Émincer l'oignon, hacher l'ail et le gingembre." },
+          { "stepNumber": 3, "description": "Dans une poêle, faire revenir l'oignon jusqu'à ce qu'il soit doré." },
+          { "stepNumber": 4, "description": "Ajouter l'ail et le gingembre, cuire 1 minute." },
+          { "stepNumber": 5, "description": "Ajouter le poulet mariné et le faire dorer de tous les côtés." },
+          { "stepNumber": 6, "description": "Incorporer les tomates concassées et les épices restantes. Laisser mijoter 20 minutes." },
+          { "stepNumber": 7, "description": "Ajouter la crème fraîche, mélanger et cuire encore 5 minutes." },
+          { "id": "5c7b4ebb-f915-4b2e-bf07-9a50529f89d8", "stepNumber": 8, "description": "Servir chaud avec du riz, garni de coriandre fraîche." }
+      ]
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

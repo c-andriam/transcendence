@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>public api key - API Documentation</title>
+    <style>
+        body { margin: 0; padding: 0; }
+        #opencollection-container { width: 100vw; height: 100vh; }
+    </style>
+    <link rel="stylesheet" href="https://cdn.opencollection.com/docs.css">
+    <script src="https://cdn.opencollection.com/docs.js"></script>
+</head>
+<body>
+    <div id="opencollection-container"></div>
+    <script>
+        const collectionData = "opencollection: 1.0.0\ninfo:\n  name: public api key\nitems:\n  - info:\n      name: generate api key\n      type: http\n      seq: 1\n    http:\n      method: POST\n      url: http://localhost:3000/api/v1/api-key/generate\n      headers:\n        - name: x-gateway-api-key\n          value: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM\n      auth:\n        type: bearer\n        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtazEya3MzMDAwMDBkMXNvZnI2c3pkODgiLCJ1c2VybmFtZSI6ImNhbmRyaWFtIiwiaWF0IjoxNzY3NzYzNjMyLCJleHAiOjE3Njc3NjQ1MzJ9.Cgj_sbtD3GUcbuadH06tXP03kW_6r0g1AfdIp9SjWfM\n    settings:\n      encodeUrl: true\n      timeout: 0\n      followRedirects: true\n      maxRedirects: 5\n  - info:\n      name: recipes\n      type: http\n      seq: 3\n    http:\n      method: GET\n      url: http://localhost:3000/api/v1/recipes\n      headers:\n        - name: x-gateway-api-key\n          value: cs_661a324c-47fb-4b61-aaa5-aae783dc94c3_1767848230_df0465c5.5goFIdr2_1YSREeT2aUaPxPQKPGGJshe\n      auth:\n        type: bearer\n        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtazEya3MzMDAwMDBkMXNvZnI2c3pkODgiLCJ1c2VybmFtZSI6ImNhbmRyaWFtIiwiaWF0IjoxNzY3NzYzNjMyLCJleHAiOjE3Njc3NjQ1MzJ9.Cgj_sbtD3GUcbuadH06tXP03kW_6r0g1AfdIp9SjWfM\n    settings:\n      encodeUrl: true\n      timeout: 0\n      followRedirects: true\n      maxRedirects: 5\n  - info:\n      name: users\n      type: http\n      seq: 4\n    http:\n      method: GET\n      url: http://localhost:3000/api/v1/users\n      headers:\n        - name: x-gateway-api-key\n          value: cs_661a324c-47fb-4b61-aaa5-aae783dc94c3_1767848230_df0465c5.5goFIdr2_1YSREeT2aUaPxPQKPGGJshe\n      auth:\n        type: bearer\n        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtazEya3MzMDAwMDBkMXNvZnI2c3pkODgiLCJ1c2VybmFtZSI6ImNhbmRyaWFtIiwiaWF0IjoxNzY3NzYzNjMyLCJleHAiOjE3Njc3NjQ1MzJ9.Cgj_sbtD3GUcbuadH06tXP03kW_6r0g1AfdIp9SjWfM\n    settings:\n      encodeUrl: true\n      timeout: 0\n      followRedirects: true\n      maxRedirects: 5\n  - info:\n      name: recipe\n      type: http\n      seq: 5\n    http:\n      method: GET\n      url: http://localhost:3000/api/v1/recipes/35d1e1f1-34d8-4c9c-afde-59fed7d93381\n      headers:\n        - name: x-gateway-api-key\n          value: cs_661a324c-47fb-4b61-aaa5-aae783dc94c3_1767848230_df0465c5.5goFIdr2_1YSREeT2aUaPxPQKPGGJshe\n      auth:\n        type: bearer\n        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtazEya3MzMDAwMDBkMXNvZnI2c3pkODgiLCJ1c2VybmFtZSI6ImNhbmRyaWFtIiwiaWF0IjoxNzY3NzYzNjMyLCJleHAiOjE3Njc3NjQ1MzJ9.Cgj_sbtD3GUcbuadH06tXP03kW_6r0g1AfdIp9SjWfM\n    settings:\n      encodeUrl: true\n      timeout: 0\n      followRedirects: true\n      maxRedirects: 5\nbundled: true\nextensions:\n  bruno:\n    ignore:\n      - node_modules\n      - .git\n    exportedAt: '2026-01-11T02:15:42.553Z'\n    exportedUsing: Bruno/3.0.2\n";
+        new window.OpenCollection({
+            target: document.getElementById('opencollection-container'),
+            opencollection: collectionData,
+            theme: 'light'
+        });
+    </script>
+</body>
+</html>

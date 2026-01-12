@@ -1,0 +1,30 @@
+meta {
+  name: create-category
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3000/api/v1/categories
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+  x-gateway-api-key: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+}
+
+body:json {
+  {
+    "name": "Apéritifs",
+    "iconName": "wine-glass",
+    "color": "#FF6B6B",
+    "sortOrder": 1
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

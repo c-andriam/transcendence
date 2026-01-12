@@ -1,0 +1,27 @@
+meta {
+  name: read-by-difficulty-with-sorting-pagination
+  type: http
+  seq: 14
+}
+
+get {
+  url: http://localhost:3000/api/v1/recipes/difficulty/MEDIUM?sortBy=cookTime&sortOrder=asc&page=1&limit=10
+  body: none
+  auth: inherit
+}
+
+params:query {
+  sortBy: cookTime
+  sortOrder: asc
+  page: 1
+  limit: 10
+}
+
+headers {
+  x-gateway-api-key: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -9,6 +9,7 @@ import swaggerUi from "@fastify/swagger-ui";
 import { authRoutes } from "./routes/auth.routes";
 import { globalErrorHandler } from "@transcendence/common";
 import cookie from "@fastify/cookie";
+import cors from "@fastify/cors";
 import path from "path";
 
 dotenv.config({
@@ -47,6 +48,9 @@ app.register(cookie, {
 const start = async () => {
   try {
     await registerRateLimiter(app);
+    await app.register(cors, {
+      origin: true
+    });
     await app.register(swagger, {
       openapi:
       {

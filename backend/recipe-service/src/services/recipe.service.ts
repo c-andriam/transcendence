@@ -313,6 +313,13 @@ export async function rateRecipe(
 }
 
 export async function getRecipeRatings(recipeId: string) {
+    const recipe = await db.recipe.findUnique({
+        where: { id: recipeId }
+    });
+    if (!recipe) {
+        throw new NotFoundError("Recipe not found");
+    }
+
     const ratings = await db.rating.findMany({
         where: { recipeId },
         orderBy: {
@@ -330,6 +337,13 @@ export async function getRecipeRatings(recipeId: string) {
 }
 
 export async function removeRecipeRating(recipeId: string, userId: string) {
+    const recipe = await db.recipe.findUnique({
+        where: { id: recipeId }
+    });
+    if (!recipe) {
+        throw new NotFoundError("Recipe not found");
+    }
+
     const rating = await db.rating.delete({
         where: {
             userId_recipeId: {
@@ -373,7 +387,7 @@ export async function getAllRecipesBySearch(
     servings?: number
 ) {
     const where: any = {};
-    
+
     if (categoryId) {
         where.categoryId = categoryId;
     }
@@ -434,7 +448,7 @@ export async function getAllRecipesBySearch(
         const totalScore = recipe.ratings.reduce((total, rating) => total + rating.score, 0);
         const averageScore = ratingCount > 0 ? Math.round((totalScore / ratingCount) * 10) / 10 : 0;
         const { ratings, ...recipeWithoutRatings } = recipe;
-        
+
         return {
             ...recipeWithoutRatings,
             averageScore,
@@ -595,11 +609,11 @@ export async function addToFavorites(
         throw new Error("Recipe already in favorites");
     }
     const favorite = await db.favorite.create({
-            data: {
-                userId,
-                recipeId
-            }
-        });
+        data: {
+            userId,
+            recipeId
+        }
+    });
     return favorite;
 }
 

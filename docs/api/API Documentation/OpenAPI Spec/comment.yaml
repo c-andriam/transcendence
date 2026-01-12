@@ -1,0 +1,181 @@
+openapi: 3.0.0
+info:
+  title: comment
+  version: 1.0.0
+paths:
+  /api/v1/recipes/efabc8cf-6e97-4519-b2fb-efc7624978d0/comments:
+    post:
+      summary: create-comment-on-recipe
+      operationId: create-comment-on-recipe
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: x-gateway-api-key
+          in: header
+          description: ''
+          required: true
+          example: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+        - name: Content-Type
+          in: header
+          description: ''
+          required: true
+          example: application/json
+      requestBody:
+        $ref: '#/components/requestBodies/create-comment-on-recipe'
+      security:
+        create-comment-on-recipe: []
+    get:
+      summary: read-comments-recipe-pagination
+      operationId: read-comments-recipe-pagination
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: page
+          in: query
+          description: ''
+          required: true
+          example: '1'
+        - name: limit
+          in: query
+          description: ''
+          required: true
+          example: '10'
+        - name: x-gateway-api-key
+          in: header
+          description: ''
+          required: true
+          example: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+  /api/v1/recipes/efabc8cf-6e97-4519-b2fb-efc7624978d0/comments/5d059a4f-67f2-41b7-a5bd-6833e89ad48a:
+    post:
+      summary: create-reply-comment-on-recipe
+      operationId: create-reply-comment-on-recipe
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: x-gateway-api-key
+          in: header
+          description: ''
+          required: true
+          example: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+        - name: Content-Type
+          in: header
+          description: ''
+          required: true
+          example: application/json
+      requestBody:
+        $ref: '#/components/requestBodies/create-reply-comment-on-recipe'
+      security:
+        create-reply-comment-on-recipe: []
+  /api/v1/recipes/efabc8cf-6e97-4519-b2fb-efc7624978d0/comments/cc5aa65e-7489-43d2-bb90-bba6d83be01e:
+    delete:
+      summary: delete-comment-on-recipe
+      operationId: delete-comment-on-recipe
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: x-gateway-api-key
+          in: header
+          description: ''
+          required: true
+          example: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+        - name: Content-Type
+          in: header
+          description: ''
+          required: true
+          example: application/json
+      security:
+        delete-comment-on-recipe: []
+    put:
+      summary: update-comment-on-recipe
+      operationId: update-comment-on-recipe
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: x-gateway-api-key
+          in: header
+          description: ''
+          required: true
+          example: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+        - name: Content-Type
+          in: header
+          description: ''
+          required: true
+          example: application/json
+      requestBody:
+        $ref: '#/components/requestBodies/update-comment-on-recipe'
+      security:
+        update-comment-on-recipe: []
+servers:
+  - url: http://localhost:3000
+components:
+  schemas:
+    create-comment-on-recipe:
+      type: object
+      properties:
+        content:
+          type: string
+    create-reply-comment-on-recipe:
+      type: object
+      properties:
+        content:
+          type: string
+    update-comment-on-recipe:
+      type: object
+      properties:
+        content:
+          type: string
+  requestBodies:
+    create-comment-on-recipe:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/create-comment-on-recipe'
+      description: ''
+      required: true
+    create-reply-comment-on-recipe:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/create-reply-comment-on-recipe'
+      description: ''
+      required: true
+    update-comment-on-recipe:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/update-comment-on-recipe'
+      description: ''
+      required: true
+  securitySchemes:
+    create-comment-on-recipe:
+      type: http
+      scheme: bearer
+    create-reply-comment-on-recipe:
+      type: http
+      scheme: bearer
+    delete-comment-on-recipe:
+      type: http
+      scheme: bearer
+    update-comment-on-recipe:
+      type: http
+      scheme: bearer

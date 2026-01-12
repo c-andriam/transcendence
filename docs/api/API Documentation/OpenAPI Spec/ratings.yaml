@@ -1,0 +1,134 @@
+openapi: 3.0.0
+info:
+  title: ratings
+  version: 1.0.0
+paths:
+  /api/v1/recipes/efabc8cf-6e97-4519-b2fb-efc7624978d0/rate:
+    post:
+      summary: create-recipe-rate
+      operationId: create-recipe-rate
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: Content-Type
+          in: header
+          description: ''
+          required: true
+          example: application/json
+        - name: x-gateway-api-key
+          in: header
+          description: ''
+          required: true
+          example: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+      requestBody:
+        $ref: '#/components/requestBodies/create-recipe-rate'
+      security:
+        create-recipe-rate: []
+  /api/v1/recipes/efauc8cf-6e97-4519-b2fb-efc7624978d0/ratings:
+    delete:
+      summary: delete-recipe-rate-id
+      operationId: delete-recipe-rate-id
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: x-gateway-api-key
+          in: header
+          description: ''
+          required: true
+          example: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+        - name: Content-Type
+          in: header
+          description: ''
+          required: false
+          example: application/json
+  /api/v1/recipes/efabc8cf-6e97-4519-b2fb-efc7624978d0/ratings:
+    get:
+      summary: read-recipe-rate-id
+      operationId: read-recipe-rate-id
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: x-gateway-api-key
+          in: header
+          description: ''
+          required: true
+          example: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+        - name: Content-Type
+          in: header
+          description: ''
+          required: false
+          example: application/json
+    put:
+      summary: update-recipe-rate-id
+      operationId: update-recipe-rate-id
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: Content-Type
+          in: header
+          description: ''
+          required: true
+          example: application/json
+        - name: x-gateway-api-key
+          in: header
+          description: ''
+          required: true
+          example: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+      requestBody:
+        $ref: '#/components/requestBodies/update-recipe-rate-id'
+      security:
+        update-recipe-rate-id: []
+servers:
+  - url: http://localhost:3000
+components:
+  schemas:
+    create-recipe-rate:
+      type: object
+      properties:
+        userId:
+          type: string
+        score:
+          type: number
+    update-recipe-rate-id:
+      type: object
+      properties:
+        score:
+          type: number
+  requestBodies:
+    create-recipe-rate:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/create-recipe-rate'
+      description: ''
+      required: true
+    update-recipe-rate-id:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/update-recipe-rate-id'
+      description: ''
+      required: true
+  securitySchemes:
+    create-recipe-rate:
+      type: http
+      scheme: bearer
+    update-recipe-rate-id:
+      type: http
+      scheme: bearer

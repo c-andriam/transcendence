@@ -1,0 +1,26 @@
+meta {
+  name: read-by-text-with-pagination
+  type: http
+  seq: 3
+}
+
+get {
+  url: http://localhost:3000/api/v1/recipes/search?q=poulet&page=1&limit=5
+  body: none
+  auth: inherit
+}
+
+params:query {
+  q: poulet
+  page: 1
+  limit: 5
+}
+
+headers {
+  x-gateway-api-key: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

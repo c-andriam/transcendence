@@ -1,0 +1,334 @@
+{
+  "version": "2.0.0",
+  "runtimeConfiguration": {
+    "environment": "default",
+    "laxTestingModeEnabled": false,
+    "apiConnectivityCheck": true,
+    "logLevel": "error",
+    "logDestination": "stdout+platform",
+    "logMaxFileSize": 2147483648,
+    "requestHeaderNameRequestId": "x-scan-request-id",
+    "requestHeaderNameScenarioId": "x-scan-scenario-id",
+    "requestHeaderNameRequestType": "x-scan-request-type",
+    "requestFlowrate": 100,
+    "requestTimeout": 30,
+    "requestTlsInsecureSkipVerify": true,
+    "responseFollowRedirection": false,
+    "responseMaxBodySizeScan": 10485760,
+    "happyPathOnly": false,
+    "maxRequestRetryAttempts": 5,
+    "maxScanDuration": 1800,
+    "memoryLimit": 2147483648,
+    "memoryTimeSpan": 10,
+    "reportMaxRequestSizeHappyPath": 8092,
+    "reportMaxRequestSizeTest": 8092,
+    "reportIncludeRequestBody": true,
+    "reportIncludeResponseBody": true,
+    "reportMaxHttpResponseSizeHappyPath": 8092,
+    "reportMaxBodySizeHappyPath": 8092,
+    "reportMaxHttpResponseSizeTest": 8092,
+    "reportMaxBodySizeTest": 8092,
+    "reportIssuesOnly": false,
+    "reportMaxIssues": 1000,
+    "reportMaxSize": 20971520,
+    "reportGenerateCurlCommand": true,
+    "normalizeServerUrls": true
+  },
+  "customizations": {
+    "happyPaths": {
+      "retry": 1,
+      "responsePolicy": {
+        "httpStatusExpected": true,
+        "mustBeConformant": true
+      },
+      "httpStatusExpected": []
+    },
+    "tests": {
+      "responsePolicy": {
+        "httpStatusExpected": true,
+        "mustBeConformant": true
+      }
+    }
+  },
+  "environments": {
+    "default": {
+      "variables": {
+        "host": {
+          "name": "SCAN42C_HOST",
+          "from": "environment",
+          "required": false,
+          "default": "http://localhost:3000"
+        }
+      }
+    }
+  },
+  "operations": {
+    "create-category": {
+      "operationId": "create-category",
+      "request": {
+        "operationId": "create-category",
+        "request": {
+          "type": "42c",
+          "details": {
+            "operationId": "create-category",
+            "method": "POST",
+            "url": "{{host}}/api/v1/categories",
+            "headers": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "x-gateway-api-key",
+                "value": 1429903843042818800
+              }
+            ],
+            "requestBody": {
+              "mode": "json",
+              "json": {
+                "color": "wrklqndkmxzhrvjivgvbcflaaiakjfpr",
+                "iconName": "mykalkybbwqabvmgxnzhsfbhgbnzifhp",
+                "name": "nmkfyqwazzyevcbglwhvokmorcxeudnx",
+                "sortOrder": 9.787027760161826e+37
+              }
+            }
+          }
+        },
+        "defaultResponse": "200",
+        "responses": {
+          "200": {
+            "expectations": {
+              "httpStatus": 200
+            }
+          }
+        }
+      },
+      "scenarios": [
+        {
+          "key": "happy.path",
+          "requests": [
+            {
+              "fuzzing": true,
+              "$ref": "#/operations/create-category/request"
+            }
+          ],
+          "fuzzing": true
+        }
+      ]
+    },
+    "delete-category-id": {
+      "operationId": "delete-category-id",
+      "request": {
+        "operationId": "delete-category-id",
+        "request": {
+          "type": "42c",
+          "details": {
+            "operationId": "delete-category-id",
+            "method": "DELETE",
+            "url": "{{host}}/api/v1/categories/a417822c-e7e9-4b06-812a-a641c4137d37",
+            "headers": [
+              {
+                "key": "x-gateway-api-key",
+                "value": 407805587716153300
+              }
+            ]
+          }
+        },
+        "defaultResponse": "200",
+        "responses": {
+          "200": {
+            "expectations": {
+              "httpStatus": 200
+            }
+          }
+        }
+      },
+      "scenarios": [
+        {
+          "key": "happy.path",
+          "requests": [
+            {
+              "fuzzing": true,
+              "$ref": "#/operations/delete-category-id/request"
+            }
+          ],
+          "fuzzing": true
+        }
+      ]
+    },
+    "read-categories": {
+      "operationId": "read-categories",
+      "request": {
+        "operationId": "read-categories",
+        "request": {
+          "type": "42c",
+          "details": {
+            "operationId": "read-categories",
+            "method": "GET",
+            "url": "{{host}}/api/v1/categories",
+            "headers": [
+              {
+                "key": "x-gateway-api-key",
+                "value": "2109273882371798800"
+              }
+            ]
+          }
+        },
+        "defaultResponse": "200",
+        "responses": {
+          "200": {
+            "expectations": {
+              "httpStatus": 200
+            }
+          }
+        }
+      },
+      "scenarios": [
+        {
+          "key": "happy.path",
+          "requests": [
+            {
+              "fuzzing": true,
+              "$ref": "#/operations/read-categories/request"
+            }
+          ],
+          "fuzzing": true
+        }
+      ]
+    },
+    "read-category-by-slug": {
+      "operationId": "read-category-by-slug",
+      "request": {
+        "operationId": "read-category-by-slug",
+        "request": {
+          "type": "42c",
+          "details": {
+            "operationId": "read-category-by-slug",
+            "method": "GET",
+            "url": "{{host}}/api/v1/categories/by-slug/plats-principaux",
+            "headers": [
+              {
+                "key": "x-gateway-api-key",
+                "value": 8824335612404732000
+              }
+            ]
+          }
+        },
+        "defaultResponse": "200",
+        "responses": {
+          "200": {
+            "expectations": {
+              "httpStatus": 200
+            }
+          }
+        }
+      },
+      "scenarios": [
+        {
+          "key": "happy.path",
+          "requests": [
+            {
+              "fuzzing": true,
+              "$ref": "#/operations/read-category-by-slug/request"
+            }
+          ],
+          "fuzzing": true
+        }
+      ]
+    },
+    "read-category-id": {
+      "operationId": "read-category-id",
+      "request": {
+        "operationId": "read-category-id",
+        "request": {
+          "type": "42c",
+          "details": {
+            "operationId": "read-category-id",
+            "method": "GET",
+            "url": "{{host}}/api/v1/categories/a417822c-e7e9-4b06-812a-a641c4137d37",
+            "headers": [
+              {
+                "key": "x-gateway-api-key",
+                "value": 1445398740201846500
+              }
+            ]
+          }
+        },
+        "defaultResponse": "200",
+        "responses": {
+          "200": {
+            "expectations": {
+              "httpStatus": 200
+            }
+          }
+        }
+      },
+      "scenarios": [
+        {
+          "key": "happy.path",
+          "requests": [
+            {
+              "fuzzing": true,
+              "$ref": "#/operations/read-category-id/request"
+            }
+          ],
+          "fuzzing": true
+        }
+      ]
+    },
+    "update-category-id": {
+      "operationId": "update-category-id",
+      "request": {
+        "operationId": "update-category-id",
+        "request": {
+          "type": "42c",
+          "details": {
+            "operationId": "update-category-id",
+            "method": "PUT",
+            "url": "{{host}}/api/v1/categories/a417822c-e7e9-4b06-812a-a641c4137d37",
+            "headers": [
+              {
+                "key": "x-gateway-api-key",
+                "value": 906700704293073800
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "requestBody": {
+              "mode": "json",
+              "json": {
+                "color": "tlnhfwcgnlnkheajkhbloefdlwtstddl",
+                "iconName": "onkwuthbjsjktsqrmoxiydwgifqtvvcg",
+                "name": "uqmsrlzboujgzjzgmnmkjfqucraobbmt",
+                "sortOrder": 2.3001049824321133e+37
+              }
+            }
+          }
+        },
+        "defaultResponse": "200",
+        "responses": {
+          "200": {
+            "expectations": {
+              "httpStatus": 200
+            }
+          }
+        }
+      },
+      "scenarios": [
+        {
+          "key": "happy.path",
+          "requests": [
+            {
+              "fuzzing": true,
+              "$ref": "#/operations/update-category-id/request"
+            }
+          ],
+          "fuzzing": true
+        }
+      ]
+    }
+  },
+  "authenticationDetails": []
+}
