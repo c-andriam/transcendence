@@ -10,6 +10,7 @@ import { authRoutes } from "./routes/auth.routes";
 import { globalErrorHandler } from "@transcendence/common";
 import cookie from "@fastify/cookie";
 import cors from "@fastify/cors";
+import multipart from "@fastify/multipart";
 import path from "path";
 
 dotenv.config({
@@ -43,6 +44,13 @@ if (!COOKIE_SECRET) {
 app.register(cookie, {
   secret: COOKIE_SECRET,
   parseOptions: {}
+});
+
+app.register(multipart, {
+  limits: {
+    fileSize: 10 * 1024 * 1024,
+    files: 10
+  }
 });
 
 const start = async () => {

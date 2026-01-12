@@ -66,6 +66,16 @@ export async function getAllRecipes() {
         include: {
             category: true,
             ratings: true,
+            images: {
+                orderBy: { sortOrder: 'asc' },
+                select: {
+                    id: true,
+                    url: true,
+                    altText: true,
+                    isPrimary: true,
+                    sortOrder: true,
+                }
+            },
         },
         orderBy: {
             createdAt: 'desc'
@@ -95,6 +105,16 @@ export async function getRecipeById(id: string) {
             instructions: true,
             category: true,
             ratings: true,
+            images: {
+                orderBy: { sortOrder: 'asc' },
+                select: {
+                    id: true,
+                    url: true,
+                    altText: true,
+                    isPrimary: true,
+                    sortOrder: true,
+                }
+            },
             comments: {
                 orderBy: {
                     createdAt: 'desc'
@@ -250,6 +270,16 @@ export async function getRecipeBySlug(slug: string) {
             instructions: { orderBy: { stepNumber: 'asc' } },
             category: true,
             ratings: true,
+            images: {
+                orderBy: { sortOrder: 'asc' },
+                select: {
+                    id: true,
+                    url: true,
+                    altText: true,
+                    isPrimary: true,
+                    sortOrder: true,
+                }
+            },
             comments: {
                 orderBy: {
                     createdAt: 'desc'
@@ -435,6 +465,16 @@ export async function getAllRecipesBySearch(
                 instructions: { orderBy: { stepNumber: 'asc' } },
                 category: true,
                 ratings: true,
+                images: {
+                    orderBy: { sortOrder: 'asc' },
+                    select: {
+                        id: true,
+                        url: true,
+                        altText: true,
+                        isPrimary: true,
+                        sortOrder: true,
+                    }
+                },
             },
             orderBy: {
                 [sortBy]: sortOrder,
@@ -554,6 +594,16 @@ export async function getMyRecipes(
                 instructions: { orderBy: { stepNumber: 'asc' } },
                 category: true,
                 ratings: true,
+                images: {
+                    orderBy: { sortOrder: 'asc' },
+                    select: {
+                        id: true,
+                        url: true,
+                        altText: true,
+                        isPrimary: true,
+                        sortOrder: true,
+                    }
+                },
             },
             orderBy: {
                 [sortBy || 'createdAt']: sortOrder || 'desc',
@@ -667,7 +717,17 @@ export async function getUserFavorites(
                         category: true,
                         ratings: true,
                         ingredients: true,
-                        instructions: true
+                        instructions: true,
+                        images: {
+                            orderBy: { sortOrder: 'asc' },
+                            select: {
+                                id: true,
+                                url: true,
+                                altText: true,
+                                isPrimary: true,
+                                sortOrder: true,
+                            }
+                        }
                     }
                 }
             },

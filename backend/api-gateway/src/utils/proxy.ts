@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import path from "path";
 
 dotenv.config({
-  path: path.resolve(__dirname, "../../../.env"),
+    path: path.resolve(__dirname, "../../../.env"),
 });
 
 export async function proxyRequest(
@@ -36,7 +36,7 @@ export async function proxyRequest(
         }
     };
 
-    if (['POST', 'PUT'].includes(request.method) && request.body) {
+    if (['POST', 'PUT', 'DELETE'].includes(request.method) && request.body) {
         options.headers["content-type"] = "application/json";
         options.body = JSON.stringify(request.body);
     }
@@ -77,6 +77,103 @@ export async function proxyHydrate(
         reply.status(status).send({
             status: "error",
             message
+        });
+    }
+}
+
+/**
+ * Proxy pour les requêtes multipart (upload de fichiers)
+ * Utilise le stream brut pour éviter de re-parser le multipart
+ */
+export async function proxyMultipart(
+    request: FastifyRequest,
+    reply: FastifyReply,
+    path: string,
+    serviceUrl: string
+) {
+    const url = new URL(`${serviceUrl}${path}`);
+    const query = request.query as Record<string, any>;
+    if (query) {
+        Object.keys(query).forEach(key => {
+            if (query[key] !== undefined) {
+                url.searchParams.append(key, String(query[key]));
+            }
+        });
+    }
+
+    try {
+        // Créer un nouveau FormData pour transférer au service
+        const FormData = (await import('form-data')).default;
+        const formData = new FormData();
+
+        const parts = request.parts();
+        let hasFile = false;
+
+        for await (const part of parts) {
+            if (part.type === 'file') {
+                hasFile = true;
+                const buffer = await part.toBuffer();
+                formData.append(part.fieldname, buffer, {
+                    filename: part.filename,
+                    contentType: part.mimetype
+                });
+            } else {
+                formData.append(part.fieldname, part.value);
+            }
+        }
+
+        if (!hasFile) {
+            return reply.status(400).send({
+                status: "error",
+                message: "No file uploaded"
+            });
+        }
+
+        // Utiliser une Promise pour gérer le submit de form-data
+        const responseData = await new Promise<{ statusCode: number; body: any }>((resolve, reject) => {
+            formData.submit({
+                protocol: 'http:',
+                host: new URL(serviceUrl).hostname,
+                port: new URL(serviceUrl).port || 80,
+                path: path,
+                method: 'POST',
+                headers: {
+                    "x-internal-api-key": process.env.INTERNAL_API_KEY!,
+                    ...(request.headers.authorization && {
+                        "authorization": request.headers.authorization
+                    }),
+                    ...(request.headers.cookie && {
+                        "cookie": request.headers.cookie
+                    })
+                }
+            }, (err, res) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+
+                let data = '';
+                res.on('data', (chunk) => {
+                    data += chunk;
+                });
+                res.on('end', () => {
+                    try {
+                        const body = JSON.parse(data);
+                        resolve({ statusCode: res.statusCode || 500, body });
+                    } catch {
+                        resolve({ statusCode: res.statusCode || 500, body: { message: data } });
+                    }
+                });
+                res.on('error', reject);
+            });
+        });
+
+        return reply.status(responseData.statusCode).send(responseData.body);
+    } catch (error: any) {
+        console.error('Multipart proxy error:', error);
+        return reply.status(500).send({
+            status: "error",
+            message: error.message || "Internal server error"
         });
     }
 }
