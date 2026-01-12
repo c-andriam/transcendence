@@ -1,0 +1,23 @@
+services:
+  modsecurity:
+    image: owasp/modsecurity-crs:4-nginx-alpine-202601060501
+    container_name: modsecurity
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    environment:
+      - PARANOIA_LEVEL=2
+      - ANOMALY_INBOUND=5
+      - ANOMALY_OUTBOUND=4
+      - BACKEND=http://mock-app:80
+      - MODSEC_RULE_ENGINE=On
+    volumes:
+       - ./conf/modsecurity-custom.conf:/etc/modsecurity.d/owasp-crs/rules/99-custom.conf
+       - ./certs/cert.pem:/etc/nginx/conf/server.crt:ro
+       - ./certs/key.pem:/etc/nginx/conf/server.key:ro
+
+  mock-app:
+    image: nginx:alpine
+    container_name: mock-app
+    volumes:
+      - ./conf/index-mock.html:/usr/share/nginx/html/index.html:ro
