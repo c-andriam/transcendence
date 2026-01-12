@@ -163,7 +163,7 @@ jobs:
 
           echo "Waiting for API Gateway to start..."
           for i in {1..60}; do
-            if curl -s http://localhost:3000/documentation > /dev/null 2>&1; then
+            if curl -s http://127.0.0.1:3000/documentation > /dev/null 2>&1; then
               echo "API Gateway is ready!"
               break
             fi
@@ -177,8 +177,14 @@ jobs:
             sleep 1
           done
 
-          curl -s http://localhost:3000/api/v1/json -o ../../openapi-spec.json || \
-          curl -s -H "x-gateway-api-key: github-actions-doc-generation" http://localhost:3000/api/v1/json -o ../../openapi-spec.json
+          # Fetch the actual OpenAPI spec from the correct endpoint
+          curl -s http://127.0.0.1:3000/documentation/json -o ../../openapi-spec.json || \
+          curl -s -H "x-gateway-api-key: github-actions-doc-generation" http://127.0.0.1:3000/documentation/json -o ../../openapi-spec.json
+
+          # Replace any remaining localhost with the production domain to avoid "Fetch error" in UI
+          sed -i 's/localhost:3000/cookshare.me/g' ../../openapi-spec.json
+          sed -i 's/http:\/\/localhost/https:\/\/cookshare.me/g' ../../openapi-spec.json
+          sed -i 's/http:\/\/127.0.0.1:3000/https:\/\/cookshare.me/g' ../../openapi-spec.json
 
           kill $SERVER_PID 2>/dev/null || true
 
