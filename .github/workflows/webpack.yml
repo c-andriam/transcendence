@@ -105,10 +105,6 @@ jobs:
           port: 5432
         id: postgres
 
-      - name: Generate Prisma client for API Gateway
-        run: npx prisma generate
-        working-directory: backend/api-gateway
-
       - name: Install Redoc CLI
         run: npm install -g @redocly/cli
 
