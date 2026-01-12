@@ -1,4 +1,5 @@
 import React from 'react';
+import Comment from './Comment'
 import { useState } from 'react';
 import { FiSend } from "react-icons/fi";
 import { SlUserFollow, SlUserFollowing } from "react-icons/sl";
@@ -87,8 +88,8 @@ const PostCard = () => {
                     <button
                         onClick={() => setIsFollowing(!isFollowing)}
                         className={`flex flex-row gap-2 items-center justify-center px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 ${isFollowing
-                            ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20'
-                            : 'bg-orange-500 text-white hover:bg-orange-600 shadow-lg shadow-orange-500/20'
+                            ? 'bg-emerald-500 text-white hover:bg-white/20 shadow-lg shadow-emerald-500/20'
+                            : 'bg-white/10 text-white border border-white/20 hover:bg-emerald-600'
                             }`}
                     >
                         {isFollowing ? <SlUserFollowing size={14} /> : <SlUserFollow size={14} />}
@@ -145,23 +146,38 @@ const PostCard = () => {
                 </div>
             </section>
             <section
-                className="post-card-end bg-blue-700 col-span-3"
+                className="post-card-end col-span-3 p-6 flex flex-col h-full"
             >
-                <p className='text-2xl font-semibold'>Commentaire</p>
-                <div className='flex flex-row gap-4 items-center justify-center'>
-                    <img src="../../public/images/users/Tom.png" alt="" className='w-12 h-12 rounded-full border bg-white/10' />
-                    <input
-                        type="text"
-                        placeholder='Commentez...'
-                        className='border-2 border-white/10
-                            placeholder:text-white/10 outline-none rounded-xl p-2'
-                    />
-                    <button>
-                        <FiSend className='text-white/10' size={24} />
-                    </button>
+                <p className='text-2xl font-semibold text-orange-200'>Commentaires</p>
+                <div className='flex justify-center mb-4' >
+                    <div className="w-full h-px bg-white/10"></div>
                 </div>
-            </section>
-        </div>
+                <div className='max-h-[400px] overflow-y-auto pr-2 gap-1 custom-scrollbar'>
+                    <Comment user={{ media: "../../public/images/users/David.png", username: "Mamisedra" }} coms={"J'ai tester le recette et ma famille a adorer"} date={"12-20-25"} />
+                    <Comment user={{ media: "../../public/images/users/David.png", username: "Mamisedra" }} coms={"J'ai tester le recette et ma famille a adorer"} date={"12-20-25"} />
+                    <Comment user={{ media: "../../public/images/users/David.png", username: "Mamisedra" }} coms={"J'ai tester le recette et ma famille a adorer"} date={"12-20-25"} />
+                    <Comment user={{ media: "../../public/images/users/David.png", username: "Mamisedra" }} coms={"J'ai tester le recette et ma famille a adorer"} date={"12-20-25"} />
+                    <Comment user={{ media: "../../public/images/users/David.png", username: "Mamisedra" }} coms={"J'ai tester le recette et ma famille a adorer"} date={"12-20-25"} />
+                    <Comment user={{ media: "../../public/images/users/David.png", username: "Mamisedra" }} coms={"J'ai tester le recette et ma famille a adorer"} date={"12-20-25"} />
+                </div>
+                <div className='mt-auto pt-5 border-t border-white/5 flex items-center justify-between'>
+                    <div className='flex flex-row gap-3 items-center justify-center'>
+                        <img src="../../public/images/users/Anna.png" alt="User" className='rounded-full border-2 border-orange-400/30 w-12 h-12 object-cover shadow-lg shadow-orange-500/10' />
+                        <input
+                            type="text"
+                            placeholder='Commentez...'
+                            className='border-2 border-white/10
+                            focus:border-orange-300
+                            placeholder:text-white/10 outline-none rounded-xl p-2'
+                        />
+                        <button className='flex items-center justify-center p-2.5 rounded-xl bg-white/5 text-slate-400 hover:bg-white/10 hover:text-orange-300 transition-all duration-300 group relative' title="Commenter">
+                            <FiSend size={24} />
+                            <span className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 text-[10px] text-white rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-white/10">Commenter</span>
+                        </button>
+                    </div>
+                </div>
+            </section >
+        </div >
     );
 }
 
