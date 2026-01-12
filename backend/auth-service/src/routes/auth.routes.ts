@@ -97,9 +97,11 @@ export async function authRoutes(app: FastifyInstance) {
     app.post("/refresh", async (request, reply) => {
         const refreshToken = request.cookies.refreshToken;
         if (!refreshToken) {
+            console.log("Refresh attempt failed: No refreshToken cookie found");
             return sendBadRequest(reply, "Refresh token is required");
         }
         try {
+            console.log("Attempting to refresh token...");
             const result = await refreshAccessToken(refreshToken);
             const accessToken = app.jwt.sign(
                 {
@@ -119,8 +121,9 @@ export async function authRoutes(app: FastifyInstance) {
             });
             sendSuccess(reply, { accessToken }, 'Access token refreshed successfully');
         } catch (error: any) {
+            console.error("Refresh failed error:", error.message);
             app.log.error(error);
-            sendError(reply, "Refresh failed", HttpStatus.UNAUTHORIZED);
+            sendError(reply, `Refresh failed: ${error.message}`, HttpStatus.UNAUTHORIZED);
         }
     });
 

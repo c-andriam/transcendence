@@ -9,7 +9,7 @@ import dotenv from "dotenv";
 import path from "path";
 
 dotenv.config({
-  path: path.resolve(__dirname, "../../../.env"),
+    path: path.resolve(__dirname, "../../../.env"),
 });
 
 const DOMAIN = process.env.DOMAIN;
@@ -135,7 +135,7 @@ export async function forgotPasswordByEmailIdentifier(email: string) {
     if (result.status === 'error' || !result.data) {
         return;
     }
-    
+
     const { user, resetToken } = result.data;
     await fetch(`${NOTIFICATION_SERVICE_URL}/api/v1/internal/send-reset-email`, {
         method: 'POST',
@@ -170,7 +170,7 @@ export async function resetPassword(token: string, newPassword: string) {
         },
         body: JSON.stringify({ userId: user.id, newPassword })
     });
-    
+
     if (!updateResponse.ok) {
         throw new Error('Failed to update password');
     }
@@ -188,10 +188,17 @@ export async function createRefreshToken(userId: string, username: string): Prom
 
 export async function refreshAccessToken(refreshToken: string): Promise<{ userId: string; username: string; refreshToken: string }> {
     const hashedToken = createHash('sha256').update(refreshToken).digest('hex');
+    console.log("Hashed token for lookup:", hashedToken);
     const storedToken = await prisma.refreshToken.findUnique({ where: { token: hashedToken } });
-    if (!storedToken || storedToken.expiresAt < new Date()) {
+    if (!storedToken) {
+        console.log("Token not found in database for hash:", hashedToken);
         throw new BadRequestError('Invalid or expired refresh token');
     }
+    if (storedToken.expiresAt < new Date()) {
+        console.log("Token expired at:", storedToken.expiresAt);
+        throw new BadRequestError('Invalid or expired refresh token');
+    }
+    console.log("Token found for user:", storedToken.userId);
     await prisma.refreshToken.delete({ where: { token: hashedToken } });
     const newRefreshToken = await createRefreshToken(storedToken.userId, storedToken.username);
     return { userId: storedToken.userId, username: storedToken.username, refreshToken: newRefreshToken };
