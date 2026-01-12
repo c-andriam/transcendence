@@ -33,16 +33,31 @@ const NotificationUI = () => {
 
             {/* Menu déroulant */}
             {isOpen && (
-                <div className="absolute px-4 right-0 mt-2 w-116 bg-[#18191a] border border-gray-800 rounded-xl shadow-2xl z-50 animate-in fade-in zoom-in duration-200">
+                <div
+                    className="absolute px-4 right-0 mt-2 w-116
+                        md:w-[450px] bg-[#18191a]
+                        border border-gray-800
+                        rounded-xl shadow-2xl z-50
+                        animate-in fade-in zoom-in
+                        duration-200 py-4"
+                >
                     <div className="flex justify-between items-center">
                         <div className="p-4 font-bold text-white tracking-wider">Notifications</div>
                         <button className="text-xs text-orange-500 hover:underline focus:outline-none">Mark as read</button>
                     </div>
-                    <div className="w-full h-px bg-gray-600"></div>
-                    <div className="p-4 text-gray-500 text-sm italic">Aucune nouvelle recette...</div>
+                    <div className="w-full h-px bg-gray-600" />
+                    <div className='max-h-[400px] overflow-y-auto custom-scrollbar'>
+                        <div className='flex flex-col gap-1'>
+                            <NotificationLine username="Chef Thomas R." userprofil="/images/users/Tom.png" notification="adore votre recette de" title="Pâtes Carbonara" />
+                            <NotificationLine username="Chef Thomas R." userprofil="/images/users/Tom.png" notification="viens de vous suivre" />
+                            <NotificationLine username="Chef Thomas R." userprofil="/images/users/Tom.png" notification="viens de commenter votre recette de" title="Pâtes Carbonara" />
+                            <NotificationLine username="Chef Thomas R." userprofil="/images/users/Tom.png" notification="viens de publier une nouveau recette de" title="Pâtes Carbonara" />
+                        </div>
+                        <div className="p-4 text-gray-500 text-sm italic">Aucune nouvelle recette...</div>
+                    </div>
                 </div>
             )}
-        </div>
+        </div >
     );
 }
 export default NotificationUI
