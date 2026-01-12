@@ -10,7 +10,7 @@ datasource db {
 // ==================== RECETTES ====================
 
 model Recipe {
-    id          String     @id @default(cuid())
+    id          String     @id @default(uuid())
     title       String
     slug        String     @unique
     description String
@@ -54,7 +54,7 @@ enum Difficulty {
 }
 
 model Category {
-    id        String  @id @default(cuid())
+    id        String  @id @default(uuid())
     name      String  @unique // Plats, Entrés, Desserts, Boissons... 
     slug      String  @unique
     iconName  String?
@@ -71,7 +71,7 @@ model Category {
 // ==================== INGRÉDIENTS ====================
 
 model RecipeIngredient {
-    id           String  @id @default(cuid())
+    id           String  @id @default(uuid())
     name         String // "Poulet", "Crème fraîche", "Épices tikka"
     quantityText String // "500g", "200ml", "2 c.s"
     sortOrder    Int     @default(0)
@@ -88,7 +88,7 @@ model RecipeIngredient {
 // ==================== INSTRUCTIONS ====================
 
 model Instruction {
-    id          String @id @default(cuid())
+    id          String @id @default(uuid())
     stepNumber  Int // 1, 2, 3... 
     description String // Texte de l'étape
 
@@ -104,7 +104,7 @@ model Instruction {
 // ==================== IMAGES ====================
 
 model RecipeImage {
-    id        String  @id @default(cuid())
+    id        String  @id @default(uuid())
     url       String
     altText   String?
     isPrimary Boolean @default(false)
@@ -121,7 +121,7 @@ model RecipeImage {
 // ==================== RÉGIMES ALIMENTAIRES ====================
 
 model DietaryTag {
-    id       String  @id @default(cuid())
+    id       String  @id @default(uuid())
     name     String  @unique // Végétarien, Végan, Sans gluten... 
     slug     String  @unique
     iconName String?
@@ -134,7 +134,7 @@ model DietaryTag {
 }
 
 model RecipeDietaryTag {
-    id String @id @default(cuid())
+    id String @id @default(uuid())
 
     recipeId String
     recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
@@ -152,7 +152,7 @@ model RecipeDietaryTag {
 // ==================== AVIS & COMMENTAIRES ====================
 
 model Rating {
-    id        String   @id @default(cuid())
+    id        String   @id @default(uuid())
     score     Int // 1-5 étoiles
     createdAt DateTime @default(now())
 
@@ -169,7 +169,7 @@ model Rating {
 }
 
 model Comment {
-    id        String   @id @default(cuid())
+    id        String   @id @default(uuid())
     content   String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -193,7 +193,7 @@ model Comment {
 // ==================== FAVORIS ====================
 
 model Favorite {
-    id        String   @id @default(cuid())
+    id        String   @id @default(uuid())
     createdAt DateTime @default(now())
 
     userId String // Référence ID vers le User Service

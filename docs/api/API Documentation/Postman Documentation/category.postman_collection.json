@@ -1,0 +1,881 @@
+{
+	"info": {
+		"_postman_id": "ac176bf0-7365-46b1-81c6-94b686290492",
+		"name": "category",
+		"description": "# Category API\n\n## Overview\n\nThe Category API provides endpoints for managing recipe categories in the system. Categories help organize recipes into logical groups, making it easier for users to browse and discover recipes by type (e.g., Desserts, Main Dishes, Soups, Salads).\n\nEach category includes:\n- **Name**: Display name of the category\n- **Slug**: URL-friendly identifier for the category\n- **Icon**: Emoji or icon representing the category\n- **Color**: Hex color code for visual theming\n- **Sort Order**: Numeric value for ordering categories in lists\n\n## Base URL\n\n```\nhttp://localhost:3000/api/v1\n```\n\n## Authentication\n\nAll endpoints require authentication using an API key passed in the request header:\n\n```\nx-gateway-api-key: your-api-key-here\n```\n\nTo obtain an API key, please use the API Key Generator endpoint or contact your system administrator.\n\n## Endpoints\n\n### 1. Create Category\n**POST** `/categories`\n\nCreates a new category in the system.\n\n**Required Fields:**\n- `name` (string): Category name\n- `slug` (string): URL-friendly identifier (must be unique)\n\n**Optional Fields:**\n- `icon` (string): Emoji or icon\n- `color` (string): Hex color code\n- `sortOrder` (number): Display order\n\n**Success Response:** `201 Created` with category object\n\n**Error Responses:**\n- `422 Unprocessable Entity`: Validation errors (missing required fields)\n- `409 Conflict`: Duplicate slug already exists\n\n---\n\n### 2. Get All Categories\n**GET** `/categories`\n\nRetrieves a list of all categories in the system, ordered by `sortOrder`.\n\n**Success Response:** `200 OK` with array of category objects (or empty array if none exist)\n\n---\n\n### 3. Get Category by ID\n**GET** `/categories/:id`\n\nRetrieves a single category by its unique identifier.\n\n**Path Parameters:**\n- `id` (UUID): Category identifier\n\n**Success Response:** `200 OK` with category object\n\n**Error Response:** `404 Not Found` if category doesn't exist\n\n---\n\n### 4. Get Category by Slug\n**GET** `/categories/by-slug/:slug`\n\nRetrieves a single category by its slug (URL-friendly identifier).\n\n**Path Parameters:**\n- `slug` (string): Category slug\n\n**Success Response:** `200 OK` with category object\n\n**Error Response:** `404 Not Found` if category doesn't exist\n\n---\n\n### 5. Update Category\n**PUT** `/categories/:id`\n\nUpdates an existing category. Only provided fields will be updated.\n\n**Path Parameters:**\n- `id` (UUID): Category identifier\n\n**Updatable Fields:**\n- `name` (string): Category name\n- `icon` (string): Emoji or icon\n- `color` (string): Hex color code\n- `sortOrder` (number): Display order\n\n**Note:** The `slug` field cannot be updated after creation.\n\n**Success Response:** `200 OK` with updated category object\n\n**Error Responses:**\n- `404 Not Found`: Category doesn't exist\n- `422 Unprocessable Entity`: Validation errors\n\n---\n\n### 6. Delete Category\n**DELETE** `/categories/:id`\n\nPermanently deletes a category from the system.\n\n**Path Parameters:**\n- `id` (UUID): Category identifier\n\n**Success Response:** `204 No Content` (empty response body)\n\n**Error Response:** `404 Not Found` if category doesn't exist\n\n**Warning:** Deleting a category may affect associated recipes. Ensure proper cleanup or reassignment before deletion.\n\n## Category Object Schema\n\n```json\n{\n  \"id\": \"uuid\",\n  \"name\": \"string\",\n  \"slug\": \"string\",\n  \"icon\": \"string\",\n  \"color\": \"string (hex)\",\n  \"sortOrder\": \"number\",\n  \"createdAt\": \"ISO 8601 timestamp\",\n  \"updatedAt\": \"ISO 8601 timestamp\"\n}\n```\n\n## Common Error Codes\n\n- **400 Bad Request**: Malformed request syntax\n- **401 Unauthorized**: Missing or invalid API key\n- **404 Not Found**: Resource doesn't exist\n- **409 Conflict**: Resource conflict (e.g., duplicate slug)\n- **422 Unprocessable Entity**: Validation errors\n- **500 Internal Server Error**: Server-side error\n\n## Best Practices\n\n1. **Unique Slugs**: Always ensure category slugs are unique and URL-friendly (lowercase, hyphens instead of spaces)\n2. **Sort Order**: Use incremental values (e.g., 1, 2, 3) for easy reordering\n3. **Color Codes**: Use valid hex color codes (e.g., #FF6B9D)\n4. **Icons**: Use single emoji characters for consistency\n5. **Error Handling**: Always check response status codes and handle errors appropriately\n\n## Rate Limiting\n\nAPI requests may be subject to rate limiting. Check response headers for rate limit information.\n\n## Support\n\nFor additional support or questions about the Category API, please contact the development team or refer to the main API documentation.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "50943411",
+		"_collection_link": "https://candriam-42-37777.postman.co/workspace/d19c8590-e7b6-4268-86ac-611904acc525/collection/50943411-ac176bf0-7365-46b1-81c6-94b686290492?action=share&source=collection_link&creator=50943411"
+	},
+	"item": [
+		{
+			"name": "create-category",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "x-gateway-api-key",
+						"value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Apéritifs\",\n  \"iconName\": \"wine-glass\",\n  \"color\": \"#FF6B6B\",\n  \"sortOrder\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/v1/categories",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"categories"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Conflict - Duplicate Slug",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "x-gateway-api-key",
+								"value": "your-api-key-here"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Main Dishes\",\n  \"slug\": \"plats-principaux\",\n  \"icon\": \"🍽️\",\n  \"color\": \"#4CAF50\",\n  \"sortOrder\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/categories",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"categories"
+							]
+						}
+					},
+					"status": "Conflict",
+					"code": 409,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": ""
+						},
+						{
+							"key": "x-gateway-api-key",
+							"value": "your-api-key-here",
+							"description": ""
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"error\": {\n    \"code\": \"DUPLICATE_SLUG\",\n    \"message\": \"A category with this slug already exists\",\n    \"details\": {\n      \"slug\": \"plats-principaux\",\n      \"existingCategoryId\": \"a417822c-e7e9-4b06-812a-a641c4137d37\"\n    }\n  }\n}"
+				},
+				{
+					"name": "Validation Error - Missing Required Fields",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "x-gateway-api-key",
+								"value": "your-api-key-here"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"icon\": \"🍰\",\n  \"color\": \"#FF6B9D\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/categories",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"categories"
+							]
+						}
+					},
+					"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+					"code": 422,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": ""
+						},
+						{
+							"key": "x-gateway-api-key",
+							"value": "your-api-key-here",
+							"description": ""
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"error\": {\n    \"code\": \"VALIDATION_ERROR\",\n    \"message\": \"Request validation failed\",\n    \"details\": {\n      \"name\": \"Name is required\",\n      \"slug\": \"Slug is required\"\n    }\n  }\n}"
+				},
+				{
+					"name": "Success - Category Created",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "x-gateway-api-key",
+								"value": "your-api-key-here"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Desserts\",\n  \"slug\": \"desserts\",\n  \"icon\": \"🍰\",\n  \"color\": \"#FF6B9D\",\n  \"sortOrder\": 5\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/categories",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"categories"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": ""
+						},
+						{
+							"key": "x-gateway-api-key",
+							"value": "your-api-key-here",
+							"description": ""
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"id\": \"b528943d-f8a1-4c2e-9d3b-7e4f5a6c8d9e\",\n  \"name\": \"Desserts\",\n  \"slug\": \"desserts\",\n  \"icon\": \"🍰\",\n  \"color\": \"#FF6B9D\",\n  \"sortOrder\": 5,\n  \"createdAt\": \"2024-01-15T10:30:00.000Z\",\n  \"updatedAt\": \"2024-01-15T10:30:00.000Z\"\n}"
+				}
+			]
+		},
+		{
+			"name": "delete-category-id",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-gateway-api-key",
+						"value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+						"type": "default"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/api/v1/categories/a417822c-e7e9-4b06-812a-a641c4137d37",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"categories",
+						"a417822c-e7e9-4b06-812a-a641c4137d37"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Not Found - Invalid Category ID",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "x-gateway-api-key",
+								"value": "your-api-key-here"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/categories/99999999-0000-0000-0000-000000000000",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"categories",
+								"99999999-0000-0000-0000-000000000000"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "x-gateway-api-key",
+							"value": "your-api-key-here",
+							"description": ""
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"error\": {\n    \"code\": \"CATEGORY_NOT_FOUND\",\n    \"message\": \"Category not found\",\n    \"details\": {\n      \"categoryId\": \"99999999-0000-0000-0000-000000000000\"\n    }\n  }\n}"
+				}
+			]
+		},
+		{
+			"name": "read-categories",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					},
+					{
+						"key": "x-gateway-api-key",
+						"value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+						"type": "default"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/api/v1/categories",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"categories"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Success - Multiple Categories",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-gateway-api-key",
+								"value": "your-api-key-here"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/categories",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"categories"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "x-gateway-api-key",
+							"value": "your-api-key-here",
+							"description": ""
+						}
+					],
+					"cookie": [],
+					"body": "[\n  {\n    \"id\": \"a417822c-e7e9-4b06-812a-a641c4137d37\",\n    \"name\": \"Plats Principaux\",\n    \"slug\": \"plats-principaux\",\n    \"icon\": \"🍽️\",\n    \"color\": \"#4CAF50\",\n    \"sortOrder\": 1,\n    \"createdAt\": \"2024-01-10T08:00:00.000Z\",\n    \"updatedAt\": \"2024-01-10T08:00:00.000Z\"\n  },\n  {\n    \"id\": \"c8f2a3b1-9d4e-4f5a-8b6c-7d9e0f1a2b3c\",\n    \"name\": \"Entrées\",\n    \"slug\": \"entrees\",\n    \"icon\": \"🥗\",\n    \"color\": \"#8BC34A\",\n    \"sortOrder\": 2,\n    \"createdAt\": \"2024-01-10T08:05:00.000Z\",\n    \"updatedAt\": \"2024-01-10T08:05:00.000Z\"\n  },\n  {\n    \"id\": \"d9e3b4c2-0e5f-5a6b-9c7d-8e0f1a2b3c4d\",\n    \"name\": \"Soupes\",\n    \"slug\": \"soupes\",\n    \"icon\": \"🍲\",\n    \"color\": \"#FF9800\",\n    \"sortOrder\": 3,\n    \"createdAt\": \"2024-01-10T08:10:00.000Z\",\n    \"updatedAt\": \"2024-01-10T08:10:00.000Z\"\n  },\n  {\n    \"id\": \"e0f4c5d3-1f6a-6b7c-0d8e-9f0a1b2c3d4e\",\n    \"name\": \"Salades\",\n    \"slug\": \"salades\",\n    \"icon\": \"🥙\",\n    \"color\": \"#CDDC39\",\n    \"sortOrder\": 4,\n    \"createdAt\": \"2024-01-10T08:15:00.000Z\",\n    \"updatedAt\": \"2024-01-10T08:15:00.000Z\"\n  },\n  {\n    \"id\": \"b528943d-f8a1-4c2e-9d3b-7e4f5a6c8d9e\",\n    \"name\": \"Desserts\",\n    \"slug\": \"desserts\",\n    \"icon\": \"🍰\",\n    \"color\": \"#FF6B9D\",\n    \"sortOrder\": 5,\n    \"createdAt\": \"2024-01-15T10:30:00.000Z\",\n    \"updatedAt\": \"2024-01-15T10:30:00.000Z\"\n  }\n]"
+				},
+				{
+					"name": "Success - Empty Categories",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-gateway-api-key",
+								"value": "your-api-key-here"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/categories",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"categories"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "x-gateway-api-key",
+							"value": "your-api-key-here",
+							"description": ""
+						}
+					],
+					"cookie": [],
+					"body": "[]"
+				}
+			]
+		},
+		{
+			"name": "read-category-by-slug",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-gateway-api-key",
+						"value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+						"type": "default"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/api/v1/categories/by-slug/plats-principaux",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"categories",
+						"by-slug",
+						"plats-principaux"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Success - Category Found",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-gateway-api-key",
+								"value": "your-api-key-here"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/categories/by-slug/plats-principaux",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"categories",
+								"by-slug",
+								"plats-principaux"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "x-gateway-api-key",
+							"value": "your-api-key-here",
+							"description": ""
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"id\": \"a417822c-e7e9-4b06-812a-a641c4137d37\",\n  \"name\": \"Plats Principaux\",\n  \"slug\": \"plats-principaux\",\n  \"icon\": \"🍽️\",\n  \"color\": \"#4CAF50\",\n  \"sortOrder\": 1,\n  \"createdAt\": \"2024-01-10T08:00:00.000Z\",\n  \"updatedAt\": \"2024-01-10T08:00:00.000Z\"\n}"
+				},
+				{
+					"name": "Not Found - Invalid Slug",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-gateway-api-key",
+								"value": "your-api-key-here"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/categories/by-slug/non-existent-category",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"categories",
+								"by-slug",
+								"non-existent-category"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "x-gateway-api-key",
+							"value": "your-api-key-here",
+							"description": ""
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"error\": {\n    \"code\": \"CATEGORY_NOT_FOUND\",\n    \"message\": \"Category not found\",\n    \"details\": {\n      \"slug\": \"non-existent-category\"\n    }\n  }\n}"
+				}
+			]
+		},
+		{
+			"name": "read-category-id",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-gateway-api-key",
+						"value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+						"type": "default"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3000/api/v1/categories/a417822c-e7e9-4b06-812a-a641c4137d37",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"categories",
+						"a417822c-e7e9-4b06-812a-a641c4137d37"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Success - Category Found",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-gateway-api-key",
+								"value": "your-api-key-here"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/categories/b528943d-f8a1-4c2e-9d3b-7e4f5a6c8d9e",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"categories",
+								"b528943d-f8a1-4c2e-9d3b-7e4f5a6c8d9e"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "x-gateway-api-key",
+							"value": "your-api-key-here",
+							"description": ""
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"id\": \"b528943d-f8a1-4c2e-9d3b-7e4f5a6c8d9e\",\n  \"name\": \"Desserts\",\n  \"slug\": \"desserts\",\n  \"icon\": \"🍰\",\n  \"color\": \"#FF6B9D\",\n  \"sortOrder\": 5,\n  \"createdAt\": \"2024-01-15T10:30:00.000Z\",\n  \"updatedAt\": \"2024-01-15T10:30:00.000Z\"\n}"
+				},
+				{
+					"name": "Not Found - Invalid Category ID",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-gateway-api-key",
+								"value": "your-api-key-here"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/categories/99999999-0000-0000-0000-000000000000",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"categories",
+								"99999999-0000-0000-0000-000000000000"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "x-gateway-api-key",
+							"value": "your-api-key-here",
+							"description": ""
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"error\": {\n    \"code\": \"CATEGORY_NOT_FOUND\",\n    \"message\": \"Category not found\",\n    \"details\": {\n      \"categoryId\": \"99999999-0000-0000-0000-000000000000\"\n    }\n  }\n}"
+				}
+			]
+		},
+		{
+			"name": "update-category-id",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-gateway-api-key",
+						"value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+						"type": "default"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Apéritifs\",\n  \"iconName\": \"wine-glass\",\n  \"color\": \"#FF6B6C\",\n  \"sortOrder\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/v1/categories/a417822c-e7e9-4b06-812a-a641c4137d37",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"categories",
+						"a417822c-e7e9-4b06-812a-a641c4137d37"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Success - Category Updated",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "x-gateway-api-key",
+								"value": "your-api-key-here"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Desserts & Sweets\",\n  \"icon\": \"🍮\",\n  \"color\": \"#E91E63\",\n  \"sortOrder\": 10\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/categories/b528943d-f8a1-4c2e-9d3b-7e4f5a6c8d9e",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"categories",
+								"b528943d-f8a1-4c2e-9d3b-7e4f5a6c8d9e"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": ""
+						},
+						{
+							"key": "x-gateway-api-key",
+							"value": "your-api-key-here",
+							"description": ""
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"id\": \"b528943d-f8a1-4c2e-9d3b-7e4f5a6c8d9e\",\n  \"name\": \"Desserts & Sweets\",\n  \"slug\": \"desserts\",\n  \"icon\": \"🍮\",\n  \"color\": \"#E91E63\",\n  \"sortOrder\": 10,\n  \"createdAt\": \"2024-01-15T10:30:00.000Z\",\n  \"updatedAt\": \"2024-01-16T14:20:00.000Z\"\n}"
+				},
+				{
+					"name": "Validation Error - Invalid Data",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "x-gateway-api-key",
+								"value": "your-api-key-here"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"\",\n  \"sortOrder\": \"invalid\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/categories/b528943d-f8a1-4c2e-9d3b-7e4f5a6c8d9e",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"categories",
+								"b528943d-f8a1-4c2e-9d3b-7e4f5a6c8d9e"
+							]
+						}
+					},
+					"status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+					"code": 422,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": ""
+						},
+						{
+							"key": "x-gateway-api-key",
+							"value": "your-api-key-here",
+							"description": ""
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"error\": {\n    \"code\": \"VALIDATION_ERROR\",\n    \"message\": \"Request validation failed\",\n    \"details\": {\n      \"name\": \"Name cannot be empty\",\n      \"sortOrder\": \"Sort order must be a valid number\"\n    }\n  }\n}"
+				},
+				{
+					"name": "Not Found - Invalid Category ID",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "x-gateway-api-key",
+								"value": "your-api-key-here"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Updated Category\",\n  \"color\": \"#2196F3\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/categories/99999999-0000-0000-0000-000000000000",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"categories",
+								"99999999-0000-0000-0000-000000000000"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": ""
+						},
+						{
+							"key": "x-gateway-api-key",
+							"value": "your-api-key-here",
+							"description": ""
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"error\": {\n    \"code\": \"CATEGORY_NOT_FOUND\",\n    \"message\": \"Category not found\",\n    \"details\": {\n      \"categoryId\": \"99999999-0000-0000-0000-000000000000\"\n    }\n  }\n}"
+				}
+			]
+		}
+	]
+}

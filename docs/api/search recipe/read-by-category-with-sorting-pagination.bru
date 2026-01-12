@@ -1,0 +1,27 @@
+meta {
+  name: read-by-category-with-sorting-pagination
+  type: http
+  seq: 10
+}
+
+get {
+  url: http://localhost:3000/api/v1/recipes/category/eaebd183-a430-4fbc-93ed-7958bcb52330?sortBy=prepTime&sortOrder=asc&page=1&limit=10
+  body: none
+  auth: inherit
+}
+
+params:query {
+  sortBy: prepTime
+  sortOrder: asc
+  page: 1
+  limit: 10
+}
+
+headers {
+  x-gateway-api-key: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

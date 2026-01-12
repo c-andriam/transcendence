@@ -1,0 +1,275 @@
+{
+  "info": {
+    "name": "recipe",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "create-recipe",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false,
+            "type": "default"
+          },
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": {
+            "key": "token",
+            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM1ZDFlMWYxLTM0ZDgtNGM5Yy1hZmRlLTU5ZmVkN2Q5MzM4MSIsInVzZXJuYW1lIjoiY2FuZHJpYW0iLCJpYXQiOjE3NjgwOTc0NzYsImV4cCI6MTc2ODA5ODM3Nn0.nG0-54-1ukZqINc1SqWHIMuxHCyh8r9Adl1_lsjCiSs",
+            "type": "string"
+          }
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/recipes",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "recipes"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"title\": \"Poulet Tikka Masala\",\n    \"description\": \"Un délicieux plat indien crémeux et épicé, parfait pour un dîner en famille. Le poulet est mariné dans des épices et du yaourt, puis cuit dans une sauce tomate onctueuse.\",\n    \"prepTime\": 30,\n    \"cookTime\": 45,\n    \"servings\": 4,\n    \"difficulty\": \"MEDIUM\",\n    \"isPublished\": true,\n    \"authorId\": \"35d1e1f1-34d8-4c9c-afde-59fed7d93381\",\n    \"categoryId\": \"76201871-6a2c-4060-a112-e91dee221b75\",\n    \"ingredients\": [\n        { \"name\": \"Poulet\", \"quantityText\": \"500g\", \"isOptional\": false },\n        { \"name\": \"Yaourt nature\", \"quantityText\": \"200g\", \"isOptional\": false },\n        { \"name\": \"Crème fraîche\", \"quantityText\": \"200ml\", \"isOptional\": false },\n        { \"name\": \"Tomates concassées\", \"quantityText\": \"400g\", \"isOptional\": false },\n        { \"name\": \"Oignon\", \"quantityText\": \"1 gros\", \"isOptional\": false },\n        { \"name\": \"Ail\", \"quantityText\": \"3 gousses\", \"isOptional\": false },\n        { \"name\": \"Gingembre\", \"quantityText\": \"2 cm\", \"isOptional\": false },\n        { \"name\": \"Épices tikka masala\", \"quantityText\": \"2 c.s\", \"isOptional\": false },\n        { \"name\": \"Curcuma\", \"quantityText\": \"1 c.c\", \"isOptional\": false },\n        { \"name\": \"Coriandre fraîche\", \"quantityText\": \"1 bouquet\", \"isOptional\": true }\n    ],\n    \"instructions\": [\n        { \"stepNumber\": 1, \"description\": \"Couper le poulet en morceaux et le faire mariner dans le yaourt avec les épices pendant 2 heures minimum.\" },\n        { \"stepNumber\": 2, \"description\": \"Émincer l'oignon, hacher l'ail et le gingembre.\" },\n        { \"stepNumber\": 3, \"description\": \"Dans une poêle, faire revenir l'oignon jusqu'à ce qu'il soit doré.\" },\n        { \"stepNumber\": 4, \"description\": \"Ajouter l'ail et le gingembre, cuire 1 minute.\" },\n        { \"stepNumber\": 5, \"description\": \"Ajouter le poulet mariné et le faire dorer de tous les côtés.\" },\n        { \"stepNumber\": 6, \"description\": \"Incorporer les tomates concassées et les épices restantes. Laisser mijoter 20 minutes.\" },\n        { \"stepNumber\": 7, \"description\": \"Ajouter la crème fraîche, mélanger et cuire encore 5 minutes.\" },\n        { \"stepNumber\": 8, \"description\": \"Servir chaud avec du riz basmati, garni de coriandre fraîche.\" }\n    ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "delete-recipe",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": true,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": {
+            "key": "token",
+            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM1ZDFlMWYxLTM0ZDgtNGM5Yy1hZmRlLTU5ZmVkN2Q5MzM4MSIsInVzZXJuYW1lIjoiY2FuZHJpYW0iLCJpYXQiOjE3NjgwOTc0NzYsImV4cCI6MTc2ODA5ODM3Nn0.nG0-54-1ukZqINc1SqWHIMuxHCyh8r9Adl1_lsjCiSs",
+            "type": "string"
+          }
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/recipes/efabc8cf-6e97-4519-b2fb-efc7624978d0",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "recipes",
+            "efabc8cf-6e97-4519-b2fb-efc7624978d0"
+          ],
+          "query": [],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "read-recipes-by-slug",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": true,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/recipes/by-slug/poulet-tikka-masala",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "recipes",
+            "by-slug",
+            "poulet-tikka-masala"
+          ],
+          "query": [],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "read-recipes-id",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": true,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/recipes/efabc8cf-6e97-4519-b2fb-efc7624978d0",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "recipes",
+            "efabc8cf-6e97-4519-b2fb-efc7624978d0"
+          ],
+          "query": [],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "read-recipes",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": true,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/recipes",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "recipes"
+          ],
+          "query": [],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "update-recipe",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false,
+            "type": "default"
+          },
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": {
+            "key": "token",
+            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM1ZDFlMWYxLTM0ZDgtNGM5Yy1hZmRlLTU5ZmVkN2Q5MzM4MSIsInVzZXJuYW1lIjoiY2FuZHJpYW0iLCJpYXQiOjE3NjgwOTc0NzYsImV4cCI6MTc2ODA5ODM3Nn0.nG0-54-1ukZqINc1SqWHIMuxHCyh8r9Adl1_lsjCiSs",
+            "type": "string"
+          }
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/recipes/efabc8cf-6e97-4519-b2fb-efc7624978d0",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "recipes",
+            "efabc8cf-6e97-4519-b2fb-efc7624978d0"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"title\": \"Poulet Tikka Masala\",\n    \"description\": \"Un délicieux plat indien crémeux et épicé, parfait pour un dîner en famille. Le poulet est mariné dans des épices et du yaourt, puis cuit dans une sauce tomate onctueuse.\",\n    \"prepTime\": 30,\n    \"cookTime\": 45,\n    \"servings\": 4,\n    \"difficulty\": \"MEDIUM\",\n    \"isPublished\": true,\n    \"categoryId\": \"76201871-6a2c-4060-a112-e91dee221b75\",\n    \"ingredients\": [\n        { \"name\": \"Poulet\", \"quantityText\": \"500g\", \"isOptional\": false },\n        { \"name\": \"Yaourt nature\", \"quantityText\": \"200g\", \"isOptional\": false },\n        { \"name\": \"Crème fraîche\", \"quantityText\": \"200ml\", \"isOptional\": false },\n        { \"name\": \"Tomates concassées\", \"quantityText\": \"400g\", \"isOptional\": false },\n        { \"name\": \"Oignon\", \"quantityText\": \"1 gros\", \"isOptional\": false },\n        { \"name\": \"Ail\", \"quantityText\": \"3 gousses\", \"isOptional\": false },\n        { \"name\": \"Gingembre\", \"quantityText\": \"2 cm\", \"isOptional\": false },\n        { \"name\": \"Épices tikka masala\", \"quantityText\": \"2 c.s\", \"isOptional\": false },\n        { \"name\": \"Curcuma\", \"quantityText\": \"1 c.c\", \"isOptional\": false },\n        { \"name\": \"Coriandre fraîche\", \"quantityText\": \"1 bouquet\", \"isOptional\": true }\n    ],\n    \"instructions\": [\n        { \"stepNumber\": 1, \"description\": \"Couper le poulet en morceaux et le faire mariner dans le yaourt avec les épices pendant 2 heures minimum.\" },\n        { \"stepNumber\": 2, \"description\": \"Émincer l'oignon, hacher l'ail et le gingembre.\" },\n        { \"stepNumber\": 3, \"description\": \"Dans une poêle, faire revenir l'oignon jusqu'à ce qu'il soit doré.\" },\n        { \"stepNumber\": 4, \"description\": \"Ajouter l'ail et le gingembre, cuire 1 minute.\" },\n        { \"stepNumber\": 5, \"description\": \"Ajouter le poulet mariné et le faire dorer de tous les côtés.\" },\n        { \"stepNumber\": 6, \"description\": \"Incorporer les tomates concassées et les épices restantes. Laisser mijoter 20 minutes.\" },\n        { \"stepNumber\": 7, \"description\": \"Ajouter la crème fraîche, mélanger et cuire encore 5 minutes.\" },\n        { \"id\": \"5c7b4ebb-f915-4b2e-bf07-9a50529f89d8\", \"stepNumber\": 8, \"description\": \"Servir chaud avec du riz, garni de coriandre fraîche.\" }\n    ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "variable": []
+}

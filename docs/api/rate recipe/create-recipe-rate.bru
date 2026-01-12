@@ -1,0 +1,32 @@
+meta {
+  name: create-recipe-rate
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3000/api/v1/recipes/efabc8cf-6e97-4519-b2fb-efc7624978d0/rate
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+  x-gateway-api-key: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM1ZDFlMWYxLTM0ZDgtNGM5Yy1hZmRlLTU5ZmVkN2Q5MzM4MSIsInVzZXJuYW1lIjoiY2FuZHJpYW0iLCJpYXQiOjE3NjgxMDA5MjYsImV4cCI6MTc2ODEwMTgyNn0.adIwupuDT9bBTaFd5P6RQz25Uxtn2A9Yxfvym0FHd_k
+}
+
+body:json {
+  {
+      "userId": "35d1e1f1-34d8-4c9c-afde-59fed7d93381",
+      "score": 4
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

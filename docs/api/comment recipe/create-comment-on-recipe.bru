@@ -1,0 +1,31 @@
+meta {
+  name: create-comment-on-recipe
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:3000/api/v1/recipes/efabc8cf-6e97-4519-b2fb-efc7624978d0/comments
+  body: json
+  auth: bearer
+}
+
+headers {
+  x-gateway-api-key: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM1ZDFlMWYxLTM0ZDgtNGM5Yy1hZmRlLTU5ZmVkN2Q5MzM4MSIsInVzZXJuYW1lIjoiY2FuZHJpYW0iLCJpYXQiOjE3NjgwOTc0NzYsImV4cCI6MTc2ODA5ODM3Nn0.nG0-54-1ukZqINc1SqWHIMuxHCyh8r9Adl1_lsjCiSs
+}
+
+body:json {
+  {
+      "content": "Cette recette est délicieuse ! Merci pour le partage."
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

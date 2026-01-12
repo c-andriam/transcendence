@@ -1,0 +1,27 @@
+meta {
+  name: read-by-text-with-multi-filter
+  type: http
+  seq: 6
+}
+
+get {
+  url: http://localhost:3000/api/v1/recipes/search?q=poulet&difficulty=MEDIUM&minPrepTime=10&maxPrepTime=60
+  body: none
+  auth: inherit
+}
+
+params:query {
+  q: poulet
+  difficulty: MEDIUM
+  minPrepTime: 10
+  maxPrepTime: 60
+}
+
+headers {
+  x-gateway-api-key: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

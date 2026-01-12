@@ -1,0 +1,458 @@
+openapi: 3.0.0
+info:
+  title: user
+  version: 1.0.0
+paths:
+  /api/v1/users/35d1e1f1-34d8-4c9c-afde-59fed7d93381:
+    delete:
+      summary: delete-user
+      operationId: delete-user
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: x-gateway-api-key
+          in: header
+          description: ''
+          required: true
+          example: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+        - name: Content-Type
+          in: header
+          description: ''
+          required: false
+          example: application/json
+        - name: Cookie
+          in: header
+          description: ''
+          required: false
+          example: >-
+            refreshToken=e16abf77d6ec537eab811be79bd5bd26f30048e2da3c848f85eca5014e183f65a88a0b502a0b9543b24e1cb1e4f8570a8cbaa4a69a0c82d618e980a3f282c3e5
+      security:
+        delete-user: []
+    put:
+      summary: update-user
+      operationId: update-user
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: x-gateway-api-key
+          in: header
+          description: ''
+          required: true
+          example: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+        - name: Content-Type
+          in: header
+          description: ''
+          required: true
+          example: application/json
+        - name: Cookie
+          in: header
+          description: ''
+          required: false
+          example: >-
+            refreshToken=e16abf77d6ec537eab811be79bd5bd26f30048e2da3c848f85eca5014e183f65a88a0b502a0b9543b24e1cb1e4f8570a8cbaa4a69a0c82d618e980a3f282c3e5
+      requestBody:
+        $ref: '#/components/requestBodies/update-user'
+      security:
+        update-user: []
+    get:
+      summary: user
+      operationId: user
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: x-gateway-api-key
+          in: header
+          description: ''
+          required: true
+          example: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+        - name: Cookie
+          in: header
+          description: ''
+          required: false
+          example: >-
+            refreshToken=e16abf77d6ec537eab811be79bd5bd26f30048e2da3c848f85eca5014e183f65a88a0b502a0b9543b24e1cb1e4f8570a8cbaa4a69a0c82d618e980a3f282c3e5
+        - name: Content-Type
+          in: header
+          description: ''
+          required: false
+          example: application/json
+  /api/v1/forgot-password:
+    post:
+      summary: forgot-password
+      operationId: forgot-password
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: Content-Type
+          in: header
+          description: ''
+          required: true
+          example: application/json
+        - name: x-gateway-api-key
+          in: header
+          description: ''
+          required: true
+          example: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+      requestBody:
+        $ref: '#/components/requestBodies/forgot-password'
+  /api/v1/login:
+    post:
+      summary: login
+      operationId: login
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: Content-Type
+          in: header
+          description: ''
+          required: true
+          example: application/json
+        - name: x-gateway-api-key
+          in: header
+          description: ''
+          required: true
+          example: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+      requestBody:
+        $ref: '#/components/requestBodies/login'
+  /api/v1/logout:
+    post:
+      summary: logout
+      operationId: logout
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: x-gateway-api-key
+          in: header
+          description: ''
+          required: true
+          example: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+        - name: Cookie
+          in: header
+          description: ''
+          required: true
+          example: >-
+            refreshToken=e16abf77d6ec537eab811be79bd5bd26f30048e2da3c848f85eca5014e183f65a88a0b502a0b9543b24e1cb1e4f8570a8cbaa4a69a0c82d618e980a3f282c3e5
+        - name: Content-Type
+          in: header
+          description: ''
+          required: false
+          example: application/json
+      security:
+        logout: []
+  /api/v1/me:
+    get:
+      summary: profile
+      operationId: profile
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: x-gateway-api-key
+          in: header
+          description: ''
+          required: true
+          example: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+        - name: Cookie
+          in: header
+          description: ''
+          required: false
+          example: >-
+            refreshToken=e16abf77d6ec537eab811be79bd5bd26f30048e2da3c848f85eca5014e183f65a88a0b502a0b9543b24e1cb1e4f8570a8cbaa4a69a0c82d618e980a3f282c3e5
+        - name: Content-Type
+          in: header
+          description: ''
+          required: false
+          example: application/json
+      security:
+        profile: []
+  /api/v1/refresh:
+    post:
+      summary: refresh-token
+      operationId: refresh-token
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: x-gateway-api-key
+          in: header
+          description: ''
+          required: true
+          example: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+        - name: Cookie
+          in: header
+          description: ''
+          required: true
+          example: >-
+            refreshToken=e16abf77d6ec537eab811be79bd5bd26f30048e2da3c848f85eca5014e183f65a88a0b502a0b9543b24e1cb1e4f8570a8cbaa4a69a0c82d618e980a3f282c3e5
+        - name: Content-Type
+          in: header
+          description: ''
+          required: false
+          example: application/json
+  /api/v1/register:
+    post:
+      summary: register
+      operationId: register
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: Content-Type
+          in: header
+          description: ''
+          required: true
+          example: application/json
+        - name: x-gateway-api-key
+          in: header
+          description: ''
+          required: true
+          example: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+      requestBody:
+        $ref: '#/components/requestBodies/register'
+  /api/v1/resend-verification:
+    post:
+      summary: resend-verification-email
+      operationId: resend-verification-email
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: Content-Type
+          in: header
+          description: ''
+          required: true
+          example: application/json
+        - name: x-gateway-api-key
+          in: header
+          description: ''
+          required: true
+          example: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+      requestBody:
+        $ref: '#/components/requestBodies/resend-verification-email'
+  /api/v1/reset-password:
+    post:
+      summary: reset-password
+      operationId: reset-password
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: Content-Type
+          in: header
+          description: ''
+          required: true
+          example: application/json
+        - name: x-gateway-api-key
+          in: header
+          description: ''
+          required: true
+          example: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+      requestBody:
+        $ref: '#/components/requestBodies/reset-password'
+  /api/v1/users:
+    get:
+      summary: users
+      operationId: users
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: x-gateway-api-key
+          in: header
+          description: ''
+          required: true
+          example: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+        - name: Cookie
+          in: header
+          description: ''
+          required: false
+          example: >-
+            refreshToken=e16abf77d6ec537eab811be79bd5bd26f30048e2da3c848f85eca5014e183f65a88a0b502a0b9543b24e1cb1e4f8570a8cbaa4a69a0c82d618e980a3f282c3e5
+        - name: Content-Type
+          in: header
+          description: ''
+          required: false
+          example: application/json
+  /api/v1/verify-email:
+    post:
+      summary: verify-email
+      operationId: verify-email
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: Content-Type
+          in: header
+          description: ''
+          required: true
+          example: application/json
+        - name: x-gateway-api-key
+          in: header
+          description: ''
+          required: true
+          example: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+      requestBody:
+        $ref: '#/components/requestBodies/verify-email'
+servers:
+  - url: http://localhost:3000
+components:
+  schemas:
+    forgot-password:
+      type: object
+      properties:
+        email:
+          type: string
+    login:
+      type: object
+      properties:
+        identifier:
+          type: string
+        password:
+          type: string
+    register:
+      type: object
+      properties:
+        email:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+    resend-verification-email:
+      type: object
+      properties:
+        email:
+          type: string
+    reset-password:
+      type: object
+      properties:
+        token:
+          type: string
+        newPassword:
+          type: string
+    update-user:
+      type: object
+      properties:
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+    verify-email:
+      type: object
+      properties:
+        token:
+          type: string
+  requestBodies:
+    forgot-password:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/forgot-password'
+      description: ''
+      required: true
+    login:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/login'
+      description: ''
+      required: true
+    register:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/register'
+      description: ''
+      required: true
+    resend-verification-email:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/resend-verification-email'
+      description: ''
+      required: true
+    reset-password:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/reset-password'
+      description: ''
+      required: true
+    update-user:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/update-user'
+      description: ''
+      required: true
+    verify-email:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/verify-email'
+      description: ''
+      required: true
+  securitySchemes:
+    delete-user:
+      type: http
+      scheme: bearer
+    logout:
+      type: http
+      scheme: bearer
+    profile:
+      type: http
+      scheme: bearer
+    update-user:
+      type: http
+      scheme: bearer

@@ -1,0 +1,29 @@
+meta {
+  name: user
+  type: http
+  seq: 12
+}
+
+get {
+  url: http://localhost:3000/api/v1/users/35d1e1f1-34d8-4c9c-afde-59fed7d93381
+  body: none
+  auth: none
+}
+
+headers {
+  x-gateway-api-key: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+  ~Cookie: refreshToken=e16abf77d6ec537eab811be79bd5bd26f30048e2da3c848f85eca5014e183f65a88a0b502a0b9543b24e1cb1e4f8570a8cbaa4a69a0c82d618e980a3f282c3e5
+  ~Content-Type: application/json
+}
+
+body:json {
+  {
+      "token": "b1dff52420aaef63de97ad7cd3853e78e0321e726f90c557fcfafa9403522c237cdb58f71bc170389d6c6e0879dd103f75a39e602aab0e8700ac85ce21300345",
+      "newPassword": "newpassword123"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -3,6 +3,19 @@ import { z } from "zod";
 import { bodyValidator, sendSuccess, sendCreated, authMiddleware } from "@transcendence/common";
 import { loginUser, registerUser, createRefreshToken, refreshAccessToken, deleteRefreshToken } from "../services/auth.service";
 import path from "path";
+import { resetPassword, forgotPasswordByEmailIdentifier } from "../services/auth.service";
+import dotenv from "dotenv";
+
+dotenv.config({
+  path: path.resolve(__dirname, "../../../.env"),
+});
+
+const DOMAIN = process.env.DOMAIN;
+const USER_SERVICE_PORT = process.env.USER_SERVICE_PORT;
+const USER_SERVICE_URL = `${DOMAIN}:${USER_SERVICE_PORT}`;
+const INTERNAL_API_KEY = process.env.INTERNAL_API_KEY;
+const NOTIFICATION_SERVICE_PORT = process.env.NOTIFICATION_SERVICE_PORT;
+const NOTIFICATION_SERVICE_URL = `${DOMAIN}:${NOTIFICATION_SERVICE_PORT}`;
 
 const registerSchema = z.object({
     email: z.string().email(),
@@ -112,11 +125,85 @@ export async function authRoutes(app: FastifyInstance) {
         sendSuccess(reply, {}, 'Logout successful');
     });
 
-    // app.post("/forgot-password", {
-    //     preHandler: bodyValidator(emailSchema)
-    // }, async (request, reply) => {
-    //     const { email } = request.body as { email: string };
-    //     await forgotPasswordByEmailIdentifier(email);
-    //     sendSuccess(reply, {}, 'If an account with that email exists, a password reset link has been sent.');
-    // });
+    app.post("/reset-password", {
+        preHandler: bodyValidator(z.object({
+            token: z.string(),
+            newPassword: z.string().min(8).max(142)
+        }))
+    }, async (request, reply) => {
+        const { token, newPassword } = request.body as { token: string; newPassword: string };
+        await resetPassword(token, newPassword);
+        sendSuccess(reply, {}, 'Password reset successfully');
+    });
+    
+    app.post("/forgot-password", {
+        preHandler: bodyValidator(emailSchema)
+    }, async (request, reply) => {
+        const { email } = request.body as { email: string };
+        await forgotPasswordByEmailIdentifier(email);
+        sendSuccess(reply, {}, 'If an account with that email exists, a password reset link has been sent.');
+    });
+
+    app.post("/verify-email", {
+        preHandler: bodyValidator(z.object({ token: z.string() }))
+    }, async (request, reply) => {
+        const { token } = request.body as { token: string };
+        try {
+            const response = await fetch(`${USER_SERVICE_URL}/api/v1/internal/verify-email-token`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'x-internal-api-key': INTERNAL_API_KEY },
+                body: JSON.stringify({ token })
+            });
+            if (!response.ok) {
+                throw new Error('Verification failed');
+            }
+            const result = await response.json();
+            if (result.status === 'error') {
+                throw new Error(result.message || 'Invalid token');
+            }
+            sendSuccess(reply, {}, 'Email verified');
+        } catch (error) {
+            app.log.error(error);
+            return reply.status(400).send({
+                status: 'error',
+                message: 'Invalid or expired verification token'
+            });
+        }
+    });
+
+    app.post("/resend-verification", {
+        preHandler: bodyValidator(emailSchema)
+    }, async (request, reply) => {
+        const { email } = request.body as { email: string };
+        try {
+            const userResponse = await fetch(`${USER_SERVICE_URL}/api/v1/internal/users/by-email-identifier/${email}`, {
+                headers: { 'x-internal-api-key': INTERNAL_API_KEY }
+            });
+            const userResult = await userResponse.json();
+            if (userResult.status === 'error') {
+                return sendSuccess(reply, {}, 'If an account with that email exists, a verification email has been sent.');
+            }
+            const { user } = userResult.data;
+            const tokenResponse = await fetch(`${USER_SERVICE_URL}/api/v1/internal/create-verification-token`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'x-internal-api-key': INTERNAL_API_KEY },
+                body: JSON.stringify({ userId: user.id })
+            });
+            const tokenResult = await tokenResponse.json();
+            if (tokenResult.status === 'success') {
+                await fetch(`${NOTIFICATION_SERVICE_URL}/api/v1/internal/send-verification-email`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-internal-api-key': INTERNAL_API_KEY },
+                    body: JSON.stringify({ email: user.email, verificationToken: tokenResult.data.verificationToken })
+                });
+            }
+            sendSuccess(reply, {}, 'If an account with that email exists, a verification email has been sent.');
+        } catch (error) {
+            app.log.error(error);
+            return reply.status(500).send({
+                status: 'error',
+                message: 'Service unavailable, please try again later'
+            });
+        }
+    });
 }

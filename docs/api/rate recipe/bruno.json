@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "rate recipe",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

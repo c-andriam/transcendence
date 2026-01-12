@@ -1,0 +1,34 @@
+meta {
+  name: update-user
+  type: http
+  seq: 13
+}
+
+put {
+  url: http://localhost:3000/api/v1/users/35d1e1f1-34d8-4c9c-afde-59fed7d93381
+  body: json
+  auth: bearer
+}
+
+headers {
+  x-gateway-api-key: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+  Content-Type: application/json
+  ~Cookie: refreshToken=e16abf77d6ec537eab811be79bd5bd26f30048e2da3c848f85eca5014e183f65a88a0b502a0b9543b24e1cb1e4f8570a8cbaa4a69a0c82d618e980a3f282c3e5
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtazEya3MzMDAwMDBkMXNvZnI2c3pkODgiLCJ1c2VybmFtZSI6ImNhbmRyaWFtIiwiaWF0IjoxNzY3NzYzNjMyLCJleHAiOjE3Njc3NjQ1MzJ9.Cgj_sbtD3GUcbuadH06tXP03kW_6r0g1AfdIp9SjWfM
+}
+
+body:json {
+  {
+      "username": "candriam",
+      "firstName": "Juvence",
+      "lastName": "Candriam"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -111,7 +111,7 @@
 
 | Champ | Type | Description | Contraintes |
 |:------|:-----|:------------|:------------|
-| `id` | `String` | Identifiant unique | `@id` `@default(cuid())` |
+| `id` | `String` | Identifiant unique | `@id` `@default(uuid())` |
 | `email` | `String` | Email de connexion | `@unique` |
 | `username` | `String` | Nom d'utilisateur | `@unique` |
 | `password` | `String` | Mot de passe hashé | Requis |
@@ -159,7 +159,7 @@ User
 
 | Champ | Type | Description | Contraintes |
 |:------|:-----|:------------|:------------|
-| `id` | `String` | Identifiant unique | `@id` `@default(cuid())` |
+| `id` | `String` | Identifiant unique | `@id` `@default(uuid())` |
 | `title` | `String` | Titre de la recette | Requis |
 | `slug` | `String` | URL-friendly | `@unique` |
 | `description` | `String` | Description détaillée | Requis |
@@ -210,7 +210,7 @@ Recipe
 
 | Champ | Type | Description | Contraintes |
 |:------|:-----|:------------|:------------|
-| `id` | `String` | Identifiant unique | `@id` `@default(cuid())` |
+| `id` | `String` | Identifiant unique | `@id` `@default(uuid())` |
 | `name` | `String` | Nom affiché | `@unique` |
 | `slug` | `String` | URL-friendly | `@unique` |
 | `iconName` | `String?` | Nom icône/émoji | Optionnel |
@@ -241,7 +241,7 @@ Recipe
 
 | Champ | Type | Description | Contraintes |
 |:------|:-----|:------------|:------------|
-| `id` | `String` | Identifiant unique | `@id` `@default(cuid())` |
+| `id` | `String` | Identifiant unique | `@id` `@default(uuid())` |
 | `name` | `String` | Nom de l'ingrédient | Requis |
 | `quantityText` | `String` | Quantité + unité | Requis |
 | `sortOrder` | `Int` | Ordre d'affichage | `@default(0)` |
@@ -267,7 +267,7 @@ Recipe
 
 | Champ | Type | Description | Contraintes |
 |:------|:-----|:------------|:------------|
-| `id` | `String` | Identifiant unique | `@id` `@default(cuid())` |
+| `id` | `String` | Identifiant unique | `@id` `@default(uuid())` |
 | `stepNumber` | `Int` | Numéro de l'étape | Requis |
 | `description` | `String` | Texte de l'étape | Requis |
 | `recipeId` | `String` | FK → Recipe | Requis |
@@ -289,7 +289,7 @@ Recipe
 
 | Champ | Type | Description | Contraintes |
 |:------|:-----|:------------|:------------|
-| `id` | `String` | Identifiant unique | `@id` `@default(cuid())` |
+| `id` | `String` | Identifiant unique | `@id` `@default(uuid())` |
 | `url` | `String` | URL de l'image | Requis |
 | `altText` | `String?` | Texte alternatif | Optionnel |
 | `isPrimary` | `Boolean` | Image principale | `@default(false)` |
@@ -313,7 +313,7 @@ Recipe
 
 | Champ | Type | Description | Contraintes |
 |:------|:-----|:------------|:------------|
-| `id` | `String` | Identifiant unique | `@id` `@default(cuid())` |
+| `id` | `String` | Identifiant unique | `@id` `@default(uuid())` |
 | `name` | `String` | Nom du régime | `@unique` |
 | `slug` | `String` | URL-friendly | `@unique` |
 | `iconName` | `String?` | Icône | Optionnel |
@@ -351,7 +351,7 @@ Recipe
 
 | Champ | Type | Description | Contraintes |
 |:------|:-----|:------------|:------------|
-| `id` | `String` | Identifiant unique | `@id` `@default(cuid())` |
+| `id` | `String` | Identifiant unique | `@id` `@default(uuid())` |
 | `score` | `Int` | Note 1-5 | Requis |
 | `createdAt` | `DateTime` | Date | `@default(now())` |
 | `userId` | `String` | FK → User | Requis |
@@ -383,7 +383,7 @@ const avgRating = await prisma.rating.aggregate({
 
 | Champ | Type | Description | Contraintes |
 |:------|:-----|:------------|:------------|
-| `id` | `String` | Identifiant unique | `@id` `@default(cuid())` |
+| `id` | `String` | Identifiant unique | `@id` `@default(uuid())` |
 | `content` | `String` | Texte du commentaire | Requis |
 | `createdAt` | `DateTime` | Date de création | `@default(now())` |
 | `updatedAt` | `DateTime` | Date de modification | `@updatedAt` |
@@ -418,7 +418,7 @@ Commentaire Principal (parentId = null)
 
 | Champ | Type | Description | Contraintes |
 |:------|:-----|:------------|:------------|
-| `id` | `String` | Identifiant unique | `@id` `@default(cuid())` |
+| `id` | `String` | Identifiant unique | `@id` `@default(uuid())` |
 | `createdAt` | `DateTime` | Date d'ajout | `@default(now())` |
 | `userId` | `String` | FK → User | Requis |
 | `recipeId` | `String` | FK → Recipe | Requis |
@@ -441,7 +441,7 @@ Commentaire Principal (parentId = null)
 
 | Champ | Type | Description | Contraintes |
 |:------|:-----|:------------|:------------|
-| `id` | `String` | Identifiant unique | `@id` `@default(cuid())` |
+| `id` | `String` | Identifiant unique | `@id` `@default(uuid())` |
 | `createdAt` | `DateTime` | Date | `@default(now())` |
 | `followerId` | `String` | Qui suit | Requis |
 | `followingId` | `String` | Qui est suivi | Requis |
@@ -470,7 +470,7 @@ Follow
 
 | Champ | Type | Description | Contraintes |
 |:------|:-----|:------------|:------------|
-| `id` | `String` | Identifiant unique | `@id` `@default(cuid())` |
+| `id` | `String` | Identifiant unique | `@id` `@default(uuid())` |
 | `status` | `FriendRequestStatus` | Statut | `@default(PENDING)` |
 | `createdAt` | `DateTime` | Date de demande | `@default(now())` |
 | `updatedAt` | `DateTime` | Date de modification | `@updatedAt` |
@@ -497,7 +497,7 @@ PENDING ──┬──► ACCEPTED ──► Amis mutuels
 
 | Champ | Type | Description | Contraintes |
 |:------|:-----|:------------|:------------|
-| `id` | `String` | Identifiant unique | `@id` `@default(cuid())` |
+| `id` | `String` | Identifiant unique | `@id` `@default(uuid())` |
 | `createdAt` | `DateTime` | Date de création | `@default(now())` |
 | `updatedAt` | `DateTime` | Dernier message | `@updatedAt` |
 
@@ -519,7 +519,7 @@ Conversation
 
 | Champ | Type | Description | Contraintes |
 |:------|:-----|:------------|:------------|
-| `id` | `String` | Identifiant unique | `@id` `@default(cuid())` |
+| `id` | `String` | Identifiant unique | `@id` `@default(uuid())` |
 | `lastReadAt` | `DateTime?` | Dernier message lu | Optionnel |
 | `joinedAt` | `DateTime` | Date d'entrée | `@default(now())` |
 | `userId` | `String` | FK → User | Requis |
@@ -547,7 +547,7 @@ const unreadCount = await prisma.message.count({
 
 | Champ | Type | Description | Contraintes |
 |:------|:-----|:------------|:------------|
-| `id` | `String` | Identifiant unique | `@id` `@default(cuid())` |
+| `id` | `String` | Identifiant unique | `@id` `@default(uuid())` |
 | `content` | `String` | Texte du message | Requis |
 | `createdAt` | `DateTime` | Date d'envoi | `@default(now())` |
 | `senderId` | `String` | FK → User | Requis |
@@ -565,7 +565,7 @@ const unreadCount = await prisma.message.count({
 
 | Champ | Type | Description | Contraintes |
 |:------|:-----|:------------|:------------|
-| `id` | `String` | Identifiant unique | `@id` `@default(cuid())` |
+| `id` | `String` | Identifiant unique | `@id` `@default(uuid())` |
 | `type` | `NotificationType` | Type de notif | Requis |
 | `title` | `String` | Titre | Requis |
 | `message` | `String` | Message | Requis |

@@ -1,0 +1,632 @@
+{
+  "info": {
+    "name": "user",
+    "description": "",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "delete-user",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": true,
+            "type": "default"
+          },
+          {
+            "key": "Cookie",
+            "value": "refreshToken=e16abf77d6ec537eab811be79bd5bd26f30048e2da3c848f85eca5014e183f65a88a0b502a0b9543b24e1cb1e4f8570a8cbaa4a69a0c82d618e980a3f282c3e5",
+            "disabled": true,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": {
+            "key": "token",
+            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtazEya3MzMDAwMDBkMXNvZnI2c3pkODgiLCJ1c2VybmFtZSI6ImNhbmRyaWFtIiwiaWF0IjoxNzY3NzYzNjMyLCJleHAiOjE3Njc3NjQ1MzJ9.Cgj_sbtD3GUcbuadH06tXP03kW_6r0g1AfdIp9SjWfM",
+            "type": "string"
+          }
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/users/35d1e1f1-34d8-4c9c-afde-59fed7d93381",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "users",
+            "35d1e1f1-34d8-4c9c-afde-59fed7d93381"
+          ],
+          "query": [],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "forgot-password",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false,
+            "type": "default"
+          },
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/forgot-password",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "forgot-password"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"juvence00@gmail.com\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false,
+            "type": "default"
+          },
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/login",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "login"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"identifier\": \"candriam\",\n    \"password\": \"password123\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "logout",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          },
+          {
+            "key": "Cookie",
+            "value": "refreshToken=e16abf77d6ec537eab811be79bd5bd26f30048e2da3c848f85eca5014e183f65a88a0b502a0b9543b24e1cb1e4f8570a8cbaa4a69a0c82d618e980a3f282c3e5",
+            "disabled": false,
+            "type": "default"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": true,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": {
+            "key": "token",
+            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM1ZDFlMWYxLTM0ZDgtNGM5Yy1hZmRlLTU5ZmVkN2Q5MzM4MSIsInVzZXJuYW1lIjoiY2FuZHJpYW0iLCJpYXQiOjE3NjgwOTc0NzYsImV4cCI6MTc2ODA5ODM3Nn0.nG0-54-1ukZqINc1SqWHIMuxHCyh8r9Adl1_lsjCiSs",
+            "type": "string"
+          }
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/logout",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "logout"
+          ],
+          "query": [],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "profile",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          },
+          {
+            "key": "Cookie",
+            "value": "refreshToken=e16abf77d6ec537eab811be79bd5bd26f30048e2da3c848f85eca5014e183f65a88a0b502a0b9543b24e1cb1e4f8570a8cbaa4a69a0c82d618e980a3f282c3e5",
+            "disabled": true,
+            "type": "default"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": true,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": {
+            "key": "token",
+            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM1ZDFlMWYxLTM0ZDgtNGM5Yy1hZmRlLTU5ZmVkN2Q5MzM4MSIsInVzZXJuYW1lIjoiY2FuZHJpYW0iLCJpYXQiOjE3NjgwOTc0NzYsImV4cCI6MTc2ODA5ODM3Nn0.nG0-54-1ukZqINc1SqWHIMuxHCyh8r9Adl1_lsjCiSs",
+            "type": "string"
+          }
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/me",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "me"
+          ],
+          "query": [],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "refresh-token",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          },
+          {
+            "key": "Cookie",
+            "value": "refreshToken=e16abf77d6ec537eab811be79bd5bd26f30048e2da3c848f85eca5014e183f65a88a0b502a0b9543b24e1cb1e4f8570a8cbaa4a69a0c82d618e980a3f282c3e5",
+            "disabled": false,
+            "type": "default"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": true,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/refresh",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "refresh"
+          ],
+          "query": [],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "register",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false,
+            "type": "default"
+          },
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/register",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "register"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"juvence00@gmail.com\",\n    \"username\": \"candriam\",\n    \"password\": \"password123\",\n    \"firstName\": \"Candriam\",\n    \"lastName\": \"Juvence\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "resend-verification-email",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false,
+            "type": "default"
+          },
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/resend-verification",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "resend-verification"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"email\": \"juvence00@gmail.com\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "reset-password",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false,
+            "type": "default"
+          },
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/reset-password",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "reset-password"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"token\": \"b1dff52420aaef63de97ad7cd3853e78e0321e726f90c557fcfafa9403522c237cdb58f71bc170389d6c6e0879dd103f75a39e602aab0e8700ac85ce21300345\",\n    \"newPassword\": \"newpassword123\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "update-user",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false,
+            "type": "default"
+          },
+          {
+            "key": "Cookie",
+            "value": "refreshToken=e16abf77d6ec537eab811be79bd5bd26f30048e2da3c848f85eca5014e183f65a88a0b502a0b9543b24e1cb1e4f8570a8cbaa4a69a0c82d618e980a3f282c3e5",
+            "disabled": true,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "bearer",
+          "bearer": {
+            "key": "token",
+            "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtazEya3MzMDAwMDBkMXNvZnI2c3pkODgiLCJ1c2VybmFtZSI6ImNhbmRyaWFtIiwiaWF0IjoxNzY3NzYzNjMyLCJleHAiOjE3Njc3NjQ1MzJ9.Cgj_sbtD3GUcbuadH06tXP03kW_6r0g1AfdIp9SjWfM",
+            "type": "string"
+          }
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/users/35d1e1f1-34d8-4c9c-afde-59fed7d93381",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "users",
+            "35d1e1f1-34d8-4c9c-afde-59fed7d93381"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"username\": \"candriam\",\n    \"firstName\": \"Juvence\",\n    \"lastName\": \"Candriam\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "user",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          },
+          {
+            "key": "Cookie",
+            "value": "refreshToken=e16abf77d6ec537eab811be79bd5bd26f30048e2da3c848f85eca5014e183f65a88a0b502a0b9543b24e1cb1e4f8570a8cbaa4a69a0c82d618e980a3f282c3e5",
+            "disabled": true,
+            "type": "default"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": true,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/users/35d1e1f1-34d8-4c9c-afde-59fed7d93381",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "users",
+            "35d1e1f1-34d8-4c9c-afde-59fed7d93381"
+          ],
+          "query": [],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "users",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          },
+          {
+            "key": "Cookie",
+            "value": "refreshToken=e16abf77d6ec537eab811be79bd5bd26f30048e2da3c848f85eca5014e183f65a88a0b502a0b9543b24e1cb1e4f8570a8cbaa4a69a0c82d618e980a3f282c3e5",
+            "disabled": true,
+            "type": "default"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": true,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/users",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "users"
+          ],
+          "query": [],
+          "variable": []
+        }
+      }
+    },
+    {
+      "name": "verify-email",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false,
+            "type": "default"
+          },
+          {
+            "key": "x-gateway-api-key",
+            "value": "AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM",
+            "disabled": false,
+            "type": "default"
+          }
+        ],
+        "auth": {
+          "type": "noauth"
+        },
+        "description": "",
+        "url": {
+          "raw": "http://localhost:3000/api/v1/verify-email",
+          "protocol": "http",
+          "host": [
+            "localhost:3000"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "verify-email"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"token\": \"ab4caf96508e23898575191d84436fb109deeea58240df6e51aa71a94a968318630c62b39e6cbe60a6e78e5d881bc30cede4ff13a209a1ddccda33c29c0589ac\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "variable": []
+}

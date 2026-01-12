@@ -1,0 +1,30 @@
+meta {
+  name: update-category-id
+  type: http
+  seq: 6
+}
+
+put {
+  url: http://localhost:3000/api/v1/categories/a417822c-e7e9-4b06-812a-a641c4137d37
+  body: json
+  auth: inherit
+}
+
+headers {
+  x-gateway-api-key: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Apéritifs",
+    "iconName": "wine-glass",
+    "color": "#FF6B6C",
+    "sortOrder": 1
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

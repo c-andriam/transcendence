@@ -1,0 +1,259 @@
+openapi: 3.0.0
+info:
+  title: searching
+  version: 1.0.0
+paths:
+  /api/v1/recipes/author/35d1e1f1-34d8-4c9c-afde-59fed7d93381:
+    get:
+      summary: read-by-author-with-sorting
+      operationId: read-by-author-with-sorting
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: sortBy
+          in: query
+          description: ''
+          required: true
+          example: createdAt
+        - name: sortOrder
+          in: query
+          description: ''
+          required: true
+          example: desc
+        - name: page
+          in: query
+          description: ''
+          required: true
+          example: '1'
+        - name: limit
+          in: query
+          description: ''
+          required: true
+          example: '10'
+        - name: x-gateway-api-key
+          in: header
+          description: ''
+          required: true
+          example: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+  /api/v1/recipes/search:
+    get:
+      summary: read-with-time-filter
+      operationId: read-with-time-filter
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: minCookTime
+          in: query
+          description: ''
+          required: true
+          example: '15'
+        - name: maxCookTime
+          in: query
+          description: ''
+          required: true
+          example: '60'
+        - name: x-gateway-api-key
+          in: header
+          description: ''
+          required: true
+          example: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+  /api/v1/recipes/category/eaebd183-a430-4fbc-93ed-7958bcb52330:
+    get:
+      summary: read-by-category-with-sorting-pagination
+      operationId: read-by-category-with-sorting-pagination
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: sortBy
+          in: query
+          description: ''
+          required: true
+          example: prepTime
+        - name: sortOrder
+          in: query
+          description: ''
+          required: true
+          example: asc
+        - name: page
+          in: query
+          description: ''
+          required: true
+          example: '1'
+        - name: limit
+          in: query
+          description: ''
+          required: true
+          example: '10'
+        - name: x-gateway-api-key
+          in: header
+          description: ''
+          required: true
+          example: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+  /api/v1/recipes/difficulty/EASY:
+    get:
+      summary: read-by-difficulty-with-default-sorting
+      operationId: read-by-difficulty-with-default-sorting
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: page
+          in: query
+          description: ''
+          required: true
+          example: '1'
+        - name: limit
+          in: query
+          description: ''
+          required: true
+          example: '5'
+        - name: x-gateway-api-key
+          in: header
+          description: ''
+          required: true
+          example: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+  /api/v1/recipes/difficulty/MEDIUM:
+    get:
+      summary: read-by-difficulty-with-sorting-pagination
+      operationId: read-by-difficulty-with-sorting-pagination
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: sortBy
+          in: query
+          description: ''
+          required: true
+          example: cookTime
+        - name: sortOrder
+          in: query
+          description: ''
+          required: true
+          example: asc
+        - name: page
+          in: query
+          description: ''
+          required: true
+          example: '1'
+        - name: limit
+          in: query
+          description: ''
+          required: true
+          example: '10'
+        - name: x-gateway-api-key
+          in: header
+          description: ''
+          required: true
+          example: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+  /api/v1/recipes/difficulty/HARD:
+    get:
+      summary: read-by-difficulty-with-sorting
+      operationId: read-by-difficulty-with-sorting
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: sortBy
+          in: query
+          description: ''
+          required: true
+          example: servings
+        - name: sortOrder
+          in: query
+          description: ''
+          required: true
+          example: desc
+        - name: page
+          in: query
+          description: ''
+          required: true
+          example: '1'
+        - name: limit
+          in: query
+          description: ''
+          required: true
+          example: '10'
+        - name: x-gateway-api-key
+          in: header
+          description: ''
+          required: true
+          example: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+  /api/v1/recipes/me:
+    get:
+      summary: read-my-recipes
+      operationId: read-my-recipes
+      description: ''
+      tags:
+        - ''
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: sortBy
+          in: query
+          description: ''
+          required: true
+          example: updatedAt
+        - name: sortOrder
+          in: query
+          description: ''
+          required: true
+          example: desc
+        - name: page
+          in: query
+          description: ''
+          required: true
+          example: '1'
+        - name: limit
+          in: query
+          description: ''
+          required: true
+          example: '10'
+        - name: publishedOnly
+          in: query
+          description: ''
+          required: true
+          example: 'false'
+        - name: x-gateway-api-key
+          in: header
+          description: ''
+          required: true
+          example: AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
+      security:
+        read-my-recipes: []
+servers:
+  - url: http://localhost:3000
+components:
+  schemas: {}
+  requestBodies: {}
+  securitySchemes:
+    read-my-recipes-default:
+      type: http
+      scheme: bearer
+    read-my-recipes-published-only:
+      type: http
+      scheme: bearer
+    read-my-recipes:
+      type: http
+      scheme: bearer

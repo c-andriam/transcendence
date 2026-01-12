@@ -1,0 +1,24 @@
+meta {
+  name: users
+  type: http
+  seq: 4
+}
+
+get {
+  url: http://localhost:3000/api/v1/users
+  body: none
+  auth: bearer
+}
+
+headers {
+  x-gateway-api-key: cs_661a324c-47fb-4b61-aaa5-aae783dc94c3_1767848230_df0465c5.5goFIdr2_1YSREeT2aUaPxPQKPGGJshe
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNtazEya3MzMDAwMDBkMXNvZnI2c3pkODgiLCJ1c2VybmFtZSI6ImNhbmRyaWFtIiwiaWF0IjoxNzY3NzYzNjMyLCJleHAiOjE3Njc3NjQ1MzJ9.Cgj_sbtD3GUcbuadH06tXP03kW_6r0g1AfdIp9SjWfM
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
