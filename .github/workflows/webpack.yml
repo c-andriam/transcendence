@@ -187,13 +187,6 @@ jobs:
             curl -s http://127.0.0.1:3000/api/v1/json -o ../../openapi-spec.json
           fi
 
-          # Replace any remaining localhost with the production domain to avoid "Fetch error" in UI
-          # Use | as separator to handle slashes correctly
-          sed -i 's|http://localhost:3000|https://cookshare.me|g' ../../openapi-spec.json
-          sed -i 's|http://127.0.0.1:3000|https://cookshare.me|g' ../../openapi-spec.json
-          sed -i 's|localhost:3000|cookshare.me|g' ../../openapi-spec.json
-          sed -i 's|http://localhost|https://cookshare.me|g' ../../openapi-spec.json
-
           kill $SERVER_PID 2>/dev/null || true
 
       - name: Generate Swagger UI page
@@ -277,14 +270,6 @@ jobs:
           </html>
           EOF
           fi
-
-      - name: Global localhost cleanup in documentation
-        run: |
-          # Replace localhost references in all files in the public directory
-          find public -type f \( -name "*.html" -o -name "*.json" -o -name "*.js" \) -exec sed -i 's|http://localhost:3000|https://cookshare.me|g' {} +
-          find public -type f \( -name "*.html" -o -name "*.json" -o -name "*.js" \) -exec sed -i 's|http://127.0.0.1:3000|https://cookshare.me|g' {} +
-          find public -type f \( -name "*.html" -o -name "*.json" -o -name "*.js" \) -exec sed -i 's|localhost:3000|cookshare.me|g' {} +
-          find public -type f \( -name "*.html" -o -name "*.json" -o -name "*.js" \) -exec sed -i 's|http://localhost|https://cookshare.me|g' {} +
 
       - name: Copy markdown documentation
         run: cp -r docs/api/*.md public/ 2>/dev/null || true

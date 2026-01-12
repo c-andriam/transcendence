@@ -69,17 +69,11 @@ const start = async () => {
         },
         servers: [
           {
-            url: "https://{environment}/api/{version}",
+            url: "http://localhost:{port}/api/v1",
             description: "Local development server",
             variables: {
-              environment: {
-                default: "cookshare.me"
-              },
               port: {
                 default: "3000"
-              },
-              version: {
-                default: "v1"
               }
             }
           }
