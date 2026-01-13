@@ -128,9 +128,10 @@ Toutes les règles ont été testées et validées:
 - ✅ Logs ModSecurity fonctionnels
 - ✅ Rate limiting opérationnel
 
-## Reference sur le WAF
+## Reference et test sur le WAF
 
 - [Architecture détaillée du WAF](../../docs/security/waf-modsecurity/waf-architecture.md)
+- [Tests valide pour waf](../../docs/security/waf-modsecurity/WAF_FINAL_STATUS.md)
 
 ## 📚 Documentation Complémentaire
 
