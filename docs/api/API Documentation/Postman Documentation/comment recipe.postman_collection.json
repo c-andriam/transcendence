@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "d73b3280-cd5f-4f68-a687-0d79b3baa391",
 		"name": "comment recipe",
-		"description": "# Comment Recipe API\n\n## Overview\nThe Comment Recipe API provides a comprehensive set of endpoints for managing comments on recipes. This API enables users to create, read, update, and delete comments, as well as create threaded reply comments to foster discussions around recipes.\n\n## Base URL\n```\n{{baseUrl}}/api/v1\n```\n\nThe `baseUrl` variable should be configured in your Postman environment to point to the appropriate server (development, staging, or production).\n\n## Authentication\nThis API requires authentication. Include your API key or authentication token in the request headers:\n\n```\nAuthorization: Bearer YOUR_API_TOKEN\n```\n\nEnsure you have the necessary permissions to perform operations on comments. Users can only modify or delete their own comments unless they have administrative privileges.\n\n## Common Response Codes\n\n| Status Code | Description |\n|-------------|-------------|\n| 200 | Success - Request completed successfully |\n| 201 | Created - Comment successfully created |\n| 204 | No Content - Comment successfully deleted |\n| 400 | Bad Request - Invalid input or malformed request |\n| 401 | Unauthorized - Missing or invalid authentication |\n| 403 | Forbidden - Insufficient permissions |\n| 404 | Not Found - Recipe or comment not found |\n| 422 | Unprocessable Entity - Validation errors |\n| 429 | Too Many Requests - Rate limit exceeded |\n| 500 | Internal Server Error - Server-side error |\n\n## Error Handling\nAll error responses follow a consistent format:\n\n```json\n{\n  \"error\": {\n    \"code\": \"ERROR_CODE\",\n    \"message\": \"Human-readable error message\",\n    \"details\": []\n  }\n}\n```\n\n## Rate Limiting\n- **Rate Limit**: 100 requests per minute per user\n- **Headers**: Check `X-RateLimit-Remaining` and `X-RateLimit-Reset` headers in responses\n\n## Features\n- Create top-level comments on recipes\n- Create threaded reply comments\n- Retrieve paginated comments with nested replies\n- Update existing comments\n- Delete comments (with cascade deletion of replies)\n\n## Getting Started\n1. Set up your environment with the `baseUrl` variable\n2. Configure your authentication credentials\n3. Use the collection requests to interact with recipe comments",
+		"description": "# Comment Recipe API\n\n## Overview\nThe Comment Recipe API provides a comprehensive set of endpoints for managing comments on recipes. This API enables users to create, read, update, and delete comments, as well as create threaded reply comments to foster discussions around recipes.\n\n## Base URL\n```\nhttp://localhost:3000/api/v1\n```\n\nThe `baseUrl` variable should be configured in your Postman environment to point to the appropriate server (development, staging, or production).\n\n## Authentication\nThis API requires authentication. Include your API key or authentication token in the request headers:\n\n```\nAuthorization: Bearer YOUR_API_TOKEN\n```\n\nEnsure you have the necessary permissions to perform operations on comments. Users can only modify or delete their own comments unless they have administrative privileges.\n\n## Common Response Codes\n\n| Status Code | Description |\n|-------------|-------------|\n| 200 | Success - Request completed successfully |\n| 201 | Created - Comment successfully created |\n| 204 | No Content - Comment successfully deleted |\n| 400 | Bad Request - Invalid input or malformed request |\n| 401 | Unauthorized - Missing or invalid authentication |\n| 403 | Forbidden - Insufficient permissions |\n| 404 | Not Found - Recipe or comment not found |\n| 422 | Unprocessable Entity - Validation errors |\n| 429 | Too Many Requests - Rate limit exceeded |\n| 500 | Internal Server Error - Server-side error |\n\n## Error Handling\nAll error responses follow a consistent format:\n\n```json\n{\n  \"error\": {\n    \"code\": \"ERROR_CODE\",\n    \"message\": \"Human-readable error message\",\n    \"details\": []\n  }\n}\n```\n\n## Rate Limiting\n- **Rate Limit**: 100 requests per minute per user\n- **Headers**: Check `X-RateLimit-Remaining` and `X-RateLimit-Reset` headers in responses\n\n## Features\n- Create top-level comments on recipes\n- Create threaded reply comments\n- Retrieve paginated comments with nested replies\n- Update existing comments\n- Delete comments (with cascade deletion of replies)\n\n## Getting Started\n1. Set up your environment with the `baseUrl` variable\n2. Configure your authentication credentials\n3. Use the collection requests to interact with recipe comments",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "50943411",
 		"_collection_link": "https://candriam-42-37777.postman.co/workspace/d19c8590-e7b6-4268-86ac-611904acc525/collection/50943411-d73b3280-cd5f-4f68-a687-0d79b3baa391?action=share&source=collection_link&creator=50943411"
@@ -16,7 +16,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "{{bearerToken}}",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM1ZDFlMWYxLTM0ZDgtNGM5Yy1hZmRlLTU5ZmVkN2Q5MzM4MSIsInVzZXJuYW1lIjoiY2FuZHJpYW0iLCJpYXQiOjE3NjgyMzI4MzksImV4cCI6MTc2ODIzMzczOX0.RNTvjO_2K6b6IBytRnQ6Cj1JaQT9tFk8k7slq_qRvuQ",
 							"type": "string"
 						},
 						{
@@ -47,9 +47,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{baseUrl}}/api/v1/recipes/efabc8cf-6e97-4519-b2fb-efc7624978d0/comments",
+					"raw": "http://localhost:3000/api/v1/recipes/efabc8cf-6e97-4519-b2fb-efc7624978d0/comments",
 					"host": [
-						"{{baseUrl}}"
+						"http://localhost:3000"
 					],
 					"path": [
 						"api",
@@ -70,7 +70,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "{{bearerToken}}",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM1ZDFlMWYxLTM0ZDgtNGM5Yy1hZmRlLTU5ZmVkN2Q5MzM4MSIsInVzZXJuYW1lIjoiY2FuZHJpYW0iLCJpYXQiOjE3NjgyMzI4MzksImV4cCI6MTc2ODIzMzczOX0.RNTvjO_2K6b6IBytRnQ6Cj1JaQT9tFk8k7slq_qRvuQ",
 							"type": "string"
 						},
 						{
@@ -101,9 +101,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{baseUrl}}/api/v1/recipes/efabc8cf-6e97-4519-b2fb-efc7624978d0/comments/5d059a4f-67f2-41b7-a5bd-6833e89ad48a",
+					"raw": "http://localhost:3000/api/v1/recipes/efabc8cf-6e97-4519-b2fb-efc7624978d0/comments/5d059a4f-67f2-41b7-a5bd-6833e89ad48a",
 					"host": [
-						"{{baseUrl}}"
+						"http://localhost:3000"
 					],
 					"path": [
 						"api",
@@ -125,7 +125,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "{{bearerToken}}",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM1ZDFlMWYxLTM0ZDgtNGM5Yy1hZmRlLTU5ZmVkN2Q5MzM4MSIsInVzZXJuYW1lIjoiY2FuZHJpYW0iLCJpYXQiOjE3NjgyMzI4MzksImV4cCI6MTc2ODIzMzczOX0.RNTvjO_2K6b6IBytRnQ6Cj1JaQT9tFk8k7slq_qRvuQ",
 							"type": "string"
 						},
 						{
@@ -146,9 +146,9 @@
 					}
 				],
 				"url": {
-					"raw": "{{baseUrl}}/api/v1/recipes/efabc8cf-6e97-4519-b2fb-efc7624978d0/comments/cc5aa65e-7489-43d2-bb90-bba6d83be01e",
+					"raw": "http://localhost:3000/api/v1/recipes/efabc8cf-6e97-4519-b2fb-efc7624978d0/comments/cc5aa65e-7489-43d2-bb90-bba6d83be01e",
 					"host": [
-						"{{baseUrl}}"
+						"http://localhost:3000"
 					],
 					"path": [
 						"api",
@@ -176,9 +176,9 @@
 					}
 				],
 				"url": {
-					"raw": "{{baseUrl}}/api/v1/recipes/efabc8cf-6e97-4519-b2fb-efc7624978d0/comments?page=1&limit=10",
+					"raw": "http://localhost:3000/api/v1/recipes/efabc8cf-6e97-4519-b2fb-efc7624978d0/comments?page=1&limit=10",
 					"host": [
-						"{{baseUrl}}"
+						"http://localhost:3000"
 					],
 					"path": [
 						"api",
@@ -209,7 +209,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "{{bearerToken}}",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM1ZDFlMWYxLTM0ZDgtNGM5Yy1hZmRlLTU5ZmVkN2Q5MzM4MSIsInVzZXJuYW1lIjoiY2FuZHJpYW0iLCJpYXQiOjE3NjgyMzI4MzksImV4cCI6MTc2ODIzMzczOX0.RNTvjO_2K6b6IBytRnQ6Cj1JaQT9tFk8k7slq_qRvuQ",
 							"type": "string"
 						},
 						{
@@ -240,9 +240,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{baseUrl}}/api/v1/recipes/efabc8cf-6e97-4519-b2fb-efc7624978d0/comments/cc5aa65e-7489-43d2-bb90-bba6d83be01e",
+					"raw": "http://localhost:3000/api/v1/recipes/efabc8cf-6e97-4519-b2fb-efc7624978d0/comments/cc5aa65e-7489-43d2-bb90-bba6d83be01e",
 					"host": [
-						"{{baseUrl}}"
+						"http://localhost:3000"
 					],
 					"path": [
 						"api",
