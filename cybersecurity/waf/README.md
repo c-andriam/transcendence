@@ -114,9 +114,6 @@ waf/
 
 ## 🔧 Maintenance
 
-### Règles de faux positifs commentées
-Les règles `SecRuleUpdateTargetById` et `SecRuleRemoveById` sont commentées dans `modsecurity-custom.conf` car elles référencent des règles OWASP CRS qui ne sont pas encore chargées. Pour les activer, il faudrait les placer dans un fichier chargé APRÈS les règles CRS.
-
 ### Permissions logs
 Les répertoires logs doivent avoir les permissions d'écriture:
 ```bash
@@ -130,6 +127,10 @@ Toutes les règles ont été testées et validées:
 - ✅ Conteneur démarre sans erreur
 - ✅ Logs ModSecurity fonctionnels
 - ✅ Rate limiting opérationnel
+
+## Reference sur le WAF
+
+- [Architecture détaillée du WAF](../../docs/security/waf-modsecurity/waf-architecture.md)
 
 ## 📚 Documentation Complémentaire
 
