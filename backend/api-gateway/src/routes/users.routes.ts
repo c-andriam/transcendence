@@ -19,9 +19,9 @@ if (!USER_SERVICE_URL) {
 
 export async function usersRoutes(app: FastifyInstance) {
 
-    app.get("/me", async (request, reply) => {
+    app.get("/users/me", async (request, reply) => {
         try {
-            const { statusCode, body } = await proxyRequest(request, reply, "/api/v1/me", USER_SERVICE_URL);
+            const { statusCode, body } = await proxyRequest(request, reply, "/api/v1/users/me", USER_SERVICE_URL);
             return reply.status(statusCode).send(body);
         } catch (error) {
             app.log.error(error);
@@ -29,9 +29,9 @@ export async function usersRoutes(app: FastifyInstance) {
         }
     });
 
-    app.get("/users", async (request, reply) => {
+    app.get("/users/users", async (request, reply) => {
         try {
-            const { statusCode, body } = await proxyRequest(request, reply, "/api/v1/users", USER_SERVICE_URL);
+            const { statusCode, body } = await proxyRequest(request, reply, "/api/v1/users/users", USER_SERVICE_URL);
             return reply.status(statusCode).send(body);
         } catch (error) {
             app.log.error(error);
@@ -82,9 +82,9 @@ export async function usersRoutes(app: FastifyInstance) {
         }
     });
 
-    app.post("/api-key/generate", async (request, reply) => {
+    app.post("/users/api-key/generate", async (request, reply) => {
         try {
-            const { statusCode, body } = await proxyRequest(request, reply, "/api/v1/api-key/generate", USER_SERVICE_URL);
+            const { statusCode, body } = await proxyRequest(request, reply, "/api/v1/users/api-key/generate", USER_SERVICE_URL);
             return reply.status(statusCode).send(body);
         } catch (error) {
             app.log.error(error);

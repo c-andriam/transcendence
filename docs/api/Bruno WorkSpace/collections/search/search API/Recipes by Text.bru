@@ -1,0 +1,29 @@
+meta {
+  name: Recipes by Text
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}{{searchPrefix}}?q=poulet
+  body: none
+  auth: none
+}
+
+params:query {
+  q: poulet
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+}
+
+assert {
+  res.body.data: isJson
+  res.body.data.recipes: isArray
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

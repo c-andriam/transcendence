@@ -1,0 +1,29 @@
+meta {
+  name: Recipes by servings filter
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}{{searchPrefix}}?servings=4
+  body: none
+  auth: none
+}
+
+params:query {
+  servings: 4
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+}
+
+assert {
+  res.body.data: isJson
+  res.body.data.recipes: isArray
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

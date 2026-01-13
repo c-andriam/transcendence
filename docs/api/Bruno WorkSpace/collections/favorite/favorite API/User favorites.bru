@@ -1,0 +1,31 @@
+meta {
+  name: User favorites
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}{{myFavPrefix}}?page=1&limit=10&sortBy=createdAt&sortOrder=desc
+  body: none
+  auth: bearer
+}
+
+params:query {
+  page: 1
+  limit: 10
+  sortBy: createdAt
+  sortOrder: desc
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+}
+
+auth:bearer {
+  token: {{bearerToken}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

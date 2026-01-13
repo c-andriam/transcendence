@@ -1,0 +1,31 @@
+meta {
+  name: Verify Email
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}{{authPrefix}}verify-email
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+  x-gateway-api-key: {{gatewayKey}}
+}
+
+body:json {
+  {
+      "token": "466442ac470d2617dfb95d37a523e7065eeb96aa825fc5dca30db7cffa8f92ce6d8f44ae91efcbe5315a2a04930032ed01904f4229055b051a90af81abe9057a"
+  }
+}
+
+assert {
+  res.status: eq 200
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

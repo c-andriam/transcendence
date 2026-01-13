@@ -1,0 +1,38 @@
+meta {
+  name: Login
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}{{authPrefix}}login
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+  x-gateway-api-key: {{gatewayKey}}
+}
+
+body:json {
+  {
+      "identifier": "juvence00@gmail.com",
+      "password": "newpassword123"
+  }
+}
+
+script:post-response {
+  bru.setGlobalEnvVar("bearerToken", res.body.data.accessToken);
+  
+  const cookie = res.headers['set-cookie'];
+  const refreshToken = cookie[0]
+  .split('refreshToken=')[1]
+  .split(';')[0];
+  bru.setGlobalEnvVar("refreshToken", refreshToken);
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

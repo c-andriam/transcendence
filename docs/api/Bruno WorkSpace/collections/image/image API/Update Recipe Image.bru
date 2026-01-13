@@ -1,0 +1,32 @@
+meta {
+  name: Update Recipe Image
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}{{recImgPref}}/{{recImgId}}
+  body: json
+  auth: bearer
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{bearerToken}}
+}
+
+body:json {
+  {
+      "altText": "Délicieux plat indien",
+      "isPrimary": true
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

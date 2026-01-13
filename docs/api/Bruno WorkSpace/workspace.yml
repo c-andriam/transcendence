@@ -1,0 +1,28 @@
+opencollection: 1.0.0
+info:
+  name: "Bruno WorkSpace"
+  type: workspace
+
+collections:
+  - name: "auth"
+    path: "collections/auth"
+  - name: "category"
+    path: "collections/category"
+  - name: "recipe"
+    path: "collections/recipe"
+  - name: "rating"
+    path: "collections/rating"
+  - name: "search"
+    path: "collections/search"
+  - name: "comment"
+    path: "collections/comment"
+  - name: "favorite"
+    path: "collections/favorite"
+  - name: "image"
+    path: "collections/image"
+
+specs:
+
+docs: ''
+
+activeEnvironmentUid: 15jv36h00000000000000

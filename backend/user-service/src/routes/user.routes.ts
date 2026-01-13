@@ -27,7 +27,7 @@ import {
 
 export async function userRoutes(app: FastifyInstance) {
 
-    app.get("/users", async (request, reply) => {
+    app.get("/users/users", async (request, reply) => {
         const users = await getAllUsers();
         sendSuccess(reply, users.map(stripPassword), 'Users retrieved');
     });
@@ -63,7 +63,7 @@ export async function userRoutes(app: FastifyInstance) {
         sendCreated(reply, stripPassword(user), 'User created');
     });
 
-    app.get("/me", { preHandler: authMiddleware }, async (request, reply) => {
+    app.get("/users/me", { preHandler: authMiddleware }, async (request, reply) => {
         const userId = request.user!.id;
         const user = await getUserById(userId);
         if (!user) {
@@ -143,7 +143,7 @@ export async function userRoutes(app: FastifyInstance) {
         sendSuccess(reply, user, 'Token verified');
     });
 
-    app.post("/api-key/generate", { preHandler: authMiddleware }, async (request, reply) => {
+    app.post("/users/api-key/generate", { preHandler: authMiddleware }, async (request, reply) => {
         const userId = request.user!.id;
         const user = await getUserById(userId);
 

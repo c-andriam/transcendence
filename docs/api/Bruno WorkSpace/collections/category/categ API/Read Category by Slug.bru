@@ -1,0 +1,34 @@
+meta {
+  name: Read Category by Slug
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}{{categPrefix}}/{{slug}}plats-principaux
+  body: none
+  auth: inherit
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+  ~Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Apéritifs",
+    "iconName": "wine-glass",
+    "color": "#FF6B6B",
+    "sortOrder": 1
+  }
+}
+
+assert {
+  res.body.data: isJson
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

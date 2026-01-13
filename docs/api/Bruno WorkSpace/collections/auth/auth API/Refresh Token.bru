@@ -1,0 +1,43 @@
+meta {
+  name: Refresh Token
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}{{authPrefix}}refresh
+  body: none
+  auth: inherit
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+  Cookie: refreshToken={{refreshToken}}
+}
+
+body:json {
+  {
+      "email": "candriam21@gmail.com"
+  }
+}
+
+assert {
+  res.status: eq 200
+}
+
+script:post-response {
+  bru.setGlobalEnvVar("bearerToken", res.body.data.accessToken);
+  
+  const cookie = res.headers['set-cookie'];
+  const refreshToken = cookie[0]
+  .split('refreshToken=')[1]
+  .split(';')[0];
+  bru.setGlobalEnvVar("refreshToken", refreshToken);
+  
+  bru.setGlobalEnvVar("bearerToken", res.body.data.accessToken);
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

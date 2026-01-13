@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>comment - API Documentation</title>
+    <style>
+        body { margin: 0; padding: 0; }
+        #opencollection-container { width: 100vw; height: 100vh; }
+    </style>
+    <link rel="stylesheet" href="https://cdn.opencollection.com/docs.css">
+    <script src="https://cdn.opencollection.com/docs.js"></script>
+</head>
+<body>
+    <div id="opencollection-container"></div>
+    <script>
+        const collectionData = "opencollection: 1.0.0\ninfo:\n  name: comment\nitems:\n  - info:\n      name: comment API\n      type: folder\n      seq: 1\n    request:\n      auth: inherit\n    items:\n      - info:\n          name: All Comments\n          type: http\n          seq: 1\n        http:\n          method: GET\n          url: '{{baseUrl}}{{commentPrefix}}?page=1&limit=10'\n          headers:\n            - name: x-gateway-api-key\n              value: '{{gatewayKey}}'\n          params:\n            - name: page\n              value: '1'\n              type: query\n            - name: limit\n              value: '10'\n              type: query\n          auth: inherit\n        settings:\n          encodeUrl: true\n          timeout: 0\n          followRedirects: true\n          maxRedirects: 5\n      - info:\n          name: Create Comment\n          type: http\n          seq: 2\n        http:\n          method: POST\n          url: '{{baseUrl}}{{commentPrefix}}'\n          headers:\n            - name: x-gateway-api-key\n              value: '{{gatewayKey}}'\n            - name: Content-Type\n              value: application/json\n          body:\n            type: json\n            data: |-\n              {\n                  \"content\": \"Cette recette est d\xE9licieuse !\"\n              }\n          auth:\n            type: bearer\n            token: '{{bearerToken}}'\n        runtime:\n          scripts:\n            - type: after-response\n              code: bru.setGlobalEnvVar(\"commentId\", res.body.data.id);\n        settings:\n          encodeUrl: true\n          timeout: 0\n          followRedirects: true\n          maxRedirects: 5\n      - info:\n          name: Create Reply Comment\n          type: http\n          seq: 5\n        http:\n          method: POST\n          url: '{{baseUrl}}{{commentPrefix}}{{replyComId}}/replies'\n          headers:\n            - name: x-gateway-api-key\n              value: '{{gatewayKey}}'\n            - name: Content-Type\n              value: application/json\n          body:\n            type: json\n            data: |-\n              {\n                  \"content\": \"Merci, c'est gentil !\"\n              }\n          auth:\n            type: bearer\n            token: '{{bearerToken}}'\n        runtime:\n          scripts:\n            - type: after-response\n              code: bru.setGlobalEnvVar(\"commentId\", res.body.data.id);\n        settings:\n          encodeUrl: true\n          timeout: 0\n          followRedirects: true\n          maxRedirects: 5\n      - info:\n          name: Delete Comment\n          type: http\n          seq: 4\n        http:\n          method: DELETE\n          url: '{{baseUrl}}{{commentPrefix}}/{{commentId}}'\n          headers:\n            - name: x-gateway-api-key\n              value: '{{gatewayKey}}'\n            - name: Content-Type\n              value: application/json\n              disabled: true\n          auth:\n            type: bearer\n            token: '{{bearerToken}}'\n        settings:\n          encodeUrl: true\n          timeout: 0\n          followRedirects: true\n          maxRedirects: 5\n      - info:\n          name: Update Comment\n          type: http\n          seq: 3\n        http:\n          method: PUT\n          url: '{{baseUrl}}{{commentPrefix}}/{{commentId}}'\n          headers:\n            - name: x-gateway-api-key\n              value: '{{gatewayKey}}'\n            - name: Content-Type\n              value: application/json\n          body:\n            type: json\n            data: |-\n              {\n                  \"content\": \"Cette recette est d\xE9licieuse ! Merci pour le partage.\"\n              }\n          auth:\n            type: bearer\n            token: '{{bearerToken}}'\n        settings:\n          encodeUrl: true\n          timeout: 0\n          followRedirects: true\n          maxRedirects: 5\nbundled: true\nextensions:\n  bruno:\n    ignore:\n      - node_modules\n      - .git\n    exportedAt: '2026-01-13T10:30:51.441Z'\n    exportedUsing: Bruno/3.0.2\n";
+        new window.OpenCollection({
+            target: document.getElementById('opencollection-container'),
+            opencollection: collectionData,
+            theme: 'light'
+        });
+    </script>
+</body>
+</html>

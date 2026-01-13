@@ -1,0 +1,24 @@
+meta {
+  name: Add to favorite
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}{{favPrefix}}
+  body: none
+  auth: bearer
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+}
+
+auth:bearer {
+  token: {{bearerToken}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

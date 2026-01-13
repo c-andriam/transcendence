@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rating - API Documentation</title>
+    <style>
+        body { margin: 0; padding: 0; }
+        #opencollection-container { width: 100vw; height: 100vh; }
+    </style>
+    <link rel="stylesheet" href="https://cdn.opencollection.com/docs.css">
+    <script src="https://cdn.opencollection.com/docs.js"></script>
+</head>
+<body>
+    <div id="opencollection-container"></div>
+    <script>
+        const collectionData = "opencollection: 1.0.0\ninfo:\n  name: rating\nitems:\n  - info:\n      name: rating API\n      type: folder\n      seq: 1\n    request:\n      auth: inherit\n    items:\n      - info:\n          name: Create Recipe Rate by Id\n          type: http\n          seq: 1\n        http:\n          method: POST\n          url: '{{baseUrl}}{{ratingPrefix}}'\n          headers:\n            - name: Content-Type\n              value: application/json\n            - name: x-gateway-api-key\n              value: '{{gatewayKey}}'\n          body:\n            type: json\n            data: |-\n              {\n                \"userId\": \"{{userId}}\",\n                \"score\": 4\n              }\n          auth:\n            type: bearer\n            token: '{{bearerToken}}'\n        settings:\n          encodeUrl: true\n          timeout: 0\n          followRedirects: true\n          maxRedirects: 5\n      - info:\n          name: Delete Recipe Rate by Id\n          type: http\n          seq: 4\n        http:\n          method: DELETE\n          url: '{{baseUrl}}{{ratingPrefix}}'\n          headers:\n            - name: x-gateway-api-key\n              value: '{{gatewayKey}}'\n            - name: Content-Type\n              value: application/json\n          body:\n            type: json\n            data: |-\n              {\n                \"userId\": \"{{userId}}\"\n              }\n          auth:\n            type: bearer\n            token: '{{bearerToken}}'\n        settings:\n          encodeUrl: true\n          timeout: 0\n          followRedirects: true\n          maxRedirects: 5\n      - info:\n          name: Recipe Rate by Id\n          type: http\n          seq: 2\n        http:\n          method: GET\n          url: '{{baseUrl}}{{ratingPrefix}}'\n          headers:\n            - name: x-gateway-api-key\n              value: '{{gatewayKey}}'\n            - name: Content-Type\n              value: application/json\n              disabled: true\n        settings:\n          encodeUrl: true\n          timeout: 0\n          followRedirects: true\n          maxRedirects: 5\n      - info:\n          name: Update Recipe Rate by Id\n          type: http\n          seq: 3\n        http:\n          method: PUT\n          url: '{{baseUrl}}{{ratingPrefix}}'\n          headers:\n            - name: x-gateway-api-key\n              value: '{{gatewayKey}}'\n            - name: Content-Type\n              value: application/json\n          body:\n            type: json\n            data: |-\n              {\n                \"score\": 5\n              }\n          auth:\n            type: bearer\n            token: '{{bearerToken}}'\n        settings:\n          encodeUrl: true\n          timeout: 0\n          followRedirects: true\n          maxRedirects: 5\nbundled: true\nextensions:\n  bruno:\n    ignore:\n      - node_modules\n      - .git\n    exportedAt: '2026-01-13T10:30:39.537Z'\n    exportedUsing: Bruno/3.0.2\n";
+        new window.OpenCollection({
+            target: document.getElementById('opencollection-container'),
+            opencollection: collectionData,
+            theme: 'light'
+        });
+    </script>
+</body>
+</html>

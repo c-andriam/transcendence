@@ -291,7 +291,7 @@ export async function recipesRoutes(app: FastifyInstance) {
 
     // ========== ROUTES RATINGS ==========
 
-    app.post("/recipes/:id/rate", {
+    app.post("/recipes/:id/ratings", {
         preHandler: [authMiddleware, paramValidator(z.object({
             id: z.string().min(1)
         })), bodyValidator(z.object({

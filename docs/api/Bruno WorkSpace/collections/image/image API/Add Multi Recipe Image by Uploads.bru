@@ -1,0 +1,39 @@
+meta {
+  name: Add Multi Recipe Image by Uploads
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{baseUrl}}{{recImgPref}}/uploads
+  body: multipartForm
+  auth: bearer
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+  ~Content-Type: multipart/form-data
+}
+
+auth:bearer {
+  token: {{bearerToken}}
+}
+
+body:json {
+  {
+      "imageUrl": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=800",
+      "altText": "Délicieux plat indien",
+      "isPrimary": false
+  }
+}
+
+body:multipart-form {
+  file: @file(/home/candriam/Pictures/Screenshots/Screenshot from 2025-12-18 09-50-53.png) @contentType(image/jpeg)
+  file: @file(/home/candriam/Pictures/Screenshots/Screenshot from 2025-12-18 09-51-25.png) @contentType(image/jpeg)
+  file: @file(/home/candriam/Pictures/Screenshots/Screenshot from 2025-12-18 09-51-42.png) @contentType(image/jpeg)
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

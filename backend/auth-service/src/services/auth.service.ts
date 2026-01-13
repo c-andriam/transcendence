@@ -1,4 +1,4 @@
-import { hashPassword, comparePassword, verifyPassword, isValidEmail } from "@transcendence/common";
+import { hashPassword, comparePassword, verifyPassword, isValidEmail, UnauthorizedError } from "@transcendence/common";
 import { BadRequestError } from "@transcendence/common";
 // import { PrismaClient } from "@prisma/client";
 import { PrismaClient } from "../generated/prisma";
@@ -116,7 +116,7 @@ export async function loginUser(credentials: any) {
     await verifyPassword(password, user.password, identifier);
 
     if (!user.isEmailVerified) {
-        throw new BadRequestError("Please verify your email address before logging in");
+        throw new UnauthorizedError("Please verify your email address before logging in");
     }
 
     const { password: _, ...userWithoutPassword } = user;

@@ -1,0 +1,29 @@
+meta {
+  name: Recipes by filter
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}{{searchPrefix}}?difficulty=MEDIUM
+  body: none
+  auth: none
+}
+
+params:query {
+  difficulty: MEDIUM
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+}
+
+assert {
+  res.body.data: isJson
+  res.body.data.recipes: isArray
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

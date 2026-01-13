@@ -1,0 +1,62 @@
+meta {
+  name: Read Category
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}{{categPrefix}}
+  body: none
+  auth: inherit
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+  ~Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Apéritifs",
+    "iconName": "wine-glass",
+    "color": "#FF6B6B",
+    "sortOrder": 1
+  }
+}
+
+script:post-response {
+  var id = res.body.data.find(o => o.slug === "aperitifs")?.id;
+  bru.setGlobalEnvVar("aperiCatId", id);
+  
+  id = res.body.data.find(o => o.slug === "entrees")?.id;
+  bru.setGlobalEnvVar("entreCatId", id);
+  
+  id = res.body.data.find(o => o.slug === "plats-principaux")?.id;
+  bru.setGlobalEnvVar("platCatId", id);
+  
+  id = res.body.data.find(o => o.slug === "desserts")?.id;
+  bru.setGlobalEnvVar("dessCatId", id);
+  
+  id = res.body.data.find(o => o.slug === "accompagnements")?.id;
+  bru.setGlobalEnvVar("accompCatId", id);
+  
+  id = res.body.data.find(o => o.slug === "boissons")?.id;
+  bru.setGlobalEnvVar("boisCatId", id);
+  
+  id = res.body.data.find(o => o.slug === "petit-dejeuner")?.id;
+  bru.setGlobalEnvVar("petDejCatId", id);
+  
+  id = res.body.data.find(o => o.slug === "boulangerie")?.id;
+  bru.setGlobalEnvVar("boulCatId", id);
+  
+  id = res.body.data.find(o => o.slug === "sauces---bases")?.id;
+  bru.setGlobalEnvVar("sauceCatId", id);
+  
+  id = res.body.data.find(o => o.slug === "snacks")?.id;
+  bru.setGlobalEnvVar("snacksCatId", id);
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

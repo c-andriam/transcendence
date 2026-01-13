@@ -1,0 +1,35 @@
+meta {
+  name: Create Comment
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}{{commentPrefix}}
+  body: json
+  auth: bearer
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{bearerToken}}
+}
+
+body:json {
+  {
+      "content": "Cette recette est délicieuse !"
+  }
+}
+
+script:post-response {
+  bru.setGlobalEnvVar("commentId", res.body.data.id);
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
