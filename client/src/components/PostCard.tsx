@@ -10,7 +10,7 @@ import { PiChefHat } from "react-icons/pi";
 import { TbChartBar } from "react-icons/tb";
 import { RiMessengerLine } from "react-icons/ri";
 import { MdFlatware } from "react-icons/md";
-import Instrution from "../pages/Instrution";
+import Instrution from "./Modal/InstrutionModal";
 
 const PostCard = () => {
     const modalRef = useRef<HTMLDialogElement>(null);

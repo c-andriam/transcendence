@@ -5,12 +5,7 @@ interface InstrutionProps {
     modalRef: any;
 }
 
-interface steps {
-    step: number;
-    instruction: string;
-}
-
-const Instrution = ({ modalRef }: InstrutionProps) => {
+const InstrutionModal = ({ modalRef }: InstrutionProps) => {
     const ingredients = [
         '500g Pasta',
         'Pesto Sauce',
@@ -95,4 +90,4 @@ const Instrution = ({ modalRef }: InstrutionProps) => {
     );
 };
 
-export default Instrution;
+export default InstrutionModal;

@@ -3,7 +3,8 @@ import { useState, useEffect, useRef } from 'react';
 import { IoSettingsOutline } from "react-icons/io5";
 import { MdOutlineLogout } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
-
+import Profil from '../Modal/ProfilModal';
+import Deconnexion from '../Modal/DeconnexionModal';
 
 export interface AccountProps {
     // username: string;
@@ -13,6 +14,8 @@ export interface AccountProps {
 const Account = ({ profilePicture }: AccountProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
+    const profilRef = useRef<HTMLDialogElement>(null);
+    const deconnexionRef = useRef<HTMLDialogElement>(null);
 
     useEffect(() => {
         const closeMenu = (e: MouseEvent) => {
@@ -52,6 +55,7 @@ const Account = ({ profilePicture }: AccountProps) => {
                             hover:bg-white/10 rounded-lg
                             transition tracking-wider p-2 mx-2
                             flex flex-row items-center justify-start gap-8'
+                            onClick={() => profilRef.current?.showModal()}
                         >
                             <CgProfile size={24} />
                             Profil
@@ -70,6 +74,7 @@ const Account = ({ profilePicture }: AccountProps) => {
                             hover:bg-white/10 rounded-lg
                             transition tracking-wider p-2 mx-2
                             flex flex-row items-center justify-start gap-8'
+                            onClick={() => deconnexionRef.current?.showModal()}
                         >
                             <MdOutlineLogout size={24} />
                             Déconnexion
@@ -77,6 +82,18 @@ const Account = ({ profilePicture }: AccountProps) => {
                     </div>
                 </div>
             )}
+            {/**MODAL*/}
+            <Profil
+                profilePictureURL="/images/users/Tom.png"
+                username="Username"
+                email="Username@gmail.com"
+                lastname="Lastname"
+                firstname="Firstname"
+                modelRef={profilRef}
+            />
+            <Deconnexion
+                modelRef={deconnexionRef}
+            />
         </div>
     );
 }
