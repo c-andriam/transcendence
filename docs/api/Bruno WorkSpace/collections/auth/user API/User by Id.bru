@@ -1,0 +1,27 @@
+meta {
+  name: User by Id
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}{{userPrefix}}{{userId}}
+  body: none
+  auth: none
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.status: eq success
+  res.body.data: isJson
+  res.body.data.isEmailVerified: eq true
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

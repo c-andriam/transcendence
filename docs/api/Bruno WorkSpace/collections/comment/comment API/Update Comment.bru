@@ -1,0 +1,31 @@
+meta {
+  name: Update Comment
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{baseUrl}}{{commentPrefix}}/{{commentId}}
+  body: json
+  auth: bearer
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{bearerToken}}
+}
+
+body:json {
+  {
+      "content": "Cette recette est délicieuse ! Merci pour le partage."
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

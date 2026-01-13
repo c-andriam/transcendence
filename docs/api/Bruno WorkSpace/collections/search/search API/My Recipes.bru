@@ -1,0 +1,32 @@
+meta {
+  name: My Recipes
+  type: http
+  seq: 15
+}
+
+get {
+  url: {{baseUrl}}{{recipePrefix}}/me?sortBy=updatedAt&sortOrder=desc&page=1&limit=10&publishedOnly=false
+  body: none
+  auth: bearer
+}
+
+params:query {
+  sortBy: updatedAt
+  sortOrder: desc
+  page: 1
+  limit: 10
+  publishedOnly: false
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+}
+
+auth:bearer {
+  token: {{bearerToken}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

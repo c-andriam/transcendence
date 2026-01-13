@@ -1,0 +1,40 @@
+meta {
+  name: Update User by Id
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}{{userPrefix}}{{userId}}
+  body: json
+  auth: bearer
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{bearerToken}}
+}
+
+body:json {
+  {
+      "username": "candriam21",
+      "firstName": "Juvence",
+      "lastName": "Candriam21"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.status: eq success
+  res.body.data: isJson
+  res.body.data.isEmailVerified: eq true
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

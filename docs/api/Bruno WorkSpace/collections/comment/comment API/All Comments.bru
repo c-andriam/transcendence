@@ -1,0 +1,25 @@
+meta {
+  name: All Comments
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}{{commentPrefix}}?page=1&limit=10
+  body: none
+  auth: inherit
+}
+
+params:query {
+  page: 1
+  limit: 10
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

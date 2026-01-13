@@ -1,0 +1,35 @@
+meta {
+  name: Create Reply Comment
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}{{commentPrefix}}{{replyComId}}/replies
+  body: json
+  auth: bearer
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{bearerToken}}
+}
+
+body:json {
+  {
+      "content": "Merci, c'est gentil !"
+  }
+}
+
+script:post-response {
+  bru.setGlobalEnvVar("commentId", res.body.data.id);
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

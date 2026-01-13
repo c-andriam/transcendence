@@ -1,0 +1,32 @@
+meta {
+  name: Set Recipe Image as Primary
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{baseUrl}}{{recImgPref}}/{{recImgId}}/primary
+  body: none
+  auth: bearer
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+  ~Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{bearerToken}}
+}
+
+body:json {
+  {
+      "altText": "Délicieux plat indien",
+      "isPrimary": true
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -1,0 +1,31 @@
+meta {
+  name: Recipes with pagination
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}{{searchPrefix}}?q=poulet&page=1&limit=5
+  body: none
+  auth: none
+}
+
+params:query {
+  q: poulet
+  page: 1
+  limit: 5
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+}
+
+assert {
+  res.body.data: isJson
+  res.body.data.recipes: isArray
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

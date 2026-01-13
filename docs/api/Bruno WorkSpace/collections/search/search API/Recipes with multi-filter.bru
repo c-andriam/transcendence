@@ -1,0 +1,32 @@
+meta {
+  name: Recipes with multi-filter
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}{{searchPrefix}}?q=poulet&difficulty=MEDIUM&minPrepaTime=10&maxPrepTime=60
+  body: none
+  auth: none
+}
+
+params:query {
+  q: poulet
+  difficulty: MEDIUM
+  minPrepaTime: 10
+  maxPrepTime: 60
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+}
+
+assert {
+  res.body.data: isJson
+  res.body.data.recipes: isArray
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

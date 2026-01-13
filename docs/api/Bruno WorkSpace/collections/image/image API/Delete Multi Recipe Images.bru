@@ -1,0 +1,31 @@
+meta {
+  name: Delete Multi Recipe Images
+  type: http
+  seq: 10
+}
+
+delete {
+  url: {{baseUrl}}{{recipePrefix}}/{{recipeId}}/images/bulk
+  body: json
+  auth: bearer
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{bearerToken}}
+}
+
+body:json {
+  {
+      "imageIds": ["6962207d-3eea-4029-a814-d21fcbeb522c", "4a43428b-e031-4c62-8e4f-c70d11df0147", "1bafba31-c3d6-42cc-9c08-15577cff5cb3"]
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
