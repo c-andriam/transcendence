@@ -1,0 +1,36 @@
+meta {
+  name: Profile
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}{{userPrefix}}me
+  body: none
+  auth: bearer
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+}
+
+auth:bearer {
+  token: {{bearerToken}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.status: eq success
+  res.body.data: isJson
+  res.body.data.isEmailVerified: eq true
+}
+
+script:post-response {
+  bru.setGlobalEnvVar("authorId", res.body.data.id);
+  bru.setGlobalEnvVar("authorEmail", res.body.data.email);
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

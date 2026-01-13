@@ -1,0 +1,30 @@
+meta {
+  name: Update Category
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{baseUrl}}{{categPrefix}}/{{aperiCatId}}
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+  x-gateway-api-key: {{gatewayKey}}
+}
+
+body:json {
+  {
+    "name": "Apéritifs",
+    "iconName": "wine-glass",
+    "color": "#FF6B6B",
+    "sortOrder": 1
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

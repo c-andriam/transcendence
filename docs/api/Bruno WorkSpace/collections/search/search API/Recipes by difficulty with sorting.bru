@@ -1,0 +1,30 @@
+meta {
+  name: Recipes by difficulty with sorting
+  type: http
+  seq: 12
+}
+
+get {
+  url: {{baseUrl}}{{recipePrefix}}/difficulty/MEDIUM?sortBy=cookTime&sortOrder=asc
+  body: none
+  auth: none
+}
+
+params:query {
+  sortBy: cookTime
+  sortOrder: asc
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+}
+
+assert {
+  res.body.data: isJson
+  res.body.data.recipes: isArray
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

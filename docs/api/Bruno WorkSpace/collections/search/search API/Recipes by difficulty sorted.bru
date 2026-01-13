@@ -1,0 +1,32 @@
+meta {
+  name: Recipes by difficulty sorted
+  type: http
+  seq: 14
+}
+
+get {
+  url: {{baseUrl}}{{recipePrefix}}/difficulty/HARD?sortBy=servings&sortOrder=desc&page=1&limit=10
+  body: none
+  auth: none
+}
+
+params:query {
+  sortBy: servings
+  sortOrder: desc
+  page: 1
+  limit: 10
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+}
+
+assert {
+  res.body.data: isJson
+  res.body.data.recipes: isArray
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

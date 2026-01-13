@@ -1,0 +1,30 @@
+meta {
+  name: My Recipes Published
+  type: http
+  seq: 16
+}
+
+get {
+  url: {{baseUrl}}{{recipePrefix}}/me?publishedOnly=true&page=1&limit=5
+  body: none
+  auth: bearer
+}
+
+params:query {
+  publishedOnly: true
+  page: 1
+  limit: 5
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+}
+
+auth:bearer {
+  token: {{bearerToken}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

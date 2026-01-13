@@ -1,0 +1,35 @@
+meta {
+  name: Add Multi Recipe Image by Urls
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}{{recImgPref}}/urls
+  body: json
+  auth: bearer
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{bearerToken}}
+}
+
+body:json {
+  {
+      "images": [
+          { "imageUrl": "https://photo-cdn2.icons8.com/t7nTCbPkDTChTYtm6W9dmo5moFDoiU54uApwv2gcLYE/rs:fit:288:192/czM6Ly9pY29uczgu/bW9vc2UtcHJvZC5l/eHRlcm5hbC9hMmE0/Mi83MjBlYjViZDE5/NDg0ZmIzYTIxMDE1/NDFlZWZlZGZhYy5q/cGc.webp", "altText": "Image 1" },
+          { "imageUrl": "https://photo-cdn2.icons8.com/P710xESTB_XsVRKxu6Ir8IMiSUkAgJR--gx7-TtaH7k/rs:fit:288:192/czM6Ly9pY29uczgu/bW9vc2UtcHJvZC5l/eHRlcm5hbC9hMmE0/Mi80ZjM5MzQ2NTlh/MjI0YzZlYTA0Yzhj/OGIxZmU5NjdmYi5q/cGc.webp", "altText": "Image 2" },
+          { "imageUrl": "https://photo-cdn2.icons8.com/xqEhFN_W_RVT4ZTwcy04cKLS6a2Q4dVE8wvwzaTL-TU/rs:fit:288:162/czM6Ly9pY29uczgu/bW9vc2UtcHJvZC5l/eHRlcm5hbC9hMmE0/Mi9hMThjNzZiNGE2/YTg0NjgzYjM1ZGZk/NDc5MTFmY2I3My5q/cGc.webp", "altText": "Image 3" }
+      ]
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -1,0 +1,24 @@
+meta {
+  name: All My Recipes
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}{{recipePrefix}}/me
+  body: none
+  auth: bearer
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+}
+
+auth:bearer {
+  token: {{bearerToken}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

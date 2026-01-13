@@ -1,0 +1,20 @@
+meta {
+  name: All Recipes Images
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}{{recImgPref}}
+  body: none
+  auth: inherit
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

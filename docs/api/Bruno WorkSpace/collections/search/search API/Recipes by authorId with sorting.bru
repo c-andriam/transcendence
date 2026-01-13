@@ -1,0 +1,32 @@
+meta {
+  name: Recipes by authorId with sorting
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}{{recipePrefix}}/author/{{authorId}}?sortBy=createdAt&sortOrder=asc&page=1&limit=5
+  body: none
+  auth: none
+}
+
+params:query {
+  sortBy: createdAt
+  sortOrder: asc
+  page: 1
+  limit: 5
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+}
+
+assert {
+  res.body.data: isJson
+  res.body.data.recipes: isArray
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

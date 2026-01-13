@@ -1,0 +1,32 @@
+meta {
+  name: Create Recipe Rate by Id
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}{{ratingPrefix}}
+  body: json
+  auth: bearer
+}
+
+headers {
+  Content-Type: application/json
+  x-gateway-api-key: {{gatewayKey}}
+}
+
+auth:bearer {
+  token: {{bearerToken}}
+}
+
+body:json {
+  {
+    "userId": "{{userId}}",
+    "score": 4
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

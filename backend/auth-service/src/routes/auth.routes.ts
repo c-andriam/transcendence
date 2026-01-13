@@ -45,7 +45,7 @@ const emailSchema = z.object({
 });
 
 export async function authRoutes(app: FastifyInstance) {
-    app.post("/register", {
+    app.post("/auth/register", {
         preHandler: bodyValidator(registerSchema)
     }, async (request, reply) => {
         try {
@@ -60,7 +60,7 @@ export async function authRoutes(app: FastifyInstance) {
         }
     });
 
-    app.post("/login", {
+    app.post("/auth/login", {
         preHandler: bodyValidator(loginSchema)
     }, async (request, reply) => {
         try {
@@ -79,22 +79,27 @@ export async function authRoutes(app: FastifyInstance) {
                 httpOnly: true,
                 secure: true,//process.env.NODE_ENV === 'production',
                 sameSite: 'strict',
-                path: '/api/v1/refresh',
+                path: '/api/v1/auth/refresh',
                 maxAge: 7 * 24 * 60 * 60
             });
 
             sendSuccess(reply, { accessToken }, 'Login successful');
         } catch (error: any) {
-            // Login failures normally throw specific errors from service
-            if (error.message === 'Invalid credentials' || error.message.includes('not found')) {
-                return sendBadRequest(reply, "Invalid credentials");
+            if (error.message === 'Invalid credentials') {
+                return sendError(reply, "Invalid credentials", HttpStatus.BAD_REQUEST);
+            }
+            if (error.message.includes('not found')) {
+                return sendError(reply, "User not found", HttpStatus.NOT_FOUND);
             }
             app.log.error(error);
-            sendError(reply, "Login failed", HttpStatus.INTERNAL_SERVER_ERROR);
+            if (error.message.includes('Please verify your email address before logging in')) {
+                return sendError(reply, "Please verify your email address before logging in", HttpStatus.UNAUTHORIZED);
+            }
+            sendError(reply, "Login failed.", HttpStatus.UNAUTHORIZED);
         }
     });
 
-    app.post("/refresh", async (request, reply) => {
+    app.post("/auth/refresh", async (request, reply) => {
         const refreshToken = request.cookies.refreshToken;
         if (!refreshToken) {
             console.log("Refresh attempt failed: No refreshToken cookie found");
@@ -116,7 +121,7 @@ export async function authRoutes(app: FastifyInstance) {
                 httpOnly: true,
                 secure: true,//process.env.NODE_ENV === 'production',
                 sameSite: 'strict',
-                path: '/api/v1/refresh',
+                path: '/api/v1/auth/refresh',
                 maxAge: 7 * 24 * 60 * 60
             });
             sendSuccess(reply, { accessToken }, 'Access token refreshed successfully');
@@ -127,7 +132,7 @@ export async function authRoutes(app: FastifyInstance) {
         }
     });
 
-    app.post("/logout", {
+    app.post("/auth/logout", {
         preHandler: [authMiddleware]
     }, async (request, reply) => {
         const refreshToken = request.cookies.refreshToken;
@@ -140,17 +145,16 @@ export async function authRoutes(app: FastifyInstance) {
                 httpOnly: true,
                 secure: true,//process.env.NODE_ENV === 'production',
                 sameSite: 'strict',
-                path: '/api/v1/refresh',
+                path: '/api/v1/auth/refresh',
             });
             sendSuccess(reply, {}, 'Logout successful');
         } catch (error: any) {
             app.log.error(error);
-            // Logout fail shouldn't block user
             sendSuccess(reply, {}, 'Logout successful');
         }
     });
 
-    app.post("/reset-password", {
+    app.post("/auth/reset-password", {
         preHandler: bodyValidator(z.object({
             token: z.string(),
             newPassword: z.string().min(8).max(142)
@@ -166,7 +170,7 @@ export async function authRoutes(app: FastifyInstance) {
         }
     });
 
-    app.post("/forgot-password", {
+    app.post("/auth/forgot-password", {
         preHandler: bodyValidator(emailSchema)
     }, async (request, reply) => {
         const { email } = request.body as { email: string };
@@ -175,12 +179,11 @@ export async function authRoutes(app: FastifyInstance) {
             sendSuccess(reply, {}, 'If an account with that email exists, a password reset link has been sent.');
         } catch (error: any) {
             app.log.error(error);
-            // Security: Always return success
             sendSuccess(reply, {}, 'If an account with that email exists, a password reset link has been sent.');
         }
     });
 
-    app.post("/verify-email", {
+    app.post("/auth/verify-email", {
         preHandler: bodyValidator(z.object({ token: z.string() }))
     }, async (request, reply) => {
         const { token } = request.body as { token: string };
@@ -204,7 +207,7 @@ export async function authRoutes(app: FastifyInstance) {
         }
     });
 
-    app.post("/resend-verification", {
+    app.post("/auth/resend-verification", {
         preHandler: bodyValidator(emailSchema)
     }, async (request, reply) => {
         const { email } = request.body as { email: string };

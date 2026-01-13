@@ -1,0 +1,33 @@
+meta {
+  name: Add Recipe Image by Url
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}{{recImgPref}}/url
+  body: json
+  auth: bearer
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{bearerToken}}
+}
+
+body:json {
+  {
+      "imageUrl": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=800",
+      "altText": "Délicieux plat indien",
+      "isPrimary": false
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

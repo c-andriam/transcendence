@@ -1,0 +1,32 @@
+meta {
+  name: Recipes with sorting
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}{{searchPrefix}}?sortBy=prepTime&sortOrder=asc&page=1&limit=5
+  body: none
+  auth: none
+}
+
+params:query {
+  sortBy: prepTime
+  sortOrder: asc
+  page: 1
+  limit: 5
+}
+
+headers {
+  x-gateway-api-key: {{gatewayKey}}
+}
+
+assert {
+  res.body.data: isJson
+  res.body.data.recipes: isArray
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
