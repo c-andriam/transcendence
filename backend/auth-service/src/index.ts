@@ -10,8 +10,6 @@ dotenv.config({
   path: path.resolve(__dirname, "../../.env"),
 });
 
-// dotenv.config();
-
 const app = fastify({
     logger: true
 });

@@ -1,8 +1,18 @@
 import db from "../utils/dbPlugin";
-import { hashPassword, isValidEmail } from "@transcendence/common";
-import { BadRequestError } from "@transcendence/common";
+import {
+    hashPassword,
+    isValidEmail,
+    BadRequestError,
+    NotFoundError
+} from "@transcendence/common";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
+import {
+    uploadImageFromBuffer,
+    deleteImage,
+    getThumbnailUrl
+} from "./cloudinary.service";
+import { MultipartFile } from "@fastify/multipart";
 
 export async function createUser(data: {
     email: string;
@@ -25,7 +35,7 @@ export async function createUser(data: {
     const hashedPassword = await hashPassword(data.password);
 
     const user = await db.user.create({
-        data: { 
+        data: {
             ...data,
             password: hashedPassword
         }
@@ -44,7 +54,6 @@ export async function getUserById(id: string) {
 }
 
 export async function updateUser(id: string, data: {
-    // email?: string;
     username?: string;
     firstName?: string;
     lastName?: string;
@@ -53,15 +62,42 @@ export async function updateUser(id: string, data: {
 }) {
     const user = await db.user.update({
         where: { id },
-        data: { 
+        data: {
             username: data.username,
             firstName: data.firstName,
             lastName: data.lastName,
             avatarUrl: data.avatarUrl,
             bio: data.bio
-         }
+        }
     });
     return user;
+}
+
+export async function updateAvatar(userId: string, data: MultipartFile) {
+    const user = await db.user.findUnique({ where: { id: userId } });
+    if (!user) {
+        throw new NotFoundError("User not found");
+    }
+
+    const buffer = await data.toBuffer();
+    const result = await uploadImageFromBuffer(buffer, {
+        folder: 'avatars',
+        publicId: `avatar_${userId}`,
+        transformation: [
+            { width: 400, height: 400, crop: 'fill', gravity: 'face' },
+            { quality: 'auto:good' },
+            { fetch_format: 'auto' }
+        ]
+    });
+
+    const updatedUser = await db.user.update({
+        where: { id: userId },
+        data: {
+            avatarUrl: result.secureUrl
+        }
+    });
+
+    return updatedUser;
 }
 
 export async function deleteUser(id: string) {
@@ -91,6 +127,26 @@ export async function getUserByIdentifier(identifier: string) {
         }
     });
     return user;
+}
+
+export async function searchUsers(query: string) {
+    return await db.user.findMany({
+        where: {
+            OR: [
+                { username: { contains: query, mode: 'insensitive' } },
+                { firstName: { contains: query, mode: 'insensitive' } },
+                { lastName: { contains: query, mode: 'insensitive' } }
+            ]
+        },
+        select: {
+            id: true,
+            username: true,
+            firstName: true,
+            lastName: true,
+            avatarUrl: true
+        },
+        take: 20
+    });
 }
 
 export async function getUserByEmailIdentifier(email: string) {
@@ -133,6 +189,37 @@ export async function verifyResetToken(token: string) {
 
 export async function updatePassword(userId: string, newPassword: string) {
     const hashedPassword = await hashPassword(newPassword);
+    await db.user.update({
+        where: { id: userId },
+        data: { password: hashedPassword }
+    });
+}
+
+export async function updateUserStatus(userId: string, isOnline: boolean) {
+    return await db.user.update({
+        where: { id: userId },
+        data: {
+            isOnline,
+            lastSeenAt: isOnline ? null : new Date()
+        }
+    });
+}
+export async function changePassword(userId: string, oldPass: string, newPass: string) {
+    const user = await db.user.findUnique({ where: { id: userId } });
+    if (!user) {
+        throw new NotFoundError("User not found");
+    }
+
+    const isMatch = await bcrypt.compare(oldPass, user.password);
+    if (!isMatch) {
+        throw new BadRequestError("Invalid old password");
+    }
+
+    if (newPass.length < 8 || newPass.length > 142) {
+        throw new BadRequestError("Password must be between 8 and 142 characters");
+    }
+
+    const hashedPassword = await hashPassword(newPass);
     await db.user.update({
         where: { id: userId },
         data: { password: hashedPassword }

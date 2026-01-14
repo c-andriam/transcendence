@@ -13,7 +13,6 @@ dotenv.config({
     path: path.resolve(__dirname, "../../.env"),
 });
 
-// dotenv.config();
 const INTERNAL_API_KEY = process.env.INTERNAL_API_KEY;
 
 if (!INTERNAL_API_KEY) {

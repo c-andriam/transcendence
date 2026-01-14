@@ -23,7 +23,6 @@ export async function proxyRequest(
             }
         });
     }
-
     const options: RequestInit = {
         method: request.method,
         headers: {
@@ -36,12 +35,10 @@ export async function proxyRequest(
             })
         }
     };
-
     if (['POST', 'PUT', 'DELETE'].includes(request.method) && request.body) {
         options.headers["content-type"] = "application/json";
         options.body = JSON.stringify(request.body);
     }
-
     try {
         const response = await fetch(url.toString(), options);
         const statusCode = response.status;
@@ -79,10 +76,6 @@ export async function proxyHydrate(
     }
 }
 
-/**
- * Proxy pour les requêtes multipart (upload de fichiers)
- * Utilise le stream brut pour éviter de re-parser le multipart
- */
 export async function proxyMultipart(
     request: FastifyRequest,
     reply: FastifyReply,
@@ -100,7 +93,6 @@ export async function proxyMultipart(
     }
 
     try {
-        // Créer un nouveau FormData pour transférer au service
         const FormData = (await import('form-data')).default;
         const formData = new FormData();
 
@@ -119,15 +111,12 @@ export async function proxyMultipart(
                 formData.append(part.fieldname, part.value);
             }
         }
-
         if (!hasFile) {
             return reply.status(400).send({
                 status: "error",
                 message: "No file uploaded"
             });
         }
-
-        // Utiliser une Promise pour gérer le submit de form-data
         const responseData = await new Promise<{ statusCode: number; body: any }>((resolve, reject) => {
             formData.submit({
                 protocol: 'http:',

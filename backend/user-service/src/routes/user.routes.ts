@@ -4,15 +4,39 @@ import {
     createUser,
     deleteUser,
     getAllUsers,
+    searchUsers,
     getUserByEmailIdentifier,
     getUserById,
     getUserByIdentifier,
     getUsersByIds,
     updatePassword,
     updateUser,
+    updateAvatar,
+    changePassword,
     verifyResetToken,
-    verifyEmailToken
+    verifyEmailToken,
+    updateUserStatus
 } from "../services/user.service";
+import {
+    followUser,
+    unfollowUser,
+    getFollowers,
+    getFollowing,
+    checkIsFollowing
+} from "../services/follow.service";
+import {
+    sendFriendRequest,
+    acceptFriendRequest,
+    rejectFriendRequest,
+    removeFriend,
+    getFriends,
+    getFriendRequests
+} from "../services/friend.service";
+import {
+    blockUser,
+    unblockUser,
+    getBlockedUsers
+} from "../services/block.service";
 import {
     sendSuccess,
     sendCreated,
@@ -21,15 +45,27 @@ import {
     authMiddleware,
     generateApiKey,
     sendNotFound,
+    sendBadRequest,
     sendForbidden,
     sendError
 } from "@transcendence/common";
 
 export async function userRoutes(app: FastifyInstance) {
 
-    app.get("/users/users", async (request, reply) => {
+    app.get("/users", async (request, reply) => {
         const users = await getAllUsers();
         sendSuccess(reply, users.map(stripPassword), 'Users retrieved');
+    });
+
+    app.get("/users/search", async (request, reply) => {
+        const query = request.query as { q: string | string[] };
+        const q = Array.isArray(query.q) ? query.q[0] : query.q;
+
+        if (!q) {
+            return sendSuccess(reply, [], 'No query provided');
+        }
+        const users = await searchUsers(q);
+        sendSuccess(reply, users, 'Users found');
     });
 
     app.get("/users/:id", async (request, reply) => {
@@ -88,6 +124,24 @@ export async function userRoutes(app: FastifyInstance) {
         sendSuccess(reply, stripPassword(user), 'User updated');
     });
 
+    app.post("/users/me/avatar", { preHandler: authMiddleware }, async (request, reply) => {
+        const data = await request.file();
+        if (!data) {
+            return sendBadRequest(reply, "No image uploaded");
+        }
+        const userId = request.user!.id;
+        const user = await updateAvatar(userId, data);
+        sendSuccess(reply, stripPassword(user), "Avatar updated successfully");
+    });
+
+    app.post("/users/change-password", { preHandler: authMiddleware }, async (request, reply) => {
+        const { oldPassword, newPassword } = request.body as { oldPassword: string, newPassword: string };
+        const userId = request.user!.id;
+        await changePassword(userId, oldPassword, newPassword);
+        sendSuccess(reply, {}, "Password changed successfully");
+    });
+
+
     app.delete("/users/:id", { preHandler: authMiddleware }, async (request, reply) => {
         const { id } = request.params as { id: string };
         if (request.user!.id !== id) {
@@ -95,6 +149,111 @@ export async function userRoutes(app: FastifyInstance) {
         }
         const user = await deleteUser(id);
         sendDeleted(reply, stripPassword(user), 'User deleted');
+    });
+
+    app.post("/users/:id/follow", { preHandler: authMiddleware }, async (request, reply) => {
+        const { id } = request.params as { id: string };
+        const followerId = request.user!.id;
+        const result = await followUser(followerId, id);
+        sendCreated(reply, result, 'User followed successfully');
+    });
+
+    app.delete("/users/:id/follow", { preHandler: authMiddleware }, async (request, reply) => {
+        const { id } = request.params as { id: string };
+        const followerId = request.user!.id;
+        const result = await unfollowUser(followerId, id);
+        sendSuccess(reply, result, 'User unfollowed successfully');
+    });
+
+    app.get("/users/me/followers", { preHandler: authMiddleware }, async (request, reply) => {
+        const userId = request.user!.id;
+        const followers = await getFollowers(userId);
+        sendSuccess(reply, followers, 'Your followers retrieved');
+    });
+
+    app.get("/users/me/following", { preHandler: authMiddleware }, async (request, reply) => {
+        const userId = request.user!.id;
+        const following = await getFollowing(userId);
+        sendSuccess(reply, following, 'Who you follow retrieved');
+    });
+
+    app.get("/users/:id/followers", async (request, reply) => {
+        const { id } = request.params as { id: string };
+        const followers = await getFollowers(id);
+        sendSuccess(reply, followers, 'Followers retrieved');
+    });
+
+    app.get("/users/:id/following", async (request, reply) => {
+        const { id } = request.params as { id: string };
+        const following = await getFollowing(id);
+        sendSuccess(reply, following, 'Following retrieved');
+    });
+
+    app.get("/users/:id/is-following", { preHandler: authMiddleware }, async (request, reply) => {
+        const { id } = request.params as { id: string };
+        const followerId = request.user!.id;
+        const isFollowing = await checkIsFollowing(followerId, id);
+        sendSuccess(reply, { isFollowing }, 'Follow status retrieved');
+    });
+
+    app.post("/users/friend-requests", { preHandler: authMiddleware }, async (request, reply) => {
+        const { receiverId } = request.body as { receiverId: string };
+        const senderId = request.user!.id;
+        const result = await sendFriendRequest(senderId, receiverId);
+        sendCreated(reply, result, 'Friend request sent');
+    });
+
+    app.put("/users/friend-requests/:id/accept", { preHandler: authMiddleware }, async (request, reply) => {
+        const { id } = request.params as { id: string };
+        const userId = request.user!.id;
+        const result = await acceptFriendRequest(id, userId);
+        sendSuccess(reply, result, 'Friend request accepted');
+    });
+
+    app.put("/users/friend-requests/:id/reject", { preHandler: authMiddleware }, async (request, reply) => {
+        const { id } = request.params as { id: string };
+        const userId = request.user!.id;
+        const result = await rejectFriendRequest(id, userId);
+        sendSuccess(reply, result, 'Friend request rejected');
+    });
+
+    app.delete("/users/friends/:friendId", { preHandler: authMiddleware }, async (request, reply) => {
+        const { friendId } = request.params as { friendId: string };
+        const userId = request.user!.id;
+        const result = await removeFriend(userId, friendId);
+        sendSuccess(reply, result, 'Friend removed');
+    });
+
+    app.get("/users/me/friends", { preHandler: authMiddleware }, async (request, reply) => {
+        const userId = request.user!.id;
+        const friends = await getFriends(userId);
+        sendSuccess(reply, friends, 'Friends list retrieved');
+    });
+
+    app.get("/users/me/friend-requests", { preHandler: authMiddleware }, async (request, reply) => {
+        const userId = request.user!.id;
+        const requests = await getFriendRequests(userId);
+        sendSuccess(reply, requests, 'Friend requests retrieved');
+    });
+
+    app.post("/users/:id/block", { preHandler: authMiddleware }, async (request, reply) => {
+        const { id } = request.params as { id: string };
+        const userId = request.user!.id;
+        const result = await blockUser(userId, id);
+        sendCreated(reply, result, 'User blocked successfully');
+    });
+
+    app.delete("/users/:id/block", { preHandler: authMiddleware }, async (request, reply) => {
+        const { id } = request.params as { id: string };
+        const userId = request.user!.id;
+        const result = await unblockUser(userId, id);
+        sendSuccess(reply, result, 'User unblocked successfully');
+    });
+
+    app.get("/users/me/blocked", { preHandler: authMiddleware }, async (request, reply) => {
+        const userId = request.user!.id;
+        const blockedUsers = await getBlockedUsers(userId);
+        sendSuccess(reply, blockedUsers, 'Blocked users retrieved');
     });
 
     app.get("/internal/users/batch", async (request, reply) => {
@@ -171,5 +330,12 @@ export async function userRoutes(app: FastifyInstance) {
                 example: `curl -H "x-gateway-api-key: ${apiKey}" https://cookshare.me/documentation/api/v1/recipes`
             }
         }, 'API Key generated');
+    });
+
+    app.put("/internal/users/:id/status", async (request, reply) => {
+        const { id } = request.params as { id: string };
+        const { isOnline } = request.body as { isOnline: boolean };
+        const user = await updateUserStatus(id, isOnline);
+        sendSuccess(reply, { id: user.id, isOnline: user.isOnline }, 'Status updated');
     });
 }

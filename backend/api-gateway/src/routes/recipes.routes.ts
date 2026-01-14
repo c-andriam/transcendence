@@ -157,65 +157,53 @@ export async function recipesRoutes(app: FastifyInstance) {
         return proxyHydrate(app, request, reply, "/api/v1/me/favorites", RECIPE_SERVICE_URL);
     });
 
-    // ========== IMAGE ROUTES ==========
-
-    // Get all images for a recipe
     app.get("/recipes/:recipeId/images", async (request, reply) => {
         const { recipeId } = request.params as { recipeId: string };
         return proxyHydrate(app, request, reply, `/api/v1/recipes/${recipeId}/images`, RECIPE_SERVICE_URL);
     });
 
-    // Upload local image (file upload)
     app.post("/recipes/:recipeId/images/upload", async (request, reply) => {
         const { recipeId } = request.params as { recipeId: string };
         const { proxyMultipart } = await import("../utils/proxy");
         return proxyMultipart(request, reply, `/api/v1/recipes/${recipeId}/images/upload`, RECIPE_SERVICE_URL);
     });
 
-    // Upload image from URL
     app.post("/recipes/:recipeId/images/url", async (request, reply) => {
         const { recipeId } = request.params as { recipeId: string };
         return proxyHydrate(app, request, reply, `/api/v1/recipes/${recipeId}/images/url`, RECIPE_SERVICE_URL);
     });
 
-    // Delete multiple images (MUST be before /images/:imageId)
     app.delete("/recipes/:recipeId/images/bulk", async (request, reply) => {
         const { recipeId } = request.params as { recipeId: string };
         return proxyHydrate(app, request, reply, `/api/v1/recipes/${recipeId}/images/bulk`, RECIPE_SERVICE_URL);
     });
 
-    // Update image
     app.put("/recipes/:recipeId/images/:imageId", async (request, reply) => {
         const { recipeId, imageId } = request.params as { recipeId: string; imageId: string };
         return proxyHydrate(app, request, reply, `/api/v1/recipes/${recipeId}/images/${imageId}`, RECIPE_SERVICE_URL);
     });
 
-    // Set image as primary
     app.post("/recipes/:recipeId/images/:imageId/primary", async (request, reply) => {
         const { recipeId, imageId } = request.params as { recipeId: string; imageId: string };
         return proxyHydrate(app, request, reply, `/api/v1/recipes/${recipeId}/images/${imageId}/primary`, RECIPE_SERVICE_URL);
     });
 
-    // Delete image
     app.delete("/recipes/:recipeId/images/:imageId", async (request, reply) => {
         const { recipeId, imageId } = request.params as { recipeId: string; imageId: string };
         return proxyHydrate(app, request, reply, `/api/v1/recipes/${recipeId}/images/${imageId}`, RECIPE_SERVICE_URL);
     });
 
-    // Upload multiple images from URLs
     app.post("/recipes/:recipeId/images/urls", async (request, reply) => {
         const { recipeId } = request.params as { recipeId: string };
         return proxyHydrate(app, request, reply, `/api/v1/recipes/${recipeId}/images/urls`, RECIPE_SERVICE_URL);
     });
 
-    // Upload multiple local images
     app.post("/recipes/:recipeId/images/uploads", async (request, reply) => {
         const { recipeId } = request.params as { recipeId: string };
         const { proxyMultipart } = await import("../utils/proxy");
         return proxyMultipart(request, reply, `/api/v1/recipes/${recipeId}/images/uploads`, RECIPE_SERVICE_URL);
     });
 
-    // Reorder images
     app.put("/recipes/:recipeId/images/reorder", async (request, reply) => {
         const { recipeId } = request.params as { recipeId: string };
         return proxyHydrate(app, request, reply, `/api/v1/recipes/${recipeId}/images/reorder`, RECIPE_SERVICE_URL);

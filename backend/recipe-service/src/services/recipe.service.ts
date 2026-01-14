@@ -122,8 +122,16 @@ export async function getRecipeById(id: string) {
             },
         },
     });
+
     if (!recipe) {
         return null;
+    }
+
+    if (recipe) {
+        await db.recipe.update({
+            where: { id },
+            data: { viewCount: { increment: 1 } }
+        });
     }
 
     const ratingCount = recipe.ratings.length;
@@ -287,8 +295,16 @@ export async function getRecipeBySlug(slug: string) {
             },
         },
     });
+
     if (!recipe) {
         return null;
+    }
+
+    if (recipe) {
+        await db.recipe.update({
+            where: { id: recipe.id },
+            data: { viewCount: { increment: 1 } }
+        });
     }
 
     const ratingCount = recipe.ratings.length;

@@ -1,172 +1,31 @@
-### ============================================
-### AUTHENTICATION FLOWS TESTS
-### ============================================
-
 @baseUrl = http://localhost:3000
 @gatewayKey = AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
-@jwtToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM1ZDFlMWYxLTM0ZDgtNGM5Yy1hZmRlLTU5ZmVkN2Q5MzM4MSIsInVzZXJuYW1lIjoiY2FuZHJpYW0iLCJpYXQiOjE3NjgyMzI4MzksImV4cCI6MTc2ODIzMzczOX0.RNTvjO_2K6b6IBytRnQ6Cj1JaQT9tFk8k7slq_qRvuQ
-@refreshToken = 762b8aa078b47497c92aea2fa23b1d89c19d5442d873435d4da7f3c0909213498bd729b544364be51a948ba731581557621052d02eac3366718116a7e9624ec8
+@jwtToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM1ZDFlMWYxLTM0ZDgtNGM5Yy1hZmRlLTU5ZmVkN2Q5MzM4MSIsInVzZXJuYW1lIjoiY2FuZHJpYW0iLCJpYXQiOjE3NjgzOTM3MDYsImV4cCI6MTc2ODM5NDYwNn0.Opr-0yl2Ghze_sBc1FqcVHkJakjUKt8W9pWBjtzefuk
+@refreshToken = c7c49e363bbecd4301df4b04aaee85b1d8495ab99866762e7c57784c6b3f07cc438d22f53ac0d8ed51be3715f550f4ba75000447ce0d734cc4f02830937006fd
 @userApiKey = cs_661a324c-47fb-4b61-aaa5-aae783dc94c3_1767848230_df0465c5.5goFIdr2_1YSREeT2aUaPxPQKPGGJshe
 @authorId = 35d1e1f1-34d8-4c9c-afde-59fed7d93381
+@otherUserId = 2a64ed7e-29d7-4c4e-89e0-257b787fbf12
 @categoryId = 76201871-6a2c-4060-a112-e91dee221b75
 @recipeId = efabc8cf-6e97-4519-b2fb-efc7624978d0
 @commentId = cc5aa65e-7489-43d2-bb90-bba6d83be01e
 @replyCommentId1 = 3c6c246c-551e-42d8-9b81-4583c6f3658a
 @replyCommentId2 = 5d059a4f-67f2-41b7-a5bd-6833e89ad48a
+@requestId = 4ad469b6-883d-4ef8-bc1d-e189fcb38c77
 ### 1. Register a new user (requires email verification)
 POST {{baseUrl}}/api/v1/auth/register
 Content-Type: application/json
 x-gateway-api-key: {{gatewayKey}}
 
 {
-    "email": "candriam21@gmail.com",
+    "email": "candriam21.test@example.com",
+    "password": "password123",
     "username": "candriam21",
-    "password": "password123",
-    "firstName": "Candriam",
-    "lastName": "Juvence"
-}
-
-### 2. Verify email (use token from email sent during registration)
-POST {{baseUrl}}/api/v1/auth/verify-email
-Content-Type: application/json
-x-gateway-api-key: {{gatewayKey}}
-
-{
-    "token": "466442ac470d2617dfb95d37a523e7065eeb96aa825fc5dca30db7cffa8f92ce6d8f44ae91efcbe5315a2a04930032ed01904f4229055b051a90af81abe9057a"
-}
-
-### 3. Login with verified user
-POST {{baseUrl}}/api/v1/auth/login
-Content-Type: application/json
-x-gateway-api-key: {{gatewayKey}}
-
-{
-    "identifier": "candriam21",
-    "password": "password123"
-}
-
-### 4. Forgot password (initiate reset)
-POST {{baseUrl}}/api/v1/auth/forgot-password
-Content-Type: application/json
-x-gateway-api-key: {{gatewayKey}}
-
-{
-    "email": "juvence00@gmail.com"
-}
-
-### 5. Reset password (use token from email)
-POST {{baseUrl}}/api/v1/reset-password
-Content-Type: application/json
-x-gateway-api-key: {{gatewayKey}}
-
-{
-    "token": "b1dff52420aaef63de97ad7cd3853e78e0321e726f90c557fcfafa9403522c237cdb58f71bc170389d6c6e0879dd103f75a39e602aab0e8700ac85ce21300345",
-    "newPassword": "newpassword123"
-}
-
-### 6. Resend verification email
-POST {{baseUrl}}/api/v1/resend-verification
-Content-Type: application/json
-x-gateway-api-key: {{gatewayKey}}
-
-{
-    "email": "juvence00@gmail.com"
-}
-
-### ============================================
-### ERROR HANDLING TESTS
-### ============================================
-
-### Invalid verification token
-POST {{baseUrl}}/api/v1/verify-email
-Content-Type: application/json
-x-gateway-api-key: {{gatewayKey}}
-
-{
-    "token": "invalid_token"
-}
-
-### Invalid reset token
-POST {{baseUrl}}/api/v1/reset-password
-Content-Type: application/json
-x-gateway-api-key: {{gatewayKey}}
-
-{
-    "token": "invalid_reset_token",
-    "newPassword": "newpassword123"
-}
-
-### Forgot password for non-existent email
-POST {{baseUrl}}/api/v1/forgot-password
-Content-Type: application/json
-x-gateway-api-key: {{gatewayKey}}
-
-{
-    "email": "nonexistent@example.com"
-}
-
-### Resend verification for non-existent email
-POST {{baseUrl}}/api/v1/resend-verification
-Content-Type: application/json
-x-gateway-api-key: {{gatewayKey}}
-
-{
-    "email": "nonexistent@example.com"
-}
-
-### ============================================
-### PUBLIC API KEY TESTS
-### ============================================
-
-### Generate API Key for authenticated user
-# Requires JWT token from login
-POST {{baseUrl}}/api/v1/api-key/generate
-Authorization: Bearer {{jwtToken}}
-x-gateway-api-key: {{gatewayKey}}
-
-### Test API with user's signed API key (cs_ prefix)
-# Replace {{userApiKey}} with the generated key from above
-GET {{baseUrl}}/api/v1/recipes
-x-gateway-api-key: {{userApiKey}}
-
-### Test GET users with user API key
-GET {{baseUrl}}/api/v1/users
-x-gateway-api-key: {{userApiKey}}
-
-### Test GET single recipe with user API key
-GET {{baseUrl}}/api/v1/recipes/cmk3vthae000azqsoe0yfn0e4
-x-gateway-api-key: {{userApiKey}}
-
-### ============================================
-
-### create user
-POST {{baseUrl}}/api/v1/users
-Content-Type: application/json
-x-gateway-api-key: {{gatewayKey}}
-
-{
-    "email": "juvence@gmail.com",
-    "username": "test",
-    "password": "test",
     "firstName": "Test",
-    "lastName": "Test"
+    "lastName": "User"
 }
 
-### register user
-POST {{baseUrl}}/api/v1/register
-Content-Type: application/json
-x-gateway-api-key: {{gatewayKey}}
-
-{
-    "email": "juvence00@gmail.com",
-    "username": "kakabesolo",
-    "password": "password123",
-    "firstName": "Kakabesolo",
-    "lastName": "Kakabesolo"
-}
-
-### login user
-POST {{baseUrl}}/api/v1/login
+### 2. Login (get JWT)
+POST {{baseUrl}}/api/v1/auth/login
 Content-Type: application/json
 x-gateway-api-key: {{gatewayKey}}
 
@@ -175,335 +34,235 @@ x-gateway-api-key: {{gatewayKey}}
     "password": "newpassword123"
 }
 
-### ============================================
-### TEST COOKIES - FLUX COMPLET
-### ============================================
-
-### 1. Login (récupère le cookie refreshToken)
-# @name login
-POST {{baseUrl}}/api/v1/login
-Content-Type: application/json
-x-gateway-api-key: {{gatewayKey}}
-
-{
-    "identifier": "candriam",
-    "password": "password123"
-}
-
-### 2. Refresh Token (envoyer le cookie manuellement)
-# Copiez la valeur du cookie refreshToken depuis les headers de la réponse login
-POST {{baseUrl}}/api/v1/refresh
-x-gateway-api-key: {{gatewayKey}}
-Cookie: refreshToken={{refreshToken}}
-
-### 3. Logout (avec cookie)
-POST {{baseUrl}}/api/v1/logout
-x-gateway-api-key: {{gatewayKey}}
-Authorization: Bearer {{jwtToken}}
-Cookie: refreshToken={{refreshToken}}
-
-### get my profile (protected route - requires accessToken from login)
-GET {{baseUrl}}/api/v1/me
-x-gateway-api-key: {{gatewayKey}}
-Authorization: Bearer {{jwtToken}}
-
-### read user
-GET {{baseUrl}}/api/v1/users
-x-gateway-api-key: {{gatewayKey}}
-
-### read user by id
-GET {{baseUrl}}/api/v1/users/cmjxz8a2j0000wusoljkgx5tu
-x-gateway-api-key: {{gatewayKey}}
-
-### update user
-PUT {{baseUrl}}/api/v1/users/cmk3uscvj0000guso4xinj425
+### 3. Refresh Token
+POST {{baseUrl}}/api/v1/auth/refresh
 Content-Type: application/json
 x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer {{jwtToken}}
 
 {
-    "username": "candriam",
-    "firstName": "Juvence",
-    "lastName": "Candriam"
+    "refreshToken": "{{refreshToken}}"
 }
 
-### delete user
+### 4. Logout
+POST {{baseUrl}}/api/v1/auth/logout
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### 5. Forgot Password
+POST {{baseUrl}}/api/v1/auth/forgot-password
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+
+{
+    "email": "candriam.test@example.com"
+}
+
+### 6. Reset Password (token from email)
+POST {{baseUrl}}/api/v1/auth/reset-password
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+
+{
+    "token": "reset_token_here",
+    "newPassword": "newpassword123"
+}
+
+### 7. Verify Email (token from email)
+POST {{baseUrl}}/api/v1/auth/verify-email
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+
+{
+    "token": "email_verification_token_here"
+}
+
+### 8. Resend Verification Email
+POST {{baseUrl}}/api/v1/auth/resend-verification
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+
+{
+    "email": "candriam.test@example.com"
+}
+
+### ============================================
+### USER ROUTES
+### ============================================
+
+### Get Current User Profile
+GET {{baseUrl}}/api/v1/users/me
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Update User Profile
+PUT {{baseUrl}}/api/v1/users/{{authorId}}
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+{
+    "bio": "I love cooking Italian food!",
+    "firstName": "UpdatedFirstName",
+    "lastName": "UpdatedLastName"
+}
+
+### Generate API Key
+POST {{baseUrl}}/api/v1/users/api-key/generate
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Delete User (Self)
 DELETE {{baseUrl}}/api/v1/users/{{authorId}}
 x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer {{jwtToken}}
 
+### ============================================
+### RECIPE ROUTES
+### ============================================
 
-### create category
-### 1. Apéritifs
-POST {{baseUrl}}/api/v1/categories
-Content-Type: application/json
-x-gateway-api-key: {{gatewayKey}}
-
-{
-  "name": "Apéritifs",
-  "iconName": "wine-glass",
-  "color": "#FF6B6B",
-  "sortOrder": 1
-}
-
-### 2. Entrées
-POST {{baseUrl}}/api/v1/categories
-Content-Type: application/json
-x-gateway-api-key: {{gatewayKey}}
-
-{
-  "name": "Entrées",
-  "iconName": "bowl-food",
-  "color": "#4ECDC4",
-  "sortOrder": 2
-}
-
-### 3. Plats Principaux
-POST {{baseUrl}}/api/v1/categories
-Content-Type: application/json
-x-gateway-api-key: {{gatewayKey}}
-
-{
-  "name": "Plats Principaux",
-  "iconName": "utensils",
-  "color": "#1A535C",
-  "sortOrder": 3
-}
-
-### 4. Desserts
-POST {{baseUrl}}/api/v1/categories
-Content-Type: application/json
-x-gateway-api-key: {{gatewayKey}}
-
-{
-  "name": "Desserts",
-  "iconName": "ice-cream",
-  "color": "#FF9F1C",
-  "sortOrder": 4
-}
-
-### 5. Accompagnements
-POST {{baseUrl}}/api/v1/categories
-Content-Type: application/json
-x-gateway-api-key: {{gatewayKey}}
-
-{
-  "name": "Accompagnements",
-  "iconName": "carrot",
-  "color": "#9BC53D",
-  "sortOrder": 5
-}
-
-### 6. Boissons
-POST {{baseUrl}}/api/v1/categories
-Content-Type: application/json
-x-gateway-api-key: {{gatewayKey}}
-
-{
-  "name": "Boissons",
-  "iconName": "mug-hot",
-  "color": "#5D576B",
-  "sortOrder": 6
-}
-
-### 7. Petit-Déjeuner
-POST {{baseUrl}}/api/v1/categories
-Content-Type: application/json
-x-gateway-api-key: {{gatewayKey}}
-
-{
-  "name": "Petit-Déjeuner",
-  "iconName": "egg",
-  "color": "#F7B801",
-  "sortOrder": 7
-}
-
-### 8. Boulangerie
-POST {{baseUrl}}/api/v1/categories
-Content-Type: application/json
-x-gateway-api-key: {{gatewayKey}}
-
-{
-  "name": "Boulangerie",
-  "iconName": "bread-slice",
-  "color": "#8D5B4C",
-  "sortOrder": 8
-}
-
-### 9. Sauces
-POST {{baseUrl}}/api/v1/categories
-Content-Type: application/json
-x-gateway-api-key: {{gatewayKey}}
-
-{
-  "name": "Sauces & Bases",
-  "iconName": "jar",
-  "color": "#A5A58D",
-  "sortOrder": 9
-}
-
-### 10. Snacks
-POST {{baseUrl}}/api/v1/categories
-Content-Type: application/json
-x-gateway-api-key: {{gatewayKey}}
-
-{
-  "name": "Snacks",
-  "iconName": "hamburger",
-  "color": "#FF6B6B",
-  "sortOrder": 10
-}
-
-### Read category
-GET {{baseUrl}}/api/v1/categories
-x-gateway-api-key: {{gatewayKey}}
-
-
-### Read category by id
-GET {{baseUrl}}/api/v1/categories/:id
-x-gateway-api-key: {{gatewayKey}}
-
-
-### Read category by slug
-GET {{baseUrl}}/api/v1/categories/by-slug/:slug
-x-gateway-api-key: {{gatewayKey}}
-
-
-### Update category
-PUT {{baseUrl}}/api/v1/categories/:id
-Content-Type: application/json
-x-gateway-api-key: {{gatewayKey}}
-
-
-{
-  "name": "Plats Principaux",
-  "iconName": "utensils",
-  "color": "#1A535C",
-  "sortOrder": 3
-}
-
-### Delete category
-DELETE {{baseUrl}}/api/v1/categories/:id
-x-gateway-api-key: {{gatewayKey}}
-
-
-### Create recipe
+### Create New Recipe
 POST {{baseUrl}}/api/v1/recipes
 Content-Type: application/json
 x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer {{jwtToken}}
 
 {
-    "title": "Poulet Tikka Masala",
-    "description": "Un délicieux plat indien crémeux et épicé, parfait pour un dîner en famille. Le poulet est mariné dans des épices et du yaourt, puis cuit dans une sauce tomate onctueuse.",
-    "prepTime": 30,
-    "cookTime": 45,
-    "servings": 4,
-    "difficulty": "MEDIUM",
-    "isPublished": true,
-    "authorId": "35d1e1f1-34d8-4c9c-afde-59fed7d93381",
-    "categoryId": "76201871-6a2c-4060-a112-e91dee221b75",
+    "title": "Spaghetti Carbonara",
+    "description": "Classic Italian pasta dish with eggs, cheese, pancetta, and black pepper.",
     "ingredients": [
-        { "name": "Poulet", "quantityText": "500g", "isOptional": false },
-        { "name": "Yaourt nature", "quantityText": "200g", "isOptional": false },
-        { "name": "Crème fraîche", "quantityText": "200ml", "isOptional": false },
-        { "name": "Tomates concassées", "quantityText": "400g", "isOptional": false },
-        { "name": "Oignon", "quantityText": "1 gros", "isOptional": false },
-        { "name": "Ail", "quantityText": "3 gousses", "isOptional": false },
-        { "name": "Gingembre", "quantityText": "2 cm", "isOptional": false },
-        { "name": "Épices tikka masala", "quantityText": "2 c.s", "isOptional": false },
-        { "name": "Curcuma", "quantityText": "1 c.c", "isOptional": false },
-        { "name": "Coriandre fraîche", "quantityText": "1 bouquet", "isOptional": true }
+        "Spaghetti",
+        "Eggs",
+        "Pecorino Romano",
+        "Guanciale",
+        "Black Pepper"
     ],
     "instructions": [
-        { "stepNumber": 1, "description": "Couper le poulet en morceaux et le faire mariner dans le yaourt avec les épices pendant 2 heures minimum." },
-        { "stepNumber": 2, "description": "Émincer l'oignon, hacher l'ail et le gingembre." },
-        { "stepNumber": 3, "description": "Dans une poêle, faire revenir l'oignon jusqu'à ce qu'il soit doré." },
-        { "stepNumber": 4, "description": "Ajouter l'ail et le gingembre, cuire 1 minute." },
-        { "stepNumber": 5, "description": "Ajouter le poulet mariné et le faire dorer de tous les côtés." },
-        { "stepNumber": 6, "description": "Incorporer les tomates concassées et les épices restantes. Laisser mijoter 20 minutes." },
-        { "stepNumber": 7, "description": "Ajouter la crème fraîche, mélanger et cuire encore 5 minutes." },
-        { "stepNumber": 8, "description": "Servir chaud avec du riz basmati, garni de coriandre fraîche." }
-    ]
+        "Boil pasta.",
+        "Fry guanciale.",
+        "Mix eggs and cheese.",
+        "Combine all with pasta water."
+    ],
+    "categoryId": "{{categoryId}}"
 }
 
-### Read recipe
+### Get All Recipes
 GET {{baseUrl}}/api/v1/recipes
-x-gateway-api-key: {{gatewayKey}}
-
-### Read recipe by id
-GET {{baseUrl}}/api/v1/recipes/{{recipeId}}
-x-gateway-api-key: {{gatewayKey}}
-
-### Read recipe by slug
-GET {{baseUrl}}/api/v1/recipes/by-slug/poulet-tikka-masala
-x-gateway-api-key: {{gatewayKey}}
-
-
-### Delete recipe
-DELETE {{baseUrl}}/api/v1/recipes/{{recipeId}}
 x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer {{jwtToken}}
 
+### Get Recipe by ID
+GET {{baseUrl}}/api/v1/recipes/{{recipeId}}
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
 
-### Update recipe
+### Get Recipe by Slug
+GET {{baseUrl}}/api/v1/recipes/by-slug/poulet-tikka-masala
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Update Recipe
 PUT {{baseUrl}}/api/v1/recipes/{{recipeId}}
 Content-Type: application/json
 x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer {{jwtToken}}
 
 {
-    "title": "Poulet Tikka Masala",
-    "description": "Un délicieux plat indien crémeux et épicé, parfait pour un dîner en famille. Le poulet est mariné dans des épices et du yaourt, puis cuit dans une sauce tomate onctueuse.",
-    "prepTime": 30,
-    "cookTime": 45,
-    "servings": 4,
-    "difficulty": "MEDIUM",
-    "isPublished": true,
-    "categoryId": "{{categoryId}}",
-    "ingredients": [
-        { "name": "Poulet", "quantityText": "500g", "isOptional": false },
-        { "name": "Yaourt nature", "quantityText": "200g", "isOptional": false },
-        { "name": "Crème fraîche", "quantityText": "200ml", "isOptional": false },
-        { "name": "Tomates concassées", "quantityText": "400g", "isOptional": false },
-        { "name": "Oignon", "quantityText": "1 gros", "isOptional": false },
-        { "name": "Ail", "quantityText": "3 gousses", "isOptional": false },
-        { "name": "Gingembre", "quantityText": "2 cm", "isOptional": false },
-        { "name": "Épices tikka masala", "quantityText": "2 c.s", "isOptional": false },
-        { "name": "Curcuma", "quantityText": "1 c.c", "isOptional": false },
-        { "name": "Coriandre fraîche", "quantityText": "1 bouquet", "isOptional": true }
-    ],
-    "instructions": [
-        { "stepNumber": 1, "description": "Couper le poulet en morceaux et le faire mariner dans le yaourt avec les épices pendant 2 heures minimum." },
-        { "stepNumber": 2, "description": "Émincer l'oignon, hacher l'ail et le gingembre." },
-        { "stepNumber": 3, "description": "Dans une poêle, faire revenir l'oignon jusqu'à ce qu'il soit doré." },
-        { "stepNumber": 4, "description": "Ajouter l'ail et le gingembre, cuire 1 minute." },
-        { "stepNumber": 5, "description": "Ajouter le poulet mariné et le faire dorer de tous les côtés." },
-        { "stepNumber": 6, "description": "Incorporer les tomates concassées et les épices restantes. Laisser mijoter 20 minutes." },
-        { "stepNumber": 7, "description": "Ajouter la crème fraîche, mélanger et cuire encore 5 minutes." },
-        { "id": "5c7b4ebb-f915-4b2e-bf07-9a50529f89d8", "stepNumber": 8, "description": "Servir chaud avec du riz, garni de coriandre fraîche." }
-    ]
+    "title": "Authentic Spaghetti Carbonara",
+    "description": "Updated description for the classic dish."
 }
 
+### Delete Recipe
+DELETE {{baseUrl}}/api/v1/recipes/{{recipeId}}
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
 
-### Create recipe rate by id
-POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/rate
+### Search Recipes
+GET {{baseUrl}}/api/v1/recipes/search?q=poulet
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Filter by Category
+GET {{baseUrl}}/api/v1/recipes/category/{{categoryId}}
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Filter by Author
+GET {{baseUrl}}/api/v1/recipes/author/{{authorId}}
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Filter by Difficulty
+GET {{baseUrl}}/api/v1/recipes/difficulty/MEDIUM
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Get My Recipes
+GET {{baseUrl}}/api/v1/recipes/me
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### ============================================
+### CATEGORY ROUTES
+### ============================================
+
+### Create Category
+POST {{baseUrl}}/api/v1/categories
 Content-Type: application/json
 x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer {{jwtToken}}
 
 {
-    "userId": "{{authorId}}",
-    "score": 4
+    "name": "Desserts",
+    "description": "Sweet treats for after dinner."
 }
 
+### Get All Categories
+GET {{baseUrl}}/api/v1/categories
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
 
-### Read recipe rate by id
+### Get Category by ID
+GET {{baseUrl}}/api/v1/categories/{{categoryId}}
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Update Category
+PUT {{baseUrl}}/api/v1/categories/{{categoryId}}
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+{
+    "name": "Italian Cuisine",
+    "description": "Recipes from Italy."
+}
+
+### Delete Category
+DELETE {{baseUrl}}/api/v1/categories/{{categoryId}}
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### ============================================
+### RATING ROUTES
+### ============================================
+
+### Add Rating
+POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/ratings
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+{
+    "score": 5
+}
+
+### Get Ratings for Recipe
 GET {{baseUrl}}/api/v1/recipes/{{recipeId}}/ratings
 x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
 
-
-### Update recipe rate by id
+### Update Rating
 PUT {{baseUrl}}/api/v1/recipes/{{recipeId}}/ratings
 Content-Type: application/json
 x-gateway-api-key: {{gatewayKey}}
@@ -513,348 +272,106 @@ Authorization: Bearer {{jwtToken}}
     "score": 4
 }
 
-
-### Delete recipe rate by id
+### Delete Rating
 DELETE {{baseUrl}}/api/v1/recipes/{{recipeId}}/ratings
-Content-Type: application/json
-x-gateway-api-key: {{gatewayKey}}
-Authorization: Bearer {{jwtToken}}
-
-{
-    "userId": "{{authorId}}"
-}
-
-### ============================================
-### RECIPE SEARCH & FILTER TESTS
-### ============================================
-
-### Search recipes by text (title, description, ingredients)
-GET {{baseUrl}}/api/v1/recipes/search?q=poulet
-x-gateway-api-key: {{gatewayKey}}
-
-### Search with pagination
-GET {{baseUrl}}/api/v1/recipes/search?q=poulet&page=1&limit=5
-x-gateway-api-key: {{gatewayKey}}
-
-### Search with difficulty filter
-GET {{baseUrl}}/api/v1/recipes/search?difficulty=MEDIUM
-x-gateway-api-key: {{gatewayKey}}
-
-### Search with category filter (replace with actual category ID)
-GET {{baseUrl}}/api/v1/recipes/search?categoryId={{categoryId}}
-x-gateway-api-key: {{gatewayKey}}
-
-### Search with multiple filters
-GET {{baseUrl}}/api/v1/recipes/search?q=poulet&difficulty=MEDIUM&minPrepTime=10&maxPrepTime=60
-x-gateway-api-key: {{gatewayKey}}
-
-### Search with sorting
-GET {{baseUrl}}/api/v1/recipes/search?sortBy=prepTime&sortOrder=asc&page=1&limit=10
-x-gateway-api-key: {{gatewayKey}}
-
-### Search with servings filter
-GET {{baseUrl}}/api/v1/recipes/search?servings=4
-x-gateway-api-key: {{gatewayKey}}
-
-### Search with time filters
-GET {{baseUrl}}/api/v1/recipes/search?minCookTime=15&maxCookTime=60
-x-gateway-api-key: {{gatewayKey}}
-
-### ============================================
-### NEW RECIPE FILTER ROUTES TESTS
-### ============================================
-
-### Get recipes by category (with sorting and pagination)
-GET {{baseUrl}}/api/v1/recipes/category/{{categoryId}}?sortBy=prepTime&sortOrder=asc&page=1&limit=10
-x-gateway-api-key: {{gatewayKey}}
-
-### Get recipes by category (default sorting)
-GET {{baseUrl}}/api/v1/recipes/category/{{categoryId}}?page=1&limit=5
-x-gateway-api-key: {{gatewayKey}}
-
-### Get recipes by author (with sorting and pagination)
-GET {{baseUrl}}/api/v1/recipes/author/{{authorId}}?sortBy=createdAt&sortOrder=desc&page=1&limit=10
-x-gateway-api-key: {{gatewayKey}}
-
-### Get recipes by author (default sorting)
-GET {{baseUrl}}/api/v1/recipes/author/{{authorId}}?page=1&limit=5
-x-gateway-api-key: {{gatewayKey}}
-
-### Get recipes by difficulty (with sorting and pagination)
-GET {{baseUrl}}/api/v1/recipes/difficulty/MEDIUM?sortBy=cookTime&sortOrder=asc&page=1&limit=10
-x-gateway-api-key: {{gatewayKey}}
-
-### Get recipes by difficulty EASY
-GET {{baseUrl}}/api/v1/recipes/difficulty/EASY?page=1&limit=5
-x-gateway-api-key: {{gatewayKey}}
-
-### Get recipes by difficulty HARD
-GET {{baseUrl}}/api/v1/recipes/difficulty/HARD?sortBy=servings&sortOrder=desc&page=1&limit=10
-x-gateway-api-key: {{gatewayKey}}
-
-### Get my recipes (authenticated user, with sorting and pagination)
-GET {{baseUrl}}/api/v1/recipes/me?sortBy=updatedAt&sortOrder=desc&page=1&limit=10&publishedOnly=false
-x-gateway-api-key: {{gatewayKey}}
-Authorization: Bearer {{jwtToken}}
-
-### Get my published recipes only
-GET {{baseUrl}}/api/v1/recipes/me?publishedOnly=true&page=1&limit=5
-x-gateway-api-key: {{gatewayKey}}
-Authorization: Bearer {{jwtToken}}
-
-### Get my recipes (default settings)
-GET {{baseUrl}}/api/v1/recipes/me
 x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer {{jwtToken}}
 
 ### ============================================
-### RECIPE COMMENTS TESTS
+### COMMENT ROUTES
 ### ============================================
 
-### Get comments for a recipe (paginated)
-GET {{baseUrl}}/api/v1/recipes/{{recipeId}}/comments?page=1&limit=10
-x-gateway-api-key: {{gatewayKey}}
-
-### Create a new comment on a recipe (requires authentication)
-@name createComment
+### Add Comment (Top-level)
 POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/comments
 Content-Type: application/json
 x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer {{jwtToken}}
 
 {
-    "content": "Cette recette est délicieuse ! Merci pour le partage."
+    "content": "Can I substitute guanciale with bacon?"
 }
 
-### Update a comment (requires authentication and ownership)
+### Get Comments for Recipe
+GET {{baseUrl}}/api/v1/recipes/{{recipeId}}/comments
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Update Comment
 PUT {{baseUrl}}/api/v1/recipes/{{recipeId}}/comments/{{commentId}}
 Content-Type: application/json
 x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer {{jwtToken}}
 
 {
-    "content": "Cette recette est vraiment délicieuse ! Merci pour le partage."
+    "content": "Can I substitute guanciale with pancetta?"
 }
 
-### Delete a comment (requires authentication and ownership)
+### Delete Comment
 DELETE {{baseUrl}}/api/v1/recipes/{{recipeId}}/comments/{{commentId}}
 x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer {{jwtToken}}
 
-### Create a reply to a comment (requires authentication)
-POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/comments/{{replyCommentId2}}/replies
+### Reply to a Comment (Nested)
+POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/comments/{{commentId}}/replies
 Content-Type: application/json
 x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer {{jwtToken}}
 
 {
-    "content": "Merci, c'est gentil !"
+    "content": "Yes, bacon works too but it will be smokier."
 }
 
-### Add a recipe to favorites
-POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/favorite
-x-gateway-api-key: {{gatewayKey}}
-Authorization: Bearer {{jwtToken}}
-
-### Remove a recipe from favorites
-DELETE {{baseUrl}}/api/v1/recipes/{{recipeId}}/favorite
-x-gateway-api-key: {{gatewayKey}}
-Authorization: Bearer {{jwtToken}}
-
-### Get user favorites (with pagination and sorting)
-GET {{baseUrl}}/api/v1/me/favorites?page=1&limit=10&sortBy=createdAt&sortOrder=desc
-x-gateway-api-key: {{gatewayKey}}
-Authorization: Bearer {{jwtToken}}
-
 ### ============================================
-### FAVORITES TESTS - CAS D'ERREUR ET VARIATIONS
+### FAVORITE ROUTES
 ### ============================================
 
-### Ajouter une recette aux favoris (succès)
+### Add to Favorites
 POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/favorite
 x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer {{jwtToken}}
 
-### Ajouter la même recette aux favoris (doit échouer - déjà en favoris)
-POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/favorite
-x-gateway-api-key: {{gatewayKey}}
-Authorization: Bearer {{jwtToken}}
-
-### Retirer une recette des favoris (succès)
-DELETE {{baseUrl}}/api/v1/recipes/{{recipeId}}/favorite
-x-gateway-api-key: {{gatewayKey}}
-Authorization: Bearer {{jwtToken}}
-
-### Retirer une recette non favorite (doit échouer - pas en favoris)
-DELETE {{baseUrl}}/api/v1/recipes/{{recipeId}}/favorite
-x-gateway-api-key: {{gatewayKey}}
-Authorization: Bearer {{jwtToken}}
-
-### Ajouter aux favoris une recette inexistante (doit échouer)
-POST {{baseUrl}}/api/v1/recipes/00000000-0000-0000-0000-000000000000/favorite
-x-gateway-api-key: {{gatewayKey}}
-Authorization: Bearer {{jwtToken}}
-
-### Retirer des favoris une recette inexistante (doit échouer)
-DELETE {{baseUrl}}/api/v1/recipes/00000000-0000-0000-0000-000000000000/favorite
-x-gateway-api-key: {{gatewayKey}}
-Authorization: Bearer {{jwtToken}}
-
-### Récupérer les favoris de l'utilisateur (tri par date d'ajout décroissante)
-GET {{baseUrl}}/api/v1/me/favorites?page=1&limit=10&sortBy=createdAt&sortOrder=desc
-x-gateway-api-key: {{gatewayKey}}
-Authorization: Bearer {{jwtToken}}
-
-### Récupérer les favoris (tri par titre croissant)
-GET {{baseUrl}}/api/v1/me/favorites?page=1&limit=5&sortBy=title&sortOrder=asc
-x-gateway-api-key: {{gatewayKey}}
-Authorization: Bearer {{jwtToken}}
-
-### Récupérer les favoris (tri par temps de préparation)
-GET {{baseUrl}}/api/v1/me/favorites?page=1&limit=10&sortBy=prepTime&sortOrder=asc
-x-gateway-api-key: {{gatewayKey}}
-Authorization: Bearer {{jwtToken}}
-
-### Récupérer les favoris (tri par temps de cuisson décroissant)
-GET {{baseUrl}}/api/v1/me/favorites?page=2&limit=5&sortBy=cookTime&sortOrder=desc
-x-gateway-api-key: {{gatewayKey}}
-Authorization: Bearer {{jwtToken}}
-
-### Récupérer les favoris (tri par nombre de vues)
-GET {{baseUrl}}/api/v1/me/favorites?page=1&limit=10&sortBy=viewCount&sortOrder=desc
-x-gateway-api-key: {{gatewayKey}}
-Authorization: Bearer {{jwtToken}}
-
-### Récupérer les favoris sans authentification (doit échouer)
+### Get My Favorites
 GET {{baseUrl}}/api/v1/me/favorites
 x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
 
-### Ajouter aux favoris sans authentification (doit échouer)
-POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/favorite
-x-gateway-api-key: {{gatewayKey}}
-
-### Retirer des favoris sans authentification (doit échouer)
+### Remove from Favorites
 DELETE {{baseUrl}}/api/v1/recipes/{{recipeId}}/favorite
 x-gateway-api-key: {{gatewayKey}}
-
-### ============================================
-### RECIPE IMAGES TESTS
-### ============================================
-
-@imageId = 9d09945a-473d-4347-9c1c-482c7c144899
-
-### Get all images for a recipe
-GET {{baseUrl}}/api/v1/recipes/{{recipeId}}/images
-x-gateway-api-key: {{gatewayKey}}
-
-### Upload image from URL
-POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/url
-Content-Type: application/json
-x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer {{jwtToken}}
 
-{
-    "imageUrl": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=800",
-    "altText": "Délicieux plat indien",
-    "isPrimary": false
-}
+### ============================================
+### IMAGE MANAGEMENT ROUTES
+### ============================================
 
-### Upload local image (use curl or Postman for file upload)
+### 1. Simple Single Upload (Multipart Form)
+### Note: REST Client extension doesn't support multipart/form-data easily.
+### You usually need to provide a file path.
+### Example logical representation:
 # POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/upload
-# Content-Type: multipart/form-data
-# x-gateway-api-key: {{gatewayKey}}
+# Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 # Authorization: Bearer {{jwtToken}}
-# 
-# file: <select local file>
-# altText: Description de l'image
-# isPrimary: false
-#
-# Exemple avec curl:
-curl -X POST \
-  -H "x-gateway-api-key: {{gatewayKey}}" \
-  -H "Authorization: Bearer {{jwtToken}}" \
-  -F "file=@/home/candriam/Downloads/pasta.jpg" \
-  -F "altText=Description de l'image" \
-  -F "isPrimary=false" \
-  http://localhost:3000/api/v1/recipes/{{recipeId}}/images/upload
+# x-gateway-api-key: {{gatewayKey}}
 
-###
-POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/uploads
-Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
-x-gateway-api-key: {{gatewayKey}}
-Authorization: Bearer {{jwtToken}}
+# ------WebKitFormBoundary7MA4YWxkTrZu0gW
+# Content-Disposition: form-data; name="image"; filename="pizza.jpg"
+# Content-Type: image/jpeg
 
-------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="file"; filename="pasta.jpg"
-Content-Type: image/jpeg
+# < ./pizza.jpg
+# ------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
-< /home/candriam/Downloads/pasta.jpg
-------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
-### Update image (altText, isPrimary, sortOrder)
-PUT {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/{{imageId}}
-Content-Type: application/json
-x-gateway-api-key: {{gatewayKey}}
-Authorization: Bearer {{jwtToken}}
-
-{
-    "altText": "Nouveau texte alternatif",
-    "isPrimary": true
-}
-
-### Set image as primary
-POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/{{imageId}}/primary
-x-gateway-api-key: {{gatewayKey}}
-Authorization: Bearer {{jwtToken}}
-
-### Delete an image
-DELETE {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/{{imageId}}
-x-gateway-api-key: {{gatewayKey}}
-Authorization: Bearer {{jwtToken}}
-
-### Reorder images
-PUT {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/reorder
-Content-Type: application/json
-x-gateway-api-key: {{gatewayKey}}
-Authorization: Bearer {{jwtToken}}
-
-{
-    "imageIds": ["9d09945a-473d-4347-9c1c-482c7c144899", "7c5cccd1-8cc7-42f4-a57c-85f3b66563ca"]
-}
-
-### ============================================
-### IMAGES ERROR CASES
-### ============================================
-
-### Upload image without authentication (should fail)
-POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/url
-Content-Type: application/json
-x-gateway-api-key: {{gatewayKey}}
-
-{
-    "imageUrl": "https://example.com/image.jpg"
-}
-
-### Upload with invalid URL (should fail)
+### 2. Upload from URL (JSON)
 POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/url
 Content-Type: application/json
 x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer {{jwtToken}}
 
 {
-    "imageUrl": "not-a-valid-url"
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Eq_it-na_pizza-margherita_sep2005_sml.jpg/800px-Eq_it-na_pizza-margherita_sep2005_sml.jpg"
 }
 
-### Delete image without ownership (should fail if different user)
-DELETE {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/00000000-0000-0000-0000-000000000000
-x-gateway-api-key: {{gatewayKey}}
-Authorization: Bearer {{jwtToken}}
-
-### ============================================
-### MULTIPLE IMAGES OPERATIONS
-### ============================================
-
-### Upload multiple images from URLs (max 10)
+### 3. Bulk Upload from URLs (JSON)
 POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/urls
 Content-Type: application/json
 x-gateway-api-key: {{gatewayKey}}
@@ -862,36 +379,37 @@ Authorization: Bearer {{jwtToken}}
 
 {
     "images": [
-        { "imageUrl": "https://photo-cdn2.icons8.com/t7nTCbPkDTChTYtm6W9dmo5moFDoiU54uApwv2gcLYE/rs:fit:288:192/czM6Ly9pY29uczgu/bW9vc2UtcHJvZC5l/eHRlcm5hbC9hMmE0/Mi83MjBlYjViZDE5/NDg0ZmIzYTIxMDE1/NDFlZWZlZGZhYy5q/cGc.webp", "altText": "Image 1" },
-        { "imageUrl": "https://photo-cdn2.icons8.com/P710xESTB_XsVRKxu6Ir8IMiSUkAgJR--gx7-TtaH7k/rs:fit:288:192/czM6Ly9pY29uczgu/bW9vc2UtcHJvZC5l/eHRlcm5hbC9hMmE0/Mi80ZjM5MzQ2NTlh/MjI0YzZlYTA0Yzhj/OGIxZmU5NjdmYi5q/cGc.webp", "altText": "Image 2" },
-        { "imageUrl": "https://photo-cdn2.icons8.com/xqEhFN_W_RVT4ZTwcy04cKLS6a2Q4dVE8wvwzaTL-TU/rs:fit:288:162/czM6Ly9pY29uczgu/bW9vc2UtcHJvZC5l/eHRlcm5hbC9hMmE0/Mi9hMThjNzZiNGE2/YTg0NjgzYjM1ZGZk/NDc5MTFmY2I3My5q/cGc.webp", "altText": "Image 3" }
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Pizza-3007395.jpg/800px-Pizza-3007395.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Supreme_pizza.jpg/800px-Supreme_pizza.jpg"
     ]
 }
 
-### Upload multiple local images (use curl)
-POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/uploads
-Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+### 4. Get Recipe Images
+GET {{baseUrl}}/api/v1/recipes/{{recipeId}}/images
 x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer {{jwtToken}}
 
-------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="file"; filename="pasta.jpg"
-Content-Type: image/jpeg
+### 5. Reorder Images
+PUT {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/reorder
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
 
-< /home/candriam/Downloads/pasta.jpg
-------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="file"; filename="plate.jpg"
-Content-Type: image/jpeg
+{
+    "imageIds": ["{{replyCommentId1}}", "{{replyCommentId2}}"]
+}
 
-< /home/candriam/Downloads/plate.jpg
-------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="file"; filename="food.jpg"
-Content-Type: image/jpeg
+### 6. Set Primary Image (using the first ID from the list you got in step 4)
+POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/{{replyCommentId1}}/primary
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
 
-< /home/candriam/Downloads/food.jpg
-------WebKitFormBoundary7MA4YWxkTrZu0gW--
+### 7. Delete Single Image
+DELETE {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/{{replyCommentId1}}
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
 
-### Delete multiple images
+### 8. Bulk Delete Images
 DELETE {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/bulk
 Content-Type: application/json
 x-gateway-api-key: {{gatewayKey}}
@@ -924,3 +442,130 @@ Authorization: Bearer {{jwtToken}}
 {
     "imageIds": []
 }
+
+### User Search
+GET http://localhost:3000/api/v1/users/search?q=candriam
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Block User
+POST http://localhost:3000/api/v1/users/{{otherUserId}}/block
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Get Blocked Users
+GET http://localhost:3000/api/v1/users/me/blocked
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Unblock User
+DELETE http://localhost:3000/api/v1/users/{{otherUserId}}/block
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Change Password
+POST http://localhost:3000/api/v1/users/change-password
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+{
+  "oldPassword": "password123",
+  "newPassword": "newpassword123"
+}
+
+### Send Friend Request
+POST http://localhost:3000/api/v1/users/friend-requests
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+{
+  "receiverId": "{{otherUserId}}"
+}
+
+### Get Friend Requests
+GET http://localhost:3000/api/v1/users/me/friend-requests
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Accept Friend Request
+PUT http://localhost:3000/api/v1/users/friend-requests/{{requestId}}/accept
+# Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Get Friends
+GET http://localhost:3000/api/v1/users/me/friends
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Reject Friend Request
+PUT http://localhost:3000/api/v1/users/friend-requests/{{requestId}}/reject
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Remove Friend
+DELETE http://localhost:3000/api/v1/users/friends/{{otherUserId}}
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Follow User
+POST http://localhost:3000/api/v1/users/{{otherUserId}}/follow
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Check Is Following
+GET http://localhost:3000/api/v1/users/{{otherUserId}}/is-following
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Get My Followers
+GET http://localhost:3000/api/v1/users/me/followers
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Get My Following
+GET http://localhost:3000/api/v1/users/me/following
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Get User Followers
+GET http://localhost:3000/api/v1/users/{{otherUserId}}/followers
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Get User Following
+GET http://localhost:3000/api/v1/users/{{otherUserId}}/following
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Unfollow User
+DELETE http://localhost:3000/api/v1/users/{{otherUserId}}/follow
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### ============================================
+### VIEW COUNT VERIFICATION
+### ============================================
+
+### Get Recipe (Check ViewCount = N)
+GET {{baseUrl}}/api/v1/recipes/{{recipeId}}
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Get Recipe Again (Check ViewCount = N+1)
+GET {{baseUrl}}/api/v1/recipes/{{recipeId}}
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Get Recipe By Slug (Check ViewCount = N+2)
+GET {{baseUrl}}/api/v1/recipes/by-slug/poulet-tikka-masala
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}

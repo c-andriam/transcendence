@@ -10,8 +10,6 @@ dotenv.config({
   path: path.resolve(__dirname, "../../.env"),
 });
 
-// dotenv.config();
-
 if (!process.env.INTERNAL_API_KEY) {
     throw new Error("INTERNAL_API_KEY is not defined");
 }

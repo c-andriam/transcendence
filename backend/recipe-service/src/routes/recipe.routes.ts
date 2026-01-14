@@ -41,8 +41,6 @@ import {
 
 export async function recipesRoutes(app: FastifyInstance) {
 
-    // ========== ROUTES RECETTES ==========
-
     app.get("/recipes", async (request, reply) => {
         const data = await getAllRecipes();
         sendSuccess(reply, data, data.length ? 'Recipes found' : 'No recipes yet');
@@ -289,8 +287,6 @@ export async function recipesRoutes(app: FastifyInstance) {
         sendSuccess(reply, data, 'Your recipes retrieved');
     });
 
-    // ========== ROUTES RATINGS ==========
-
     app.post("/recipes/:id/ratings", {
         preHandler: [authMiddleware, paramValidator(z.object({
             id: z.string().min(1)
@@ -339,8 +335,6 @@ export async function recipesRoutes(app: FastifyInstance) {
         sendSuccess(reply, result, 'Rating removed successfully');
     });
 
-    // ================= ROUTES COMMENTS =================
-
     app.get("/recipes/:id/comments", async (request, reply) => {
         const { id } = request.params as { id: string };
         const comments = await getComments(request, reply);
@@ -370,8 +364,6 @@ export async function recipesRoutes(app: FastifyInstance) {
         const replyComment = await createReplyHandler(request, reply);
         sendCreated(reply, replyComment, "Reply created successfully");
     });
-
-    // ================= ROUTES FAVORITES =================
 
     app.post("/recipes/:id/favorite", { preHandler: authMiddleware }, async (request, reply) => {
         const { id } = request.params as { id: string };
