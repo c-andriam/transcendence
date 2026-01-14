@@ -4,13 +4,13 @@ import { FiSend } from "react-icons/fi";
 import { SlUserFollow, SlUserFollowing } from "react-icons/sl";
 import { GoHeartFill, GoHeart } from "react-icons/go";
 import { GiCampCookingPot } from "react-icons/gi";
-import { AiOutlineTags } from "react-icons/ai";
 import { BiTimeFive } from "react-icons/bi";
 import { PiChefHat } from "react-icons/pi";
 import { TbChartBar } from "react-icons/tb";
 import { RiMessengerLine } from "react-icons/ri";
 import { MdFlatware } from "react-icons/md";
 import Instrution from "./Modal/InstrutionModal";
+import Tags from "./Tags";
 
 const PostCard = () => {
     const modalRef = useRef<HTMLDialogElement>(null);
@@ -49,28 +49,28 @@ const PostCard = () => {
                         </div>
                     </div>
                     <div className="flex flex-row gap-2 items-center justify-center mb-2 px-8">
-                        <div className='flex flex-row gap-1 items-center justify-center py-1 px-2.5 border border-white/10 bg-white/5 hover:bg-white/10 transition-colors rounded-lg cursor-pointer'>
-                            <AiOutlineTags size={14} className="text-violet-300" />
-                            <p className='text-xs text-slate-300'>Italien</p>
-                        </div>
-                        <div className='flex flex-row gap-1 items-center justify-center py-1 px-2.5 border border-white/10 bg-white/5 hover:bg-white/10 transition-colors rounded-lg cursor-pointer'>
-                            <AiOutlineTags size={14} className="text-violet-300" />
-                            <p className='text-xs text-slate-300'>Pâtes</p>
-                        </div>
-                        <div className='flex flex-row gap-1 items-center justify-center py-1 px-2.5 border border-white/10 bg-white/5 hover:bg-white/10 transition-colors rounded-lg cursor-pointer'>
-                            <AiOutlineTags size={14} className="text-violet-300" />
-                            <p className='text-xs text-slate-300'>Dîner</p>
-                        </div>
-                        <div className='flex flex-row gap-1 items-center justify-center py-1 px-2.5 border border-white/10 bg-white/5 hover:bg-white/10 transition-colors rounded-lg cursor-pointer'>
-                            <AiOutlineTags size={14} className="text-violet-300" />
-                            <p className='text-xs text-slate-300'>Gourmand</p>
-                        </div>
+                        <Tags tag="Italien" />
+                        <Tags tag="Pâtes" />
+                        <Tags tag="Dessert" />
+                        <Tags tag="Dîner" />
+                        <Tags tag="Gourmand" />
                     </div>
                     <div
                         className='flex items-center justify-center'
                     >
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
-                        <img src="/images/recipes/Carbonara.png" alt="Plat" className='relative z-10 rounded-xl shadow-2xl border border-white/10 w-full h-auto object-cover aspect-square max-h-[400px]' />
+                        <div
+                            className="absolute top-0 right-0 w-64 h-64
+                            bg-blue-500/5 rounded-full blur-3xl
+                            -mr-16 -mt-16 pointer-events-none"
+                        />
+                        <img
+                            src="/images/recipes/Custard.png"
+                            alt="Plat"
+                            className='relative z-10 rounded-xl 
+                                shadow-2xl border
+                                border-white/10 max-w-full 
+                                h-auto '
+                        />
                     </div>
                 </section>
                 <section
