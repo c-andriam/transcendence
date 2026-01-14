@@ -9,16 +9,56 @@ interface FriendUIProps {
 
 const FriendUI = ({ friendName, friendPictureURL, following, follower, recipesCount }: FriendUIProps) => {
     return (
-        <div>
-            <p>{friendName}</p>
-            <img
-                src={friendPictureURL}
-                alt="Friend"
-                className="w-16 h-16 rounded-full border-2 border-white/10"
-            />
-            <p>{recipesCount} Recipes</p>
-            <p>{following} Followings</p>
-            <p>{follower} Followers</p>
+        <div
+            className="group relative flex flex-col 
+                items-center justify-center
+                border border-white/10
+                rounded-2xl py-6 px-4
+                bg-gradient-to-b from-[#2a2b2d] to-[#1e1f20]
+                hover:border-orange-500/30
+                hover:shadow-lg hover:shadow-orange-500/10
+                hover:scale-[1.02]
+                transition-all duration-300 ease-out
+                cursor-pointer overflow-hidden"
+        >
+            <div className="absolute inset-0 bg-gradient-to-t from-orange-500/5 to-transparent 
+                opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+            <div className="relative mb-3">
+                {/* <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-amber-500 
+                    rounded-full blur-md opacity-30 group-hover:opacity-50 transition-opacity" /> */}
+                <img
+                    src={friendPictureURL}
+                    alt="Friend"
+                    className="relative w-24 h-24 rounded-full
+                        border-3 border-white/20 object-cover
+                        ring-2 ring-orange-500/20 ring-offset-2 ring-offset-[#242526]"
+                />
+                {/* <span className="absolute bottom-1 right-1 w-4 h-4 
+                    bg-green-500 rounded-full border-2 border-[#242526]" /> */}
+            </div>
+            <h3 className="text-lg font-bold text-white/90
+                tracking-tight mb-1 text-center"
+            >
+                {friendName}
+            </h3>
+            <div className="flex items-center gap-1.5 bg-orange-500/10 
+                px-3 py-1 rounded-full mb-3">
+                <span className="text-orange-400 font-bold text-sm">{recipesCount}</span>
+                <span className="text-orange-300/70 text-xs">recipes</span>
+            </div>
+            <div className="w-16 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mb-3" />
+            <div className="flex gap-6 items-center justify-center text-center">
+                <div className="flex flex-col">
+                    <span className="text-white font-semibold text-base">{following}</span>
+                    <span className="text-slate-500 text-xs">Following</span>
+                </div>
+                <div className="w-px h-8 bg-white/10" />
+                <div className="flex flex-col">
+                    <span className="text-white font-semibold text-base">{follower}</span>
+                    <span className="text-slate-500 text-xs">Followers</span>
+                </div>
+            </div>
         </div>
     );
 }

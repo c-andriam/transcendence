@@ -76,7 +76,6 @@ const PostCard = () => {
                 <section
                     className="post-card-center col-span-4 p-6 bg-slate-900/50 backdrop-blur-md border-x border-white/5 flex flex-col"
                 >
-                    {/* User Header */}
                     <div className='flex flex-row items-center mb-6 justify-between'>
                         <div className='flex flex-row gap-3 items-center'>
                             <div className="relative">
@@ -100,7 +99,6 @@ const PostCard = () => {
                         </button>
                     </div>
 
-                    {/* Recipe Summary & Ingredients */}
                     <div className='flex flex-col gap-6 flex-grow'>
                         <div className='space-y-4'>
                             <div className='flex items-center gap-2 text-orange-400'>
@@ -118,7 +116,6 @@ const PostCard = () => {
                         </div>
                     </div>
 
-                    {/* Action Bar */}
                     <div className='mt-8 pt-6 border-t border-white/5 flex items-center justify-between'>
                         <button
                             onClick={() => setIsLiked(!isLiked)}

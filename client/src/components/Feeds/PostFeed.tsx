@@ -1,7 +1,7 @@
 import React from 'react';
-import PostCard from './PostCard';
+import PostCard from '../PostCard';
 
-const Feed = () => {
+const PostFeed = () => {
     return (
         <div className='mr-2 flex flex-col gap-4 mb-8'>
             <PostCard />
@@ -13,4 +13,4 @@ const Feed = () => {
     );
 }
 
-export default Feed;
+export default PostFeed;
