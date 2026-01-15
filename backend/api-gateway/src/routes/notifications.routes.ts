@@ -75,43 +75,7 @@ export async function notificationsRoutes(app: FastifyInstance) {
         }
     });
 
-    app.get("/notifications/:id", {
-        schema: {
-            tags: ["Notifications"],
-            summary: "Get notification by ID",
-            security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: {
-                type: "object",
-                properties: {
-                    id: { type: "string", format: "uuid" }
-                }
-            },
-            response: {
-                200: createResponseSchema({
-                    type: "object",
-                    properties: {
-                        id: { type: "string", format: "uuid" },
-                        type: { type: "string" },
-                        title: { type: "string" },
-                        message: { type: "string" },
-                        isRead: { type: "boolean" },
-                        data: { type: "object", additionalProperties: true, nullable: true },
-                        createdAt: { type: "string" }
-                    }
-                }),
-                ...commonResponses
-            }
-        }
-    }, async (request, reply) => {
-        try {
-            const { id } = request.params as { id: string };
-            const { statusCode, body } = await proxyRequest(request, reply, `/api/v1/notifications/${id}`, NOTIFICATION_SERVICE_URL);
-            return reply.status(statusCode as any).send(body);
-        } catch (error) {
-            app.log.error(error);
-            return sendError(reply, "Notification service is unavailable", HttpStatus.SERVICE_UNAVAILABLE);
-        }
-    });
+
 
     app.put("/notifications/:id/read", {
         schema: {
@@ -127,10 +91,7 @@ export async function notificationsRoutes(app: FastifyInstance) {
             response: {
                 200: createResponseSchema({
                     type: "object",
-                    properties: {
-                        id: { type: "string", format: "uuid" },
-                        isRead: { type: "boolean" }
-                    }
+                    properties: {}
                 }),
                 ...commonResponses
             }
@@ -154,9 +115,7 @@ export async function notificationsRoutes(app: FastifyInstance) {
             response: {
                 200: createResponseSchema({
                     type: "object",
-                    properties: {
-                        count: { type: "integer" }
-                    }
+                    properties: {}
                 }),
                 ...commonResponses
             }
@@ -185,9 +144,7 @@ export async function notificationsRoutes(app: FastifyInstance) {
             response: {
                 200: createResponseSchema({
                     type: "object",
-                    properties: {
-                        message: { type: "string" }
-                    }
+                    properties: {}
                 }),
                 ...commonResponses
             }

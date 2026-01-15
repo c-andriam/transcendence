@@ -32,9 +32,15 @@ export async function usersRoutes(app: FastifyInstance) {
                         id: { type: "string", format: "uuid" },
                         email: { type: "string" },
                         username: { type: "string" },
-                        fullName: { type: "string" },
-                        avatarUrl: { type: "string" },
-                        createdAt: { type: "string" }
+                        firstName: { type: "string", nullable: true },
+                        lastName: { type: "string", nullable: true },
+                        avatarUrl: { type: "string", nullable: true },
+                        bio: { type: "string", nullable: true },
+                        role: { type: "string" },
+                        isOnline: { type: "boolean" },
+                        isEmailVerified: { type: "boolean" },
+                        createdAt: { type: "string", format: "date-time" },
+                        updatedAt: { type: "string", format: "date-time" }
                     }
                 }),
                 ...commonResponses
@@ -62,7 +68,16 @@ export async function usersRoutes(app: FastifyInstance) {
                         properties: {
                             id: { type: "string", format: "uuid" },
                             username: { type: "string" },
-                            avatarUrl: { type: "string" }
+                            email: { type: "string" },
+                            firstName: { type: "string", nullable: true },
+                            lastName: { type: "string", nullable: true },
+                            avatarUrl: { type: "string", nullable: true },
+                            role: { type: "string" },
+                            bio: { type: "string", nullable: true },
+                            isOnline: { type: "boolean" },
+                            isEmailVerified: { type: "boolean" },
+                            createdAt: { type: "string", format: "date-time" },
+                            updatedAt: { type: "string", format: "date-time" }
                         }
                     }
                 }),
@@ -97,7 +112,10 @@ export async function usersRoutes(app: FastifyInstance) {
                         properties: {
                             id: { type: "string", format: "uuid" },
                             username: { type: "string" },
-                            avatarUrl: { type: "string" }
+                            avatarUrl: { type: "string" },
+                            email: { type: "string" },
+                            firstName: { type: "string", nullable: true },
+                            lastName: { type: "string", nullable: true }
                         }
                     }
                 }),
@@ -130,9 +148,16 @@ export async function usersRoutes(app: FastifyInstance) {
                     properties: {
                         id: { type: "string", format: "uuid" },
                         username: { type: "string" },
-                        fullName: { type: "string" },
-                        avatarUrl: { type: "string" },
-                        createdAt: { type: "string" }
+                        email: { type: "string" },
+                        firstName: { type: "string", nullable: true },
+                        lastName: { type: "string", nullable: true },
+                        avatarUrl: { type: "string", nullable: true },
+                        bio: { type: "string", nullable: true },
+                        role: { type: "string" },
+                        isOnline: { type: "boolean" },
+                        isEmailVerified: { type: "boolean" },
+                        createdAt: { type: "string", format: "date-time" },
+                        updatedAt: { type: "string", format: "date-time" }
                     }
                 }),
                 ...commonResponses
@@ -210,8 +235,11 @@ export async function usersRoutes(app: FastifyInstance) {
             body: {
                 type: "object",
                 properties: {
-                    fullName: { type: "string" },
-                    username: { type: "string" }
+                    firstName: { type: "string" },
+                    lastName: { type: "string" },
+                    username: { type: "string" },
+                    avatarUrl: { type: "string" },
+                    bio: { type: "string" }
                 }
             },
             response: {
@@ -219,8 +247,17 @@ export async function usersRoutes(app: FastifyInstance) {
                     type: "object",
                     properties: {
                         id: { type: "string", format: "uuid" },
+                        email: { type: "string" },
                         username: { type: "string" },
-                        fullName: { type: "string" }
+                        firstName: { type: "string", nullable: true },
+                        lastName: { type: "string", nullable: true },
+                        avatarUrl: { type: "string", nullable: true },
+                        bio: { type: "string", nullable: true },
+                        role: { type: "string" },
+                        isOnline: { type: "boolean" },
+                        isEmailVerified: { type: "boolean" },
+                        createdAt: { type: "string", format: "date-time" },
+                        updatedAt: { type: "string", format: "date-time" }
                     }
                 }),
                 ...commonResponses
@@ -252,7 +289,18 @@ export async function usersRoutes(app: FastifyInstance) {
                 200: createResponseSchema({
                     type: "object",
                     properties: {
-                        message: { type: "string" }
+                        id: { type: "string", format: "uuid" },
+                        email: { type: "string" },
+                        username: { type: "string" },
+                        firstName: { type: "string", nullable: true },
+                        lastName: { type: "string", nullable: true },
+                        avatarUrl: { type: "string", nullable: true },
+                        bio: { type: "string", nullable: true },
+                        role: { type: "string" },
+                        isOnline: { type: "boolean" },
+                        isEmailVerified: { type: "boolean" },
+                        createdAt: { type: "string", format: "date-time" },
+                        updatedAt: { type: "string", format: "date-time" }
                     }
                 }),
                 ...commonResponses
@@ -284,7 +332,10 @@ export async function usersRoutes(app: FastifyInstance) {
                 200: createResponseSchema({
                     type: "object",
                     properties: {
-                        message: { type: "string" }
+                        id: { type: "string", format: "uuid" },
+                        followerId: { type: "string", format: "uuid" },
+                        followingId: { type: "string", format: "uuid" },
+                        createdAt: { type: "string", format: "date-time" }
                     }
                 }),
                 ...commonResponses
@@ -316,7 +367,10 @@ export async function usersRoutes(app: FastifyInstance) {
                 200: createResponseSchema({
                     type: "object",
                     properties: {
-                        message: { type: "string" }
+                        id: { type: "string", format: "uuid" },
+                        followerId: { type: "string", format: "uuid" },
+                        followingId: { type: "string", format: "uuid" },
+                        createdAt: { type: "string", format: "date-time" }
                     }
                 }),
                 ...commonResponses
@@ -345,8 +399,9 @@ export async function usersRoutes(app: FastifyInstance) {
                         type: "object",
                         properties: {
                             id: { type: "string", format: "uuid" },
-                            followerId: { type: "string" },
-                            followingId: { type: "string" }
+                            username: { type: "string" },
+                            avatarUrl: { type: "string", nullable: true },
+                            isOnline: { type: "boolean" }
                         }
                     }
                 }),
@@ -375,8 +430,9 @@ export async function usersRoutes(app: FastifyInstance) {
                         type: "object",
                         properties: {
                             id: { type: "string", format: "uuid" },
-                            followerId: { type: "string" },
-                            followingId: { type: "string" }
+                            username: { type: "string" },
+                            avatarUrl: { type: "string", nullable: true },
+                            isOnline: { type: "boolean" }
                         }
                     }
                 }),
@@ -410,8 +466,9 @@ export async function usersRoutes(app: FastifyInstance) {
                         type: "object",
                         properties: {
                             id: { type: "string", format: "uuid" },
-                            followerId: { type: "string" },
-                            followingId: { type: "string" }
+                            username: { type: "string" },
+                            avatarUrl: { type: "string", nullable: true },
+                            isOnline: { type: "boolean" }
                         }
                     }
                 }),
@@ -446,8 +503,9 @@ export async function usersRoutes(app: FastifyInstance) {
                         type: "object",
                         properties: {
                             id: { type: "string", format: "uuid" },
-                            followerId: { type: "string" },
-                            followingId: { type: "string" }
+                            username: { type: "string" },
+                            avatarUrl: { type: "string", nullable: true },
+                            isOnline: { type: "boolean" }
                         }
                     }
                 }),
@@ -514,7 +572,10 @@ export async function usersRoutes(app: FastifyInstance) {
                     type: "object",
                     properties: {
                         id: { type: "string", format: "uuid" },
-                        status: { type: "string" }
+                        senderId: { type: "string", format: "uuid" },
+                        receiverId: { type: "string", format: "uuid" },
+                        status: { type: "string" },
+                        createdAt: { type: "string", format: "date-time" }
                     }
                 }),
                 ...commonResponses
@@ -545,7 +606,10 @@ export async function usersRoutes(app: FastifyInstance) {
                 200: createResponseSchema({
                     type: "object",
                     properties: {
-                        message: { type: "string" }
+                        id: { type: "string", format: "uuid" },
+                        status: { type: "string" },
+                        senderId: { type: "string", format: "uuid" },
+                        receiverId: { type: "string", format: "uuid" }
                     }
                 }),
                 ...commonResponses
@@ -577,7 +641,10 @@ export async function usersRoutes(app: FastifyInstance) {
                 200: createResponseSchema({
                     type: "object",
                     properties: {
-                        message: { type: "string" }
+                        id: { type: "string", format: "uuid" },
+                        status: { type: "string" },
+                        senderId: { type: "string", format: "uuid" },
+                        receiverId: { type: "string", format: "uuid" }
                     }
                 }),
                 ...commonResponses
@@ -639,7 +706,8 @@ export async function usersRoutes(app: FastifyInstance) {
                         properties: {
                             id: { type: "string", format: "uuid" },
                             username: { type: "string" },
-                            avatarUrl: { type: "string" }
+                            avatarUrl: { type: "string", nullable: true },
+                            isOnline: { type: "boolean" }
                         }
                     }
                 }),
@@ -707,7 +775,10 @@ export async function usersRoutes(app: FastifyInstance) {
                 200: createResponseSchema({
                     type: "object",
                     properties: {
-                        message: { type: "string" }
+                        id: { type: "string", format: "uuid" },
+                        blockerId: { type: "string", format: "uuid" },
+                        blockedId: { type: "string", format: "uuid" },
+                        createdAt: { type: "string", format: "date-time" }
                     }
                 }),
                 ...commonResponses
@@ -739,7 +810,10 @@ export async function usersRoutes(app: FastifyInstance) {
                 200: createResponseSchema({
                     type: "object",
                     properties: {
-                        message: { type: "string" }
+                        id: { type: "string", format: "uuid" },
+                        blockerId: { type: "string", format: "uuid" },
+                        blockedId: { type: "string", format: "uuid" },
+                        createdAt: { type: "string", format: "date-time" }
                     }
                 }),
                 ...commonResponses

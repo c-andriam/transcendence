@@ -27,27 +27,29 @@ export async function authRoutes(app: FastifyInstance) {
             security: [{ apiKeyAuth: [] }],
             body: {
                 type: "object",
-                required: ["email", "password", "username", "fullName"],
+                required: ["email", "password", "username"],
                 properties: {
                     email: { type: "string", format: "email" },
                     password: { type: "string", minLength: 8 },
                     username: { type: "string", minLength: 3 },
-                    fullName: { type: "string", minLength: 1 }
+                    firstName: { type: "string" },
+                    lastName: { type: "string" },
+                    avatarUrl: { type: "string" },
+                    bio: { type: "string" }
                 }
             },
             response: {
                 200: createResponseSchema({
                     type: "object",
                     properties: {
-                        message: { type: "string" },
-                        user: {
-                            type: "object",
-                            properties: {
-                                id: { type: "string", format: "uuid" },
-                                email: { type: "string" },
-                                username: { type: "string" }
-                            }
-                        }
+                        id: { type: "string", format: "uuid" },
+                        email: { type: "string" },
+                        username: { type: "string" },
+                        firstName: { type: "string", nullable: true },
+                        lastName: { type: "string", nullable: true },
+                        avatarUrl: { type: "string", nullable: true },
+                        bio: { type: "string", nullable: true },
+                        createdAt: { type: "string", format: "date-time" }
                     }
                 }),
                 ...commonResponses
@@ -82,17 +84,7 @@ export async function authRoutes(app: FastifyInstance) {
                 200: createResponseSchema({
                     type: "object",
                     properties: {
-                        message: { type: "string" },
-                        accessToken: { type: "string" },
-                        user: {
-                            type: "object",
-                            properties: {
-                                id: { type: "string", format: "uuid" },
-                                email: { type: "string" },
-                                username: { type: "string" },
-                                role: { type: "string" }
-                            }
-                        }
+                        accessToken: { type: "string" }
                     }
                 }),
                 ...commonResponses
@@ -145,9 +137,7 @@ export async function authRoutes(app: FastifyInstance) {
             response: {
                 200: createResponseSchema({
                     type: "object",
-                    properties: {
-                        message: { type: "string" }
-                    }
+                    properties: {}
                 }),
                 ...commonResponses
             }
@@ -177,9 +167,7 @@ export async function authRoutes(app: FastifyInstance) {
             response: {
                 200: createResponseSchema({
                     type: "object",
-                    properties: {
-                        message: { type: "string" }
-                    }
+                    properties: {}
                 }),
                 ...commonResponses
             }
@@ -212,9 +200,7 @@ export async function authRoutes(app: FastifyInstance) {
             response: {
                 200: createResponseSchema({
                     type: "object",
-                    properties: {
-                        message: { type: "string" }
-                    }
+                    properties: {}
                 }),
                 ...commonResponses
             }
@@ -246,9 +232,7 @@ export async function authRoutes(app: FastifyInstance) {
             response: {
                 200: createResponseSchema({
                     type: "object",
-                    properties: {
-                        message: { type: "string" }
-                    }
+                    properties: {}
                 }),
                 ...commonResponses
             }
@@ -280,9 +264,7 @@ export async function authRoutes(app: FastifyInstance) {
             response: {
                 200: createResponseSchema({
                     type: "object",
-                    properties: {
-                        message: { type: "string" }
-                    }
+                    properties: {}
                 }),
                 ...commonResponses
             }

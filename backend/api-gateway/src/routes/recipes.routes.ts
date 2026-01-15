@@ -233,7 +233,13 @@ export async function recipesRoutes(app: FastifyInstance) {
             summary: "Rate a recipe",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             description: "Add a rating from 1 to 5 stars. Author cannot rate their own recipe.",
-            params: { type: "object", properties: { id: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "Recipe ID" }
+                }
+            },
             body: {
                 type: "object",
                 required: ["score"],
@@ -264,7 +270,13 @@ export async function recipesRoutes(app: FastifyInstance) {
             summary: "Get ratings summary for a recipe",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             description: "Retrieve average score and total number of raters.",
-            params: { type: "object", properties: { id: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "Recipe ID" }
+                }
+            },
             response: {
                 200: createResponseSchema({
                     type: "object",
@@ -287,7 +299,13 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Recipes"],
             summary: "Update rating",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { id: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "Recipe ID" }
+                }
+            },
             body: { type: "object", required: ["score"], properties: { score: { type: "number", minimum: 1, maximum: 5 } } },
             response: {
                 200: createResponseSchema({
@@ -312,11 +330,18 @@ export async function recipesRoutes(app: FastifyInstance) {
             summary: "Delete rating",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             description: "Remove your rating from a recipe.",
-            params: { type: "object", properties: { id: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "Recipe ID" }
+                }
+            },
             response: {
                 200: createResponseSchema({
                     type: "object",
                     properties: {
+                        id: { type: "string", format: "uuid" },
                         averageScore: { type: "number" },
                         totalRaters: { type: "integer" }
                     }
@@ -371,28 +396,106 @@ export async function recipesRoutes(app: FastifyInstance) {
     });
 
     app.get("/categories/:id", {
-        schema: { tags: ["Categories"], summary: "Get category by ID", security: [{ bearerAuth: [] }], params: { type: "object", properties: { id: { type: "string", format: "uuid" } } } }
+        schema: {
+            tags: ["Categories"],
+            summary: "Get category by ID",
+            description: "Retrieve a specific category by its unique identifier.",
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "Unique category identifier" }
+                }
+            },
+            response: {
+                200: createResponseSchema(categorySummarySchema),
+                ...commonResponses
+            }
+        }
     }, async (request, reply) => {
         const { id } = request.params as { id: string };
         return proxyHydrate(app, request, reply, `/api/v1/categories/${id}`, RECIPE_SERVICE_URL);
     });
 
     app.get("/categories/by-slug/:slug", {
-        schema: { tags: ["Categories"], summary: "Get category by slug", security: [{ bearerAuth: [] }], params: { type: "object", properties: { slug: { type: "string" } } } }
+        schema: {
+            tags: ["Categories"],
+            summary: "Get category by slug",
+            description: "Retrieve a specific category by its URL-friendly slug.",
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
+            params: {
+                type: "object",
+                required: ["slug"],
+                properties: {
+                    slug: { type: "string", description: "URL-friendly category identifier" }
+                }
+            },
+            response: {
+                200: createResponseSchema(categorySummarySchema),
+                ...commonResponses
+            }
+        }
     }, async (request, reply) => {
         const { slug } = request.params as { slug: string };
         return proxyHydrate(app, request, reply, `/api/v1/categories/by-slug/${slug}`, RECIPE_SERVICE_URL);
     });
 
     app.put("/categories/:id", {
-        schema: { tags: ["Categories"], summary: "Update category", security: [{ bearerAuth: [] }], params: { type: "object", properties: { id: { type: "string", format: "uuid" } } } }
+        schema: {
+            tags: ["Categories"],
+            summary: "Update category",
+            description: "Update an existing category. Admin access required.",
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "Unique category identifier" }
+                }
+            },
+            body: {
+                type: "object",
+                properties: {
+                    name: { type: "string", minLength: 2 },
+                    iconName: { type: "string" },
+                    color: { type: "string", pattern: "^#[0-9A-Fa-f]{6}$" },
+                    sortOrder: { type: "integer", minimum: 0 }
+                }
+            },
+            response: {
+                200: createResponseSchema(categorySummarySchema),
+                ...commonResponses
+            }
+        }
     }, async (request, reply) => {
         const { id } = request.params as { id: string };
         return proxyHydrate(app, request, reply, `/api/v1/categories/${id}`, RECIPE_SERVICE_URL);
     });
 
     app.delete("/categories/:id", {
-        schema: { tags: ["Categories"], summary: "Delete category", security: [{ bearerAuth: [] }], params: { type: "object", properties: { id: { type: "string", format: "uuid" } } } }
+        schema: {
+            tags: ["Categories"],
+            summary: "Delete category",
+            description: "Delete a category. Admin access required. Will fail if recipes are using this category.",
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "Unique category identifier" }
+                }
+            },
+            response: {
+                200: createResponseSchema({
+                    type: "object",
+                    properties: {
+                        message: { type: "string", example: "Category deleted successfully" }
+                    }
+                }),
+                ...commonResponses
+            }
+        }
     }, async (request, reply) => {
         const { id } = request.params as { id: string };
         return proxyHydrate(app, request, reply, `/api/v1/categories/${id}`, RECIPE_SERVICE_URL);
@@ -443,7 +546,13 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Recipes"],
             summary: "Get recipes by category",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { categoryId: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["categoryId"],
+                properties: {
+                    categoryId: { type: "string", format: "uuid", description: "Category ID" }
+                }
+            },
             querystring: {
                 type: "object",
                 properties: {
@@ -472,7 +581,13 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Recipes"],
             summary: "Get recipes by author",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { authorId: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["authorId"],
+                properties: {
+                    authorId: { type: "string", format: "uuid", description: "UUID of the author" }
+                }
+            },
             querystring: {
                 type: "object",
                 properties: {
@@ -501,7 +616,13 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Recipes"],
             summary: "Get recipes by difficulty",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { difficulty: { type: "string", enum: ["EASY", "MEDIUM", "HARD"] } } },
+            params: {
+                type: "object",
+                required: ["difficulty"],
+                properties: {
+                    difficulty: { type: "string", enum: ["EASY", "MEDIUM", "HARD"], description: "Filter by difficulty level" }
+                }
+            },
             querystring: {
                 type: "object",
                 properties: {
@@ -560,21 +681,37 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Comments"],
             summary: "Get comments for a recipe",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { id: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "Recipe ID" }
+                }
+            },
             response: {
                 200: createResponseSchema({
-                    type: "array",
-                    items: {
-                        type: "object",
-                        properties: {
-                            id: { type: "string", format: "uuid" },
-                            content: { type: "string" },
-                            authorId: { type: "string", format: "uuid" },
-                            recipeId: { type: "string", format: "uuid" },
-                            parentId: { type: "string", format: "uuid", nullable: true },
-                            createdAt: { type: "string", format: "date-time" },
-                            updatedAt: { type: "string", format: "date-time" }
-                        }
+                    type: "object",
+                    properties: {
+                        comments: {
+                            type: "array",
+                            items: {
+                                type: "object",
+                                properties: {
+                                    id: { type: "string", format: "uuid" },
+                                    content: { type: "string" },
+                                    userId: { type: "string", format: "uuid" },
+                                    recipeId: { type: "string", format: "uuid" },
+                                    parentId: { type: "string", format: "uuid", nullable: true },
+                                    createdAt: { type: "string", format: "date-time" },
+                                    updatedAt: { type: "string", format: "date-time" },
+                                    replies: {
+                                        type: "array",
+                                        items: { type: "object", additionalProperties: true }
+                                    }
+                                }
+                            }
+                        },
+                        pagination: paginationSchema
                     }
                 }),
                 ...commonResponses
@@ -590,7 +727,13 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Comments"],
             summary: "Post a comment on a recipe",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { id: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "Recipe ID" }
+                }
+            },
             body: {
                 type: "object",
                 required: ["content"],
@@ -622,9 +765,10 @@ export async function recipesRoutes(app: FastifyInstance) {
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
+                required: ["id", "commentId"],
                 properties: {
                     id: { type: "string", format: "uuid", description: "Recipe ID" },
-                    commentId: { type: "string", format: "uuid" }
+                    commentId: { type: "string", format: "uuid", description: "Comment ID" }
                 }
             },
             body: {
@@ -658,9 +802,10 @@ export async function recipesRoutes(app: FastifyInstance) {
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
+                required: ["id", "commentId"],
                 properties: {
-                    id: { type: "string", format: "uuid" },
-                    commentId: { type: "string", format: "uuid" }
+                    id: { type: "string", format: "uuid", description: "Recipe ID" },
+                    commentId: { type: "string", format: "uuid", description: "Comment ID" }
                 }
             },
             response: {
@@ -683,9 +828,10 @@ export async function recipesRoutes(app: FastifyInstance) {
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
+                required: ["id", "commentId"],
                 properties: {
-                    id: { type: "string", format: "uuid" },
-                    commentId: { type: "string", format: "uuid" }
+                    id: { type: "string", format: "uuid", description: "Recipe ID" },
+                    commentId: { type: "string", format: "uuid", description: "Parent Comment ID" }
                 }
             },
             body: {
@@ -719,11 +865,18 @@ export async function recipesRoutes(app: FastifyInstance) {
             summary: "Add to favorites",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             description: "Add a recipe to your personal favorites list.",
-            params: { type: "object", properties: { id: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "Recipe ID" }
+                }
+            },
             response: {
                 201: createResponseSchema({
                     type: "object",
                     properties: {
+                        id: { type: "string", format: "uuid" },
                         userId: { type: "string", format: "uuid" },
                         recipeId: { type: "string", format: "uuid" },
                         createdAt: { type: "string", format: "date-time" }
@@ -742,11 +895,22 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Recipes"],
             summary: "Remove from favorites",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { id: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "Recipe ID" }
+                }
+            },
             response: {
                 200: createResponseSchema({
                     type: "object",
-                    properties: { message: { type: "string" } }
+                    properties: {
+                        id: { type: "string", format: "uuid" },
+                        userId: { type: "string", format: "uuid" },
+                        recipeId: { type: "string", format: "uuid" },
+                        createdAt: { type: "string", format: "date-time" }
+                    }
                 }),
                 ...commonResponses
             }
@@ -772,15 +936,9 @@ export async function recipesRoutes(app: FastifyInstance) {
                 200: createResponseSchema({
                     type: "object",
                     properties: {
-                        favorites: {
+                        recipes: {
                             type: "array",
-                            items: {
-                                type: "object",
-                                properties: {
-                                    createdAt: { type: "string", format: "date-time" },
-                                    recipe: recipeSummarySchema
-                                }
-                            }
+                            items: recipeSummarySchema
                         },
                         pagination: paginationSchema
                     }
@@ -798,7 +956,13 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Images"],
             summary: "Get recipe images",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { recipeId: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["recipeId"],
+                properties: {
+                    recipeId: { type: "string", format: "uuid", description: "Recipe ID" }
+                }
+            },
             response: {
                 200: createResponseSchema({ type: "array", items: imageSchema }),
                 ...commonResponses
@@ -817,7 +981,13 @@ export async function recipesRoutes(app: FastifyInstance) {
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             description: "Upload a single image file for a recipe.",
             consumes: ['multipart/form-data'],
-            params: { type: "object", properties: { recipeId: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["recipeId"],
+                properties: {
+                    recipeId: { type: "string", format: "uuid", description: "Recipe ID" }
+                }
+            },
             body: {
                 type: 'object',
                 required: ['file'],
@@ -839,7 +1009,13 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Images"],
             summary: "Add image by URL",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { recipeId: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["recipeId"],
+                properties: {
+                    recipeId: { type: "string", format: "uuid", description: "Recipe ID" }
+                }
+            },
             body: {
                 type: "object",
                 required: ["imageUrl"],
@@ -863,7 +1039,13 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Images"],
             summary: "Bulk delete images",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { recipeId: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["recipeId"],
+                properties: {
+                    recipeId: { type: "string", format: "uuid", description: "Recipe ID" }
+                }
+            },
             body: {
                 type: "object",
                 required: ["imageIds"],
@@ -884,7 +1066,14 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Images"],
             summary: "Update image metadata",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { recipeId: { type: "string", format: "uuid" }, imageId: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["recipeId", "imageId"],
+                properties: {
+                    recipeId: { type: "string", format: "uuid", description: "Recipe ID" },
+                    imageId: { type: "string", format: "uuid", description: "Image ID" }
+                }
+            },
             body: {
                 type: "object",
                 properties: {
@@ -908,7 +1097,14 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Images"],
             summary: "Set as primary image",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { recipeId: { type: "string", format: "uuid" }, imageId: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["recipeId", "imageId"],
+                properties: {
+                    recipeId: { type: "string", format: "uuid", description: "Recipe ID" },
+                    imageId: { type: "string", format: "uuid", description: "Image ID" }
+                }
+            },
             response: {
                 200: createResponseSchema(imageSchema),
                 ...commonResponses
@@ -924,7 +1120,14 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Images"],
             summary: "Delete recipe image",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { recipeId: { type: "string", format: "uuid" }, imageId: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["recipeId", "imageId"],
+                properties: {
+                    recipeId: { type: "string", format: "uuid", description: "Recipe ID" },
+                    imageId: { type: "string", format: "uuid", description: "Image ID" }
+                }
+            },
             response: {
                 200: createResponseSchema({ type: "object", properties: { message: { type: "string" } } }),
                 ...commonResponses
@@ -940,7 +1143,13 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Images"],
             summary: "Add multiple images by URLs",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { recipeId: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["recipeId"],
+                properties: {
+                    recipeId: { type: "string", format: "uuid", description: "Recipe ID" }
+                }
+            },
             body: {
                 type: "object",
                 required: ["images"],
@@ -972,7 +1181,13 @@ export async function recipesRoutes(app: FastifyInstance) {
             summary: "Upload multiple images",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             consumes: ['multipart/form-data'],
-            params: { type: "object", properties: { recipeId: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["recipeId"],
+                properties: {
+                    recipeId: { type: "string", format: "uuid", description: "Recipe ID" }
+                }
+            },
             body: {
                 type: "object",
                 required: ["files"],
@@ -994,7 +1209,13 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Images"],
             summary: "Reorder recipe images",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { recipeId: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["recipeId"],
+                properties: {
+                    recipeId: { type: "string", format: "uuid", description: "Recipe ID" }
+                }
+            },
             body: {
                 type: "object",
                 required: ["imageIds"],
@@ -1013,6 +1234,7 @@ export async function recipesRoutes(app: FastifyInstance) {
     // Dietary Tags
     app.post("/dietary-tags", {
         schema: {
+            hide: true,
             tags: ["Dietary Tags"],
             summary: "Create dietary tag",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
@@ -1021,13 +1243,19 @@ export async function recipesRoutes(app: FastifyInstance) {
                 required: ["name"],
                 properties: {
                     name: { type: "string", example: "Vegan" },
-                    description: { type: "string", example: "No animal products" }
+                    description: { type: "string", example: "No animal products" },
+                    iconName: { type: "string", example: "leaf" }
                 }
             },
             response: {
                 201: createResponseSchema({
                     type: "object",
-                    properties: { id: { type: "string" }, name: { type: "string" }, slug: { type: "string" } }
+                    properties: {
+                        id: { type: "string", format: "uuid" },
+                        name: { type: "string" },
+                        slug: { type: "string" },
+                        iconName: { type: "string", nullable: true }
+                    }
                 }),
                 ...commonResponses
             }
@@ -1044,7 +1272,15 @@ export async function recipesRoutes(app: FastifyInstance) {
             response: {
                 200: createResponseSchema({
                     type: "array",
-                    items: { type: "object", properties: { id: { type: "string" }, name: { type: "string" }, slug: { type: "string" } } }
+                    items: {
+                        type: "object",
+                        properties: {
+                            id: { type: "string", format: "uuid" },
+                            name: { type: "string" },
+                            slug: { type: "string" },
+                            iconName: { type: "string", nullable: true }
+                        }
+                    }
                 }),
                 ...commonResponses
             }
@@ -1058,9 +1294,23 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Dietary Tags"],
             summary: "Get dietary tag by ID",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { id: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "Dietary Tag ID" }
+                }
+            },
             response: {
-                200: createResponseSchema({ type: "object", properties: { id: { type: "string" }, name: { type: "string" }, slug: { type: "string" } } }),
+                200: createResponseSchema({
+                    type: "object",
+                    properties: {
+                        id: { type: "string", format: "uuid" },
+                        name: { type: "string" },
+                        slug: { type: "string" },
+                        iconName: { type: "string", nullable: true }
+                    }
+                }),
                 ...commonResponses
             }
         }
@@ -1071,16 +1321,35 @@ export async function recipesRoutes(app: FastifyInstance) {
 
     app.put("/dietary-tags/:id", {
         schema: {
+            hide: true,
             tags: ["Dietary Tags"],
             summary: "Update dietary tag",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { id: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "Dietary Tag ID" }
+                }
+            },
             body: {
                 type: "object",
-                properties: { name: { type: "string" }, description: { type: "string" } }
+                properties: {
+                    name: { type: "string" },
+                    description: { type: "string" },
+                    iconName: { type: "string" }
+                }
             },
             response: {
-                200: createResponseSchema({ type: "object", properties: { id: { type: "string" }, name: { type: "string" }, slug: { type: "string" } } }),
+                200: createResponseSchema({
+                    type: "object",
+                    properties: {
+                        id: { type: "string", format: "uuid" },
+                        name: { type: "string" },
+                        slug: { type: "string" },
+                        iconName: { type: "string", nullable: true }
+                    }
+                }),
                 ...commonResponses
             }
         }
@@ -1091,12 +1360,27 @@ export async function recipesRoutes(app: FastifyInstance) {
 
     app.delete("/dietary-tags/:id", {
         schema: {
+            hide: true,
             tags: ["Dietary Tags"],
             summary: "Delete dietary tag",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { id: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "Dietary Tag ID" }
+                }
+            },
             response: {
-                200: createResponseSchema({ type: "object", properties: { message: { type: "string" } } }),
+                200: createResponseSchema({
+                    type: "object",
+                    properties: {
+                        id: { type: "string", format: "uuid" },
+                        name: { type: "string" },
+                        slug: { type: "string" },
+                        iconName: { type: "string", nullable: true }
+                    }
+                }),
                 ...commonResponses
             }
         }
@@ -1151,14 +1435,56 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Collections"],
             summary: "Get collection details",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { id: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "Collection ID" }
+                }
+            },
             response: {
                 200: createResponseSchema({
                     type: "object",
                     properties: {
-                        id: { type: "string" },
+                        id: { type: "string", format: "uuid" },
                         name: { type: "string" },
-                        recipes: { type: "array", items: recipeSummarySchema }
+                        description: { type: "string", nullable: true },
+                        isPublic: { type: "boolean" },
+                        userId: { type: "string", format: "uuid" },
+                        createdAt: { type: "string", format: "date-time" },
+                        updatedAt: { type: "string", format: "date-time" },
+                        _count: {
+                            type: "object",
+                            properties: {
+                                recipes: { type: "integer" }
+                            }
+                        },
+                        recipes: {
+                            type: "array",
+                            items: {
+                                type: "object",
+                                properties: {
+                                    recipe: {
+                                        type: "object",
+                                        properties: {
+                                            id: { type: "string", format: "uuid" },
+                                            title: { type: "string" },
+                                            slug: { type: "string" },
+                                            images: {
+                                                type: "array",
+                                                items: {
+                                                    type: "object",
+                                                    properties: {
+                                                        url: { type: "string" },
+                                                        altText: { type: "string", nullable: true }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }),
                 ...commonResponses
@@ -1174,13 +1500,30 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Collections"],
             summary: "Update collection",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { id: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "Collection ID" }
+                }
+            },
             body: {
                 type: "object",
                 properties: { name: { type: "string" }, description: { type: "string" }, isPublic: { type: "boolean" } }
             },
             response: {
-                200: createResponseSchema({ type: "object", properties: { id: { type: "string" }, name: { type: "string" } } }),
+                200: createResponseSchema({
+                    type: "object",
+                    properties: {
+                        id: { type: "string", format: "uuid" },
+                        name: { type: "string" },
+                        description: { type: "string", nullable: true },
+                        isPublic: { type: "boolean" },
+                        userId: { type: "string", format: "uuid" },
+                        createdAt: { type: "string", format: "date-time" },
+                        updatedAt: { type: "string", format: "date-time" }
+                    }
+                }),
                 ...commonResponses
             }
         }
@@ -1194,9 +1537,18 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Collections"],
             summary: "Delete collection",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { id: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "Collection ID" }
+                }
+            },
             response: {
-                200: createResponseSchema({ type: "object", properties: { message: { type: "string" } } }),
+                200: createResponseSchema({
+                    type: "object",
+                    properties: {}
+                }),
                 ...commonResponses
             }
         }
@@ -1210,10 +1562,23 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Collections"],
             summary: "Add recipe to collection",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { id: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "Collection ID" }
+                }
+            },
             body: { type: "object", required: ["recipeId"], properties: { recipeId: { type: "string", format: "uuid" } } },
             response: {
-                201: createResponseSchema({ type: "object", properties: { message: { type: "string" } } }),
+                201: createResponseSchema({
+                    type: "object",
+                    properties: {
+                        collectionId: { type: "string", format: "uuid" },
+                        recipeId: { type: "string", format: "uuid" },
+                        addedAt: { type: "string", format: "date-time" }
+                    }
+                }),
                 ...commonResponses
             }
         }
@@ -1227,9 +1592,19 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Collections"],
             summary: "Remove recipe from collection",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { id: { type: "string", format: "uuid" }, recipeId: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["id", "recipeId"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "Collection ID" },
+                    recipeId: { type: "string", format: "uuid", description: "Recipe ID" }
+                }
+            },
             response: {
-                200: createResponseSchema({ type: "object", properties: { message: { type: "string" } } }),
+                200: createResponseSchema({
+                    type: "object",
+                    properties: {}
+                }),
                 ...commonResponses
             }
         }
@@ -1278,7 +1653,16 @@ export async function recipesRoutes(app: FastifyInstance) {
                 }
             },
             response: {
-                201: createResponseSchema({ type: "object", properties: { id: { type: "string" }, name: { type: "string" } } }),
+                201: createResponseSchema({
+                    type: "object",
+                    properties: {
+                        id: { type: "string", format: "uuid" },
+                        name: { type: "string" },
+                        quantity: { type: "string", nullable: true },
+                        isChecked: { type: "boolean" },
+                        userId: { type: "string", format: "uuid" }
+                    }
+                }),
                 ...commonResponses
             }
         }
@@ -1291,9 +1675,18 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Shopping List"],
             summary: "Add all recipe ingredients to list",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { id: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "Recipe ID" }
+                }
+            },
             response: {
-                201: createResponseSchema({ type: "object", properties: { message: { type: "string" } } }),
+                201: createResponseSchema({
+                    type: "object",
+                    properties: {}
+                }),
                 ...commonResponses
             }
         }
@@ -1307,7 +1700,13 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Shopping List"],
             summary: "Update shopping list item",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { id: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "Item ID" }
+                }
+            },
             body: {
                 type: "object",
                 properties: {
@@ -1317,7 +1716,10 @@ export async function recipesRoutes(app: FastifyInstance) {
                 }
             },
             response: {
-                200: createResponseSchema({ type: "object", properties: { id: { type: "string" }, isChecked: { type: "boolean" } } }),
+                200: createResponseSchema({
+                    type: "object",
+                    properties: {}
+                }),
                 ...commonResponses
             }
         }
@@ -1331,9 +1733,18 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Shopping List"],
             summary: "Remove item from list",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { id: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "Item ID" }
+                }
+            },
             response: {
-                200: createResponseSchema({ type: "object", properties: { message: { type: "string" } } }),
+                200: createResponseSchema({
+                    type: "object",
+                    properties: {}
+                }),
                 ...commonResponses
             }
         }
@@ -1348,7 +1759,10 @@ export async function recipesRoutes(app: FastifyInstance) {
             summary: "Remove all checked items",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             response: {
-                200: createResponseSchema({ type: "object", properties: { message: { type: "string" } } }),
+                200: createResponseSchema({
+                    type: "object",
+                    properties: {}
+                }),
                 ...commonResponses
             }
         }
@@ -1362,7 +1776,10 @@ export async function recipesRoutes(app: FastifyInstance) {
             summary: "Clear all items from list",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             response: {
-                200: createResponseSchema({ type: "object", properties: { message: { type: "string" } } }),
+                200: createResponseSchema({
+                    type: "object",
+                    properties: {}
+                }),
                 ...commonResponses
             }
         }
@@ -1386,7 +1803,19 @@ export async function recipesRoutes(app: FastifyInstance) {
                 }
             },
             response: {
-                201: createResponseSchema({ type: "object", properties: { id: { type: "string" }, date: { type: "string" } } }),
+                201: createResponseSchema({
+                    type: "object",
+                    properties: {
+                        id: { type: "string", format: "uuid" },
+                        userId: { type: "string", format: "uuid" },
+                        recipeId: { type: "string", format: "uuid" },
+                        date: { type: "string", format: "date-time" },
+                        mealType: { type: "string", enum: ["BREAKFAST", "LUNCH", "DINNER", "SNACK"] },
+                        notes: { type: "string", nullable: true },
+                        createdAt: { type: "string", format: "date-time" },
+                        updatedAt: { type: "string", format: "date-time" }
+                    }
+                }),
                 ...commonResponses
             }
         }
@@ -1412,10 +1841,14 @@ export async function recipesRoutes(app: FastifyInstance) {
                     items: {
                         type: "object",
                         properties: {
-                            id: { type: "string" },
-                            date: { type: "string" },
-                            mealType: { type: "string" },
-                            recipe: recipeSummarySchema
+                            id: { type: "string", format: "uuid" },
+                            userId: { type: "string", format: "uuid" },
+                            recipeId: { type: "string", format: "uuid" },
+                            date: { type: "string", format: "date-time" },
+                            mealType: { type: "string", enum: ["BREAKFAST", "LUNCH", "DINNER", "SNACK"] },
+                            notes: { type: "string", nullable: true },
+                            createdAt: { type: "string", format: "date-time" },
+                            updatedAt: { type: "string", format: "date-time" }
                         }
                     }
                 }),
@@ -1431,16 +1864,27 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Meal Plans"],
             summary: "Get meal plans for a specific date",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { date: { type: "string", format: "date" } } },
+            params: {
+                type: "object",
+                required: ["date"],
+                properties: {
+                    date: { type: "string", format: "date", description: "Date (YYYY-MM-DD)" }
+                }
+            },
             response: {
                 200: createResponseSchema({
                     type: "array",
                     items: {
                         type: "object",
                         properties: {
-                            id: { type: "string" },
-                            mealType: { type: "string" },
-                            recipe: recipeSummarySchema
+                            id: { type: "string", format: "uuid" },
+                            userId: { type: "string", format: "uuid" },
+                            recipeId: { type: "string", format: "uuid" },
+                            date: { type: "string", format: "date-time" },
+                            mealType: { type: "string", enum: ["BREAKFAST", "LUNCH", "DINNER", "SNACK"] },
+                            notes: { type: "string", nullable: true },
+                            createdAt: { type: "string", format: "date-time" },
+                            updatedAt: { type: "string", format: "date-time" }
                         }
                     }
                 }),
@@ -1457,7 +1901,13 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Meal Plans"],
             summary: "Update meal plan",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { id: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "Meal Plan ID" }
+                }
+            },
             body: {
                 type: "object",
                 properties: {
@@ -1466,7 +1916,19 @@ export async function recipesRoutes(app: FastifyInstance) {
                 }
             },
             response: {
-                200: createResponseSchema({ type: "object", properties: { id: { type: "string" }, date: { type: "string" } } }),
+                200: createResponseSchema({
+                    type: "object",
+                    properties: {
+                        id: { type: "string", format: "uuid" },
+                        userId: { type: "string", format: "uuid" },
+                        recipeId: { type: "string", format: "uuid" },
+                        date: { type: "string", format: "date-time" },
+                        mealType: { type: "string", enum: ["BREAKFAST", "LUNCH", "DINNER", "SNACK"] },
+                        notes: { type: "string", nullable: true },
+                        createdAt: { type: "string", format: "date-time" },
+                        updatedAt: { type: "string", format: "date-time" }
+                    }
+                }),
                 ...commonResponses
             }
         }
@@ -1480,9 +1942,27 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Meal Plans"],
             summary: "Delete meal plan",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { id: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "Meal Plan ID" }
+                }
+            },
             response: {
-                200: createResponseSchema({ type: "object", properties: { message: { type: "string" } } }),
+                200: createResponseSchema({
+                    type: "object",
+                    properties: {
+                        id: { type: "string", format: "uuid" },
+                        userId: { type: "string", format: "uuid" },
+                        recipeId: { type: "string", format: "uuid" },
+                        date: { type: "string", format: "date-time" },
+                        mealType: { type: "string", enum: ["BREAKFAST", "LUNCH", "DINNER", "SNACK"] },
+                        notes: { type: "string", nullable: true },
+                        createdAt: { type: "string", format: "date-time" },
+                        updatedAt: { type: "string", format: "date-time" }
+                    }
+                }),
                 ...commonResponses
             }
         }
@@ -1491,18 +1971,41 @@ export async function recipesRoutes(app: FastifyInstance) {
         return proxyHydrate(app, request, reply, `/api/v1/meal-plans/${id}`, RECIPE_SERVICE_URL);
     });
 
-    // ADMIN ROUTES - HIDDEN
+
     app.post("/recipes/:id/report", {
         schema: {
             hide: true,
             tags: ["Reports"],
             summary: "Report a recipe",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { id: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "Recipe ID" }
+                }
+            },
             body: {
                 type: "object",
                 required: ["reason"],
                 properties: { reason: { type: "string" }, description: { type: "string" } }
+            },
+            response: {
+                201: createResponseSchema({
+                    type: "object",
+                    properties: {
+                        id: { type: "string", format: "uuid" },
+                        reporterId: { type: "string", format: "uuid" },
+                        targetType: { type: "string", enum: ["RECIPE", "COMMENT"] },
+                        targetId: { type: "string", format: "uuid" },
+                        reason: { type: "string" },
+                        description: { type: "string", nullable: true },
+                        status: { type: "string", enum: ["PENDING", "REVIEWED", "RESOLVED", "DISMISSED"] },
+                        createdAt: { type: "string", format: "date-time" },
+                        updatedAt: { type: "string", format: "date-time" }
+                    }
+                }),
+                ...commonResponses
             }
         }
     }, async (request, reply) => {
@@ -1516,11 +2019,34 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Reports"],
             summary: "Report a comment",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            params: { type: "object", properties: { id: { type: "string", format: "uuid" } } },
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "Comment ID" }
+                }
+            },
             body: {
                 type: "object",
                 required: ["reason"],
                 properties: { reason: { type: "string" }, description: { type: "string" } }
+            },
+            response: {
+                201: createResponseSchema({
+                    type: "object",
+                    properties: {
+                        id: { type: "string", format: "uuid" },
+                        reporterId: { type: "string", format: "uuid" },
+                        targetType: { type: "string", enum: ["RECIPE", "COMMENT"] },
+                        targetId: { type: "string", format: "uuid" },
+                        reason: { type: "string" },
+                        description: { type: "string", nullable: true },
+                        status: { type: "string", enum: ["PENDING", "REVIEWED", "RESOLVED", "DISMISSED"] },
+                        createdAt: { type: "string", format: "date-time" },
+                        updatedAt: { type: "string", format: "date-time" }
+                    }
+                }),
+                ...commonResponses
             }
         }
     }, async (request, reply) => {
@@ -1541,14 +2067,32 @@ export async function recipesRoutes(app: FastifyInstance) {
     });
 
     app.get("/admin/reports/:id", {
-        schema: { hide: true, tags: ["Admin"], summary: "Get report by ID", security: [{ bearerAuth: [] }], params: { type: "object", properties: { id: { type: "string", format: "uuid" } } } }
+        schema: {
+            hide: true, tags: ["Admin"], summary: "Get report by ID", security: [{ bearerAuth: [] }],
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "Report ID" }
+                }
+            }
+        }
     }, async (request, reply) => {
         const { id } = request.params as { id: string };
         return proxyHydrate(app, request, reply, `/api/v1/admin/reports/${id}`, RECIPE_SERVICE_URL);
     });
 
     app.put("/admin/reports/:id", {
-        schema: { hide: true, tags: ["Admin"], summary: "Update report status", security: [{ bearerAuth: [] }], params: { type: "object", properties: { id: { type: "string", format: "uuid" } } } }
+        schema: {
+            hide: true, tags: ["Admin"], summary: "Update report status", security: [{ bearerAuth: [] }],
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "Report ID" }
+                }
+            }
+        }
     }, async (request, reply) => {
         const { id } = request.params as { id: string };
         return proxyHydrate(app, request, reply, `/api/v1/admin/reports/${id}`, RECIPE_SERVICE_URL);
