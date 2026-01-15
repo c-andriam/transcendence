@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React from "react";
+import { useState, useRef } from 'react';
 import { IoHomeOutline } from "react-icons/io5";
 import { MdOutlinePersonOutline, MdOutlineAddBox } from "react-icons/md";
 import { PiCookingPotBold } from "react-icons/pi";
 import { RiUserFollowLine } from "react-icons/ri";
 import { GiShadowFollower } from "react-icons/gi";
+import NewRecipe from "./Modal/NewRecipe";
 
 const Navigation = () => {
     const [active, setActive] = useState('home');
+    const modalRef = useRef<HTMLDialogElement>(null);
 
     return (
         <div className="navigation m-2 p-2 h-[76vh] shadow-lg bg-[#18191a] rounded-lg flex flex-col gap-2 z-1000">
@@ -38,7 +41,10 @@ const Navigation = () => {
             </div>
             <div>
                 <button
-                    onClick={() => setActive('new-recipe')}
+                    onClick={() => {
+                        setActive('new-recipe');
+                        modalRef.current?.showModal();
+                    }}
                     className='navigation-button flex 
                     flex-rows gap-4 items-center
                     text-lg text-center
@@ -88,6 +94,7 @@ const Navigation = () => {
                     Followings
                 </button>
             </div>
+            <NewRecipe modalRef={modalRef} />
         </div >
     );
 }

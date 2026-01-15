@@ -1,12 +1,14 @@
-import React from "react";
+import { useRef } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Navigation from "../components/Navigation";
 import PostFeed from "../components/Feeds/PostFeed";
 import FriendFeed from "../components/Feeds/FriendsFeed";
 import OwnRecipeFeed from "../components/Feeds/OwnRecipeFeed";
+import NewRecipe from "../components/Modal/NewRecipe";
 
 const Home = () => {
+    const modalRef = useRef<HTMLDialogElement>(null);
     return (
         <div className="app bg-[#18191a] w-full w-max-1080 min-h-screen flex flex-col">
             <nav className="sticky top-0 z-1000 bg-[#18191a] pt-2">
@@ -17,9 +19,9 @@ const Home = () => {
                     <Navigation />
                 </aside>
                 <main className="flex-1 main-content">
-                    <PostFeed />
+                    {/* <PostFeed />
                     <FriendFeed />
-                    <OwnRecipeFeed />
+                    <OwnRecipeFeed /> */}
                 </main>
             </div>
             <Footer />
