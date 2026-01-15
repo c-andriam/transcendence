@@ -47,37 +47,37 @@ export async function notificationRoutes(app: FastifyInstance) {
 
     app.get("/notifications", { preHandler: authMiddleware }, async (request, reply) => {
         const userId = request.user?.id;
-        if (!userId) throw new ForbiddenError("Unauthorized");
+        if (!userId) throw new ForbiddenError("Authentication required");
 
         const { page = 1, limit = 20 } = request.query as { page?: number; limit?: number };
         const result = await getNotifications(userId, Number(page), Number(limit));
-        sendSuccess(reply, result);
+        sendSuccess(reply, result, 'Notifications retrieved successfully');
     });
 
     app.put("/notifications/:id/read", { preHandler: authMiddleware }, async (request, reply) => {
         const userId = request.user?.id;
-        if (!userId) throw new ForbiddenError("Unauthorized");
+        if (!userId) throw new ForbiddenError("Authentication required");
 
         const { id } = request.params as { id: string };
         await markAsRead(id, userId);
-        sendSuccess(reply, {}, 'Notification marked as read');
+        sendSuccess(reply, {}, 'Notification marked as read successfully');
     });
 
     app.put("/notifications/read-all", { preHandler: authMiddleware }, async (request, reply) => {
         const userId = request.user?.id;
-        if (!userId) throw new ForbiddenError("Unauthorized");
+        if (!userId) throw new ForbiddenError("Authentication required");
 
         await markAllAsRead(userId);
-        sendSuccess(reply, {}, 'All notifications marked as read');
+        sendSuccess(reply, {}, 'All notifications marked as read successfully');
     });
 
     app.delete("/notifications/:id", { preHandler: authMiddleware }, async (request, reply) => {
         const userId = request.user?.id;
-        if (!userId) throw new ForbiddenError("Unauthorized");
+        if (!userId) throw new ForbiddenError("Authentication required");
 
         const { id } = request.params as { id: string };
         await deleteNotification(id, userId);
-        sendSuccess(reply, {}, 'Notification deleted');
+        sendSuccess(reply, {}, 'Notification deleted successfully');
     });
 
     app.post("/internal/notifications", {
@@ -85,6 +85,6 @@ export async function notificationRoutes(app: FastifyInstance) {
     }, async (request, reply) => {
         const { userId, type, title, message, data } = request.body as z.infer<typeof createNotificationSchema>;
         const notification = await createNotification(userId, type, title, message, data);
-        sendSuccess(reply, notification, 'Notification created');
+        sendSuccess(reply, notification, 'Notification created successfully');
     });
 }

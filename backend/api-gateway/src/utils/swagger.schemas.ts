@@ -8,14 +8,38 @@ export const errorSchema = {
 };
 
 export const commonResponses = {
-    400: errorSchema,
-    401: errorSchema,
-    403: errorSchema,
-    404: errorSchema,
-    409: errorSchema,
-    422: errorSchema,
-    429: errorSchema,
-    500: errorSchema
+    400: {
+        description: "Bad Request - The request contains invalid data or missing required fields",
+        ...errorSchema
+    },
+    401: {
+        description: "Unauthorized - Authentication is required or the provided credentials are invalid",
+        ...errorSchema
+    },
+    403: {
+        description: "Forbidden - You do not have permission to access this resource",
+        ...errorSchema
+    },
+    404: {
+        description: "Not Found - The requested resource does not exist",
+        ...errorSchema
+    },
+    409: {
+        description: "Conflict - The request conflicts with the current state of the resource",
+        ...errorSchema
+    },
+    422: {
+        description: "Unprocessable Entity - The request was well-formed but contains semantic errors",
+        ...errorSchema
+    },
+    429: {
+        description: "Too Many Requests - Rate limit exceeded, please try again later",
+        ...errorSchema
+    },
+    500: {
+        description: "Internal Server Error - An unexpected error occurred on the server",
+        ...errorSchema
+    }
 };
 
 export const createResponseSchema = (dataSchema: object) => ({

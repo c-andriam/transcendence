@@ -25,17 +25,40 @@ export async function notificationsRoutes(app: FastifyInstance) {
             tags: ["Notifications"],
             summary: "Get all notifications",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
+            querystring: {
+                type: "object",
+                properties: {
+                    page: { type: "integer", default: 1 },
+                    limit: { type: "integer", default: 20 }
+                }
+            },
             response: {
                 200: createResponseSchema({
-                    type: "array",
-                    items: {
-                        type: "object",
-                        properties: {
-                            id: { type: "string", format: "uuid" },
-                            type: { type: "string" },
-                            message: { type: "string" },
-                            read: { type: "boolean" },
-                            createdAt: { type: "string" }
+                    type: "object",
+                    properties: {
+                        notifications: {
+                            type: "array",
+                            items: {
+                                type: "object",
+                                properties: {
+                                    id: { type: "string", format: "uuid" },
+                                    type: { type: "string" },
+                                    title: { type: "string" },
+                                    message: { type: "string" },
+                                    isRead: { type: "boolean" },
+                                    data: { type: "object", additionalProperties: true, nullable: true },
+                                    createdAt: { type: "string" }
+                                }
+                            }
+                        },
+                        pagination: {
+                            type: "object",
+                            properties: {
+                                page: { type: "integer" },
+                                limit: { type: "integer" },
+                                total: { type: "integer" },
+                                totalPages: { type: "integer" }
+                            }
                         }
                     }
                 }),
@@ -69,8 +92,10 @@ export async function notificationsRoutes(app: FastifyInstance) {
                     properties: {
                         id: { type: "string", format: "uuid" },
                         type: { type: "string" },
+                        title: { type: "string" },
                         message: { type: "string" },
-                        read: { type: "boolean" },
+                        isRead: { type: "boolean" },
+                        data: { type: "object", additionalProperties: true, nullable: true },
                         createdAt: { type: "string" }
                     }
                 }),
@@ -104,7 +129,7 @@ export async function notificationsRoutes(app: FastifyInstance) {
                     type: "object",
                     properties: {
                         id: { type: "string", format: "uuid" },
-                        read: { type: "boolean" }
+                        isRead: { type: "boolean" }
                     }
                 }),
                 ...commonResponses

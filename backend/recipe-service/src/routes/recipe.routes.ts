@@ -88,7 +88,7 @@ export async function recipesRoutes(app: FastifyInstance) {
 
     app.get("/recipes", async (request, reply) => {
         const data = await getAllRecipes();
-        sendSuccess(reply, data, data.length ? 'Recipes found' : 'No recipes yet');
+        sendSuccess(reply, data, 'Recipes retrieved successfully');
     });
 
     app.post("/recipes", {
@@ -105,7 +105,10 @@ export async function recipesRoutes(app: FastifyInstance) {
     app.get("/recipes/:id", async (request, reply) => {
         const { id } = request.params as { id: string };
         const recipe = await getRecipeById(id);
-        sendSuccess(reply, recipe, 'Recipe found');
+        if (!recipe) {
+            throw new NotFoundError('Recipe not found');
+        }
+        sendSuccess(reply, recipe, 'Recipe retrieved successfully');
     });
 
     app.put("/recipes/:id", {
@@ -141,9 +144,9 @@ export async function recipesRoutes(app: FastifyInstance) {
         const { slug } = request.params as { slug: string };
         const recipe = await getRecipeBySlug(slug);
         if (!recipe) {
-            throw new Error('Recipe not found');
+            throw new NotFoundError('Recipe not found');
         }
-        sendSuccess(reply, recipe, 'Recipe found');
+        sendSuccess(reply, recipe, 'Recipe retrieved successfully');
     });
 
     app.get("/recipes/search", async (request, reply) => {

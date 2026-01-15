@@ -100,7 +100,7 @@ export async function userRoutes(app: FastifyInstance) {
 
     app.get("/users", async (request, reply) => {
         const users = await getAllUsers();
-        sendSuccess(reply, users.map(stripPassword), 'Users retrieved');
+        sendSuccess(reply, users.map(stripPassword), 'Users retrieved successfully');
     });
 
     app.get("/users/search", async (request, reply) => {
@@ -108,10 +108,10 @@ export async function userRoutes(app: FastifyInstance) {
         const q = Array.isArray(query.q) ? query.q[0] : query.q;
 
         if (!q) {
-            return sendSuccess(reply, [], 'No query provided');
+            return sendSuccess(reply, [], 'No search query provided');
         }
         const users = await searchUsers(q);
-        sendSuccess(reply, users, 'Users found');
+        sendSuccess(reply, users, 'Users search completed successfully');
     });
 
     app.get("/users/:id", async (request, reply) => {
@@ -120,7 +120,7 @@ export async function userRoutes(app: FastifyInstance) {
         if (!user) {
             throw new NotFoundError('User not found');
         }
-        sendSuccess(reply, stripPassword(user), 'User found');
+        sendSuccess(reply, stripPassword(user), 'User retrieved successfully');
     });
 
     app.post("/users", {
@@ -137,7 +137,7 @@ export async function userRoutes(app: FastifyInstance) {
         if (!user) {
             throw new NotFoundError('User not found');
         }
-        sendSuccess(reply, stripPassword(user), 'Profile retrieved');
+        sendSuccess(reply, stripPassword(user), 'Profile retrieved successfully');
     });
 
     app.put("/users/:id", {
@@ -149,7 +149,7 @@ export async function userRoutes(app: FastifyInstance) {
         }
         const body = request.body as z.infer<typeof updateUserSchema>;
         const user = await updateUser(id, body);
-        sendSuccess(reply, stripPassword(user), 'User updated');
+        sendSuccess(reply, stripPassword(user), 'User updated successfully');
     });
 
     app.post("/users/me/avatar", { preHandler: authMiddleware }, async (request, reply) => {
@@ -178,7 +178,7 @@ export async function userRoutes(app: FastifyInstance) {
             throw new ForbiddenError('You can only delete your own profile');
         }
         const user = await deleteUser(id);
-        sendDeleted(reply, stripPassword(user), 'User deleted');
+        sendDeleted(reply, stripPassword(user), 'User deleted successfully');
     });
 
     app.post("/users/:id/follow", { preHandler: authMiddleware }, async (request, reply) => {
@@ -198,32 +198,32 @@ export async function userRoutes(app: FastifyInstance) {
     app.get("/users/me/followers", { preHandler: authMiddleware }, async (request, reply) => {
         const userId = request.user!.id;
         const followers = await getFollowers(userId);
-        sendSuccess(reply, followers, 'Your followers retrieved');
+        sendSuccess(reply, followers, 'Followers retrieved successfully');
     });
 
     app.get("/users/me/following", { preHandler: authMiddleware }, async (request, reply) => {
         const userId = request.user!.id;
         const following = await getFollowing(userId);
-        sendSuccess(reply, following, 'Who you follow retrieved');
+        sendSuccess(reply, following, 'Following list retrieved successfully');
     });
 
     app.get("/users/:id/followers", async (request, reply) => {
         const { id } = request.params as { id: string };
         const followers = await getFollowers(id);
-        sendSuccess(reply, followers, 'Followers retrieved');
+        sendSuccess(reply, followers, 'Followers retrieved successfully');
     });
 
     app.get("/users/:id/following", async (request, reply) => {
         const { id } = request.params as { id: string };
         const following = await getFollowing(id);
-        sendSuccess(reply, following, 'Following retrieved');
+        sendSuccess(reply, following, 'Following list retrieved successfully');
     });
 
     app.get("/users/:id/is-following", { preHandler: authMiddleware }, async (request, reply) => {
         const { id } = request.params as { id: string };
         const followerId = request.user!.id;
         const isFollowing = await checkIsFollowing(followerId, id);
-        sendSuccess(reply, { isFollowing }, 'Follow status retrieved');
+        sendSuccess(reply, { isFollowing }, 'Follow status retrieved successfully');
     });
 
     app.post("/users/friend-requests", {
@@ -232,40 +232,40 @@ export async function userRoutes(app: FastifyInstance) {
         const { receiverId } = request.body as z.infer<typeof friendRequestSchema>;
         const senderId = request.user!.id;
         const result = await sendFriendRequest(senderId, receiverId);
-        sendCreated(reply, result, 'Friend request sent');
+        sendCreated(reply, result, 'Friend request sent successfully');
     });
 
     app.put("/users/friend-requests/:id/accept", { preHandler: authMiddleware }, async (request, reply) => {
         const { id } = request.params as { id: string };
         const userId = request.user!.id;
         const result = await acceptFriendRequest(id, userId);
-        sendSuccess(reply, result, 'Friend request accepted');
+        sendSuccess(reply, result, 'Friend request accepted successfully');
     });
 
     app.put("/users/friend-requests/:id/reject", { preHandler: authMiddleware }, async (request, reply) => {
         const { id } = request.params as { id: string };
         const userId = request.user!.id;
         const result = await rejectFriendRequest(id, userId);
-        sendSuccess(reply, result, 'Friend request rejected');
+        sendSuccess(reply, result, 'Friend request rejected successfully');
     });
 
     app.delete("/users/friends/:friendId", { preHandler: authMiddleware }, async (request, reply) => {
         const { friendId } = request.params as { friendId: string };
         const userId = request.user!.id;
         const result = await removeFriend(userId, friendId);
-        sendSuccess(reply, result, 'Friend removed');
+        sendSuccess(reply, result, 'Friend removed successfully');
     });
 
     app.get("/users/me/friends", { preHandler: authMiddleware }, async (request, reply) => {
         const userId = request.user!.id;
         const friends = await getFriends(userId);
-        sendSuccess(reply, friends, 'Friends list retrieved');
+        sendSuccess(reply, friends, 'Friends list retrieved successfully');
     });
 
     app.get("/users/me/friend-requests", { preHandler: authMiddleware }, async (request, reply) => {
         const userId = request.user!.id;
         const requests = await getFriendRequests(userId);
-        sendSuccess(reply, requests, 'Friend requests retrieved');
+        sendSuccess(reply, requests, 'Friend requests retrieved successfully');
     });
 
     app.post("/users/:id/block", { preHandler: authMiddleware }, async (request, reply) => {
@@ -285,14 +285,14 @@ export async function userRoutes(app: FastifyInstance) {
     app.get("/users/me/blocked", { preHandler: authMiddleware }, async (request, reply) => {
         const userId = request.user!.id;
         const blockedUsers = await getBlockedUsers(userId);
-        sendSuccess(reply, blockedUsers, 'Blocked users retrieved');
+        sendSuccess(reply, blockedUsers, 'Blocked users retrieved successfully');
     });
 
     app.get("/internal/users/batch", async (request, reply) => {
         const { ids } = request.query as { ids: string };
         const splittedIds = ids.split(",");
         const users = await getUsersByIds(splittedIds);
-        sendSuccess(reply, users.map(stripPassword), 'Users retrieved');
+        sendSuccess(reply, users.map(stripPassword), 'Users retrieved successfully');
     });
 
     app.get("/internal/users/:id", async (request, reply) => {
@@ -301,7 +301,7 @@ export async function userRoutes(app: FastifyInstance) {
         if (!user) {
             throw new NotFoundError('User not found');
         }
-        sendSuccess(reply, { id: user.id, username: user.username, role: user.role }, 'User found');
+        sendSuccess(reply, { id: user.id, username: user.username, role: user.role }, 'User retrieved successfully');
     });
 
     app.get("/internal/users/by-identifier/:identifier", async (request, reply) => {
@@ -310,7 +310,7 @@ export async function userRoutes(app: FastifyInstance) {
         if (!user) {
             throw new NotFoundError('User not found');
         }
-        sendSuccess(reply, user, 'User found');
+        sendSuccess(reply, user, 'User retrieved successfully');
     });
 
     app.post("/internal/verify-reset-token", {
@@ -318,7 +318,7 @@ export async function userRoutes(app: FastifyInstance) {
     }, async (request, reply) => {
         const { token } = request.body as z.infer<typeof tokenSchema>;
         const user = await verifyResetToken(token);
-        sendSuccess(reply, user, 'Token verified');
+        sendSuccess(reply, user, 'Token verified successfully');
     });
 
     app.post("/internal/update-password", {
@@ -326,13 +326,13 @@ export async function userRoutes(app: FastifyInstance) {
     }, async (request, reply) => {
         const { userId, newPassword } = request.body as z.infer<typeof updatePasswordSchema>;
         await updatePassword(userId, newPassword);
-        sendSuccess(reply, {}, 'Password updated');
+        sendSuccess(reply, {}, 'Password updated successfully');
     });
 
     app.get("/internal/users/by-email-identifier/:email", async (request, reply) => {
         const { email } = request.params as { email: string };
         const user = await getUserByEmailIdentifier(email);
-        sendSuccess(reply, user, 'User found');
+        sendSuccess(reply, user, 'User retrieved successfully');
     });
 
     app.post("/internal/create-verification-token", {
@@ -340,7 +340,7 @@ export async function userRoutes(app: FastifyInstance) {
     }, async (request, reply) => {
         const { userId } = request.body as z.infer<typeof userIdSchema>;
         const verificationToken = await createEmailVerificationToken(userId);
-        sendSuccess(reply, { verificationToken }, 'Token created');
+        sendSuccess(reply, { verificationToken }, 'Verification token created successfully');
     });
 
     app.post("/internal/verify-email-token", {
@@ -348,7 +348,7 @@ export async function userRoutes(app: FastifyInstance) {
     }, async (request, reply) => {
         const { token } = request.body as z.infer<typeof tokenSchema>;
         const user = await verifyEmailToken(token);
-        sendSuccess(reply, user, 'Token verified');
+        sendSuccess(reply, user, 'Email verified successfully');
     });
 
     app.post("/users/api-key/generate", { preHandler: authMiddleware }, async (request, reply) => {
@@ -387,6 +387,6 @@ export async function userRoutes(app: FastifyInstance) {
         const { id } = request.params as { id: string };
         const { isOnline } = request.body as z.infer<typeof statusSchema>;
         const user = await updateUserStatus(id, isOnline);
-        sendSuccess(reply, { id: user.id, isOnline: user.isOnline }, 'Status updated');
+        sendSuccess(reply, { id: user.id, isOnline: user.isOnline }, 'User status updated successfully');
     });
 }

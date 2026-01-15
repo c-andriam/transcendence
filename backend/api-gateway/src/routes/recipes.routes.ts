@@ -44,8 +44,9 @@ export async function recipesRoutes(app: FastifyInstance) {
             description: "Retrieve full details of a specific recipe including ingredients and instructions.",
             params: {
                 type: "object",
+                required: ["id"],
                 properties: {
-                    id: { type: "string", format: "uuid" }
+                    id: { type: "string", format: "uuid", description: "Unique recipe identifier" }
                 },
             },
             response: {
@@ -121,8 +122,9 @@ export async function recipesRoutes(app: FastifyInstance) {
             description: "Partially update a recipe. Only the author can perform this action.",
             params: {
                 type: "object",
+                required: ["id"],
                 properties: {
-                    id: { type: "string", format: "uuid" }
+                    id: { type: "string", format: "uuid", description: "Unique recipe identifier" }
                 },
             },
             body: {
@@ -182,8 +184,9 @@ export async function recipesRoutes(app: FastifyInstance) {
             description: "Soft delete a recipe. Only the author or an admin can perform this action.",
             params: {
                 type: "object",
+                required: ["id"],
                 properties: {
-                    id: { type: "string", format: "uuid" }
+                    id: { type: "string", format: "uuid", description: "Unique recipe identifier" }
                 },
             },
             response: {
@@ -807,6 +810,7 @@ export async function recipesRoutes(app: FastifyInstance) {
     });
 
     app.post("/recipes/:recipeId/images/upload", {
+        validatorCompiler: () => () => true,
         schema: {
             tags: ["Images"],
             summary: "Upload recipe image",
@@ -962,6 +966,7 @@ export async function recipesRoutes(app: FastifyInstance) {
     });
 
     app.post("/recipes/:recipeId/images/uploads", {
+        validatorCompiler: () => () => true,
         schema: {
             tags: ["Images"],
             summary: "Upload multiple images",

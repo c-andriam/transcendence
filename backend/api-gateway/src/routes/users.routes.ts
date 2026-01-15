@@ -812,10 +812,11 @@ export async function usersRoutes(app: FastifyInstance) {
     });
 
     app.post("/users/me/avatar", {
+        validatorCompiler: () => () => true,
         schema: {
             tags: ["Users"],
             summary: "Upload avatar",
-            security: [{ bearerAuth: [] }],
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
             consumes: ['multipart/form-data'],
             body: {
                 type: 'object',

@@ -87,16 +87,16 @@ export async function authRoutes(app: FastifyInstance) {
             sendSuccess(reply, { accessToken }, 'Login successful');
         } catch (error: any) {
             if (error.message === 'Invalid credentials') {
-                return sendError(reply, "Invalid credentials", HttpStatus.BAD_REQUEST);
+                return sendError(reply, "Invalid email/username or password", HttpStatus.UNAUTHORIZED);
             }
             if (error.message.includes('not found')) {
                 return sendError(reply, "User not found", HttpStatus.NOT_FOUND);
             }
             app.log.error(error);
             if (error.message.includes('Please verify your email address before logging in')) {
-                return sendError(reply, "Please verify your email address before logging in", HttpStatus.UNAUTHORIZED);
+                return sendError(reply, "Please verify your email address before logging in", HttpStatus.FORBIDDEN);
             }
-            sendError(reply, "Login failed.", HttpStatus.UNAUTHORIZED);
+            sendError(reply, "Authentication failed", HttpStatus.UNAUTHORIZED);
         }
     });
 
@@ -127,7 +127,7 @@ export async function authRoutes(app: FastifyInstance) {
             sendSuccess(reply, { accessToken }, 'Access token refreshed successfully');
         } catch (error: any) {
             app.log.error(error);
-            sendError(reply, `Refresh failed: ${error.message}`, HttpStatus.UNAUTHORIZED);
+            sendError(reply, "Token refresh failed - please login again", HttpStatus.UNAUTHORIZED);
         }
     });
 

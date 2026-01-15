@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import fastify from 'fastify';
 import fastifyJwt from '@fastify/jwt';
+import fastifyMultipart from '@fastify/multipart';
 import db from './utils/dbPlugin';
 import { userRoutes } from './routes/user.routes';
 import { globalErrorHandler, internalApiKeyMiddleware, validateEnv } from '@transcendence/common';
@@ -22,6 +23,13 @@ app.setErrorHandler(globalErrorHandler);
 
 app.register(fastifyJwt, {
     secret: env.JWT_SECRET
+});
+
+app.register(fastifyMultipart, {
+    limits: {
+        fileSize: 10 * 1024 * 1024,
+        files: 1
+    }
 });
 
 app.get('/health', async () => ({ status: 'ok', service: 'user-service', timestamp: new Date().toISOString() }));
