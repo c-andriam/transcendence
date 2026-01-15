@@ -61,6 +61,7 @@ const start = async () => {
     await app.register(swagger, {
       openapi:
       {
+        openapi: "3.0.0",
         info: {
           title: "API GATEWAY",
           version: "1.0.0",
