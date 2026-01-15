@@ -1,6 +1,7 @@
 import { FastifyInstance } from "fastify";
 import db from "../utils/db";
-import { slugify, NotFoundError, ForbiddenError } from "@transcendence/common";
+import { slugify, NotFoundError, ForbiddenError, NotificationType } from "@transcendence/common";
+import { notifyUser } from "../utils/notifyUser";
 
 export async function createRecipe(
     data: {
@@ -122,8 +123,16 @@ export async function getRecipeById(id: string) {
             },
         },
     });
+
     if (!recipe) {
         return null;
+    }
+
+    if (recipe) {
+        await db.recipe.update({
+            where: { id },
+            data: { viewCount: { increment: 1 } }
+        });
     }
 
     const ratingCount = recipe.ratings.length;
@@ -287,8 +296,16 @@ export async function getRecipeBySlug(slug: string) {
             },
         },
     });
+
     if (!recipe) {
         return null;
+    }
+
+    if (recipe) {
+        await db.recipe.update({
+            where: { id: recipe.id },
+            data: { viewCount: { increment: 1 } }
+        });
     }
 
     const ratingCount = recipe.ratings.length;
@@ -339,6 +356,16 @@ export async function rateRecipe(
             score
         }
     });
+
+    const fullRecipe = await db.recipe.findUnique({ where: { id: recipeId }, select: { title: true } });
+    notifyUser(
+        recipe.authorId,
+        NotificationType.NEW_RATING,
+        'New Rating',
+        `Someone rated your recipe "${fullRecipe?.title || 'your recipe'}" ${score}/5`,
+        { recipeId, score }
+    );
+
     return rating;
 }
 
@@ -664,6 +691,17 @@ export async function addToFavorites(
             recipeId
         }
     });
+
+    if (recipe.authorId !== userId) {
+        notifyUser(
+            recipe.authorId,
+            NotificationType.RECIPE_FAVORITED,
+            'Recipe Favorited',
+            `Someone added your recipe "${recipe.title}" to their favorites`,
+            { recipeId, followerId: userId }
+        );
+    }
+
     return favorite;
 }
 

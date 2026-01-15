@@ -1,4 +1,3 @@
-// import { PrismaClient } from "@prisma/client";
 import { PrismaClient } from "../generated/prisma";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
@@ -9,9 +8,6 @@ import path from "path";
 dotenv.config({
   path: path.resolve(__dirname, "../../../.env"),
 });
-// const connectionString = `${process.env.DATABASE_URL}`;
-// const pool = new Pool({ connectionString });
-// const adapter = new PrismaPg(pool);
 
 const dbUrl = new URL(process.env.USER_DATABASE_URL!);
 const schema = dbUrl.searchParams.get('schema');

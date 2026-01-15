@@ -7,12 +7,16 @@ meta {
 put {
   url: {{baseUrl}}{{categPrefix}}/{{aperiCatId}}
   body: json
-  auth: inherit
+  auth: bearer
 }
 
 headers {
   Content-Type: application/json
   x-gateway-api-key: {{gatewayKey}}
+}
+
+auth:bearer {
+  token: {{bearerToken}}
 }
 
 body:json {

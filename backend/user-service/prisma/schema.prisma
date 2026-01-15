@@ -7,32 +7,36 @@ datasource db {
   provider = "postgresql"
 }
 
+// ==================== USERS ====================
 model User {
-  id         String    @id @default(uuid())
-  email      String    @unique
-  username   String    @unique
-  password   String
-  firstName  String?
-  lastName   String?
-  bio        String?
-  avatarUrl  String?   @default("/default-avatar.png")
-  isOnline   Boolean   @default(false)
-  lastSeenAt DateTime?
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  isEmailVerified   Boolean @default(false)
+  id              String    @id @default(uuid())
+  email           String    @unique
+  username        String    @unique
+  password        String
+  firstName       String?
+  lastName        String?
+  bio             String?
+  avatarUrl       String?   @default("/default-avatar.png")
+  isOnline        Boolean   @default(false)
+  lastSeenAt      DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  isEmailVerified Boolean   @default(false)
 
   emailVerificationTokens EmailVerificationToken[]
-  passwordResetTokens PasswordResetToken[]
-  followers              Follow[]        @relation("Following")
-  following              Follow[]        @relation("Followers")
-  friendRequestsSent     FriendRequest[] @relation("FriendRequestSent")
-  friendRequestsReceived FriendRequest[] @relation("FriendRequestReceived")
+  passwordResetTokens     PasswordResetToken[]
+  followers               Follow[]                 @relation("Following")
+  following               Follow[]                 @relation("Followers")
+  friendRequestsSent      FriendRequest[]          @relation("FriendRequestSent")
+  friendRequestsReceived  FriendRequest[]          @relation("FriendRequestReceived")
+  blocksSent              Block[]                  @relation("BlocksSent")
+  blocksReceived          Block[]                  @relation("BlocksReceived")
 
   @@index([email])
   @@index([username])
 }
 
+// ==================== FRIEND REQUESTS ====================
 model FriendRequest {
   id        String              @id @default(uuid())
   status    FriendRequestStatus @default(PENDING)
@@ -56,6 +60,7 @@ enum FriendRequestStatus {
   REJECTED
 }
 
+// ==================== FOLLOWERS ====================
 model Follow {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
@@ -71,30 +76,48 @@ model Follow {
   @@index([followingId])
 }
 
+// ==================== PASSWORD RESET TOKENS ====================
 model PasswordResetToken {
   id        String   @id @default(uuid())
-  token     String   @unique // Token hashé pour sécurité
+  token     String   @unique
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   expiresAt DateTime
-  used      Boolean  @default(false) // Pour usage unique
+  used      Boolean  @default(false)
   createdAt DateTime @default(now())
 
+  @@unique([userId, token])
   @@index([userId])
   @@index([token])
-  @@unique([userId, token]) // Un token par utilisateur
 }
 
+// ==================== EMAIL VERIFICATION TOKENS ====================
 model EmailVerificationToken {
   id        String   @id @default(uuid())
-  token     String   @unique // Token hashé pour sécurité
+  token     String   @unique
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   expiresAt DateTime
-  used      Boolean  @default(false) // Pour usage unique
+  used      Boolean  @default(false)
   createdAt DateTime @default(now())
 
+  @@unique([userId, token])
   @@index([userId])
   @@index([token])
-  @@unique([userId, token]) // Un token par utilisateur
+}
+
+// ==================== BLOCKS ====================
+model Block {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  blockerId String
+  blocker   User     @relation("BlocksSent", fields: [blockerId], references: [id], onDelete: Cascade)
+
+  blockedId String
+  blocked   User     @relation("BlocksReceived", fields: [blockedId], references: [id], onDelete: Cascade)
+
+  @@unique([blockerId, blockedId])
+  @@index([blockerId])
+  @@index([blockedId])
 }

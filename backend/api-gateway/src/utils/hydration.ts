@@ -26,11 +26,9 @@ export async function hydrateRecipes(app: FastifyInstance, data: any) {
             "Content-Type": "application/json"
         }
     });
-
     if (!response.ok) {
         throw new Error(`Failed to fetch users: ${response.statusText}`);
     }
-
     const json = await response.json();
     const users = json.data || [];
     const usersMap = users.reduce((acc: any, user: any) => {

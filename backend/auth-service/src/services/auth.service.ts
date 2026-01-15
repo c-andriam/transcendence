@@ -1,6 +1,5 @@
 import { hashPassword, comparePassword, verifyPassword, isValidEmail, UnauthorizedError } from "@transcendence/common";
 import { BadRequestError } from "@transcendence/common";
-// import { PrismaClient } from "@prisma/client";
 import { PrismaClient } from "../generated/prisma";
 import { randomBytes, createHash } from "crypto";
 import { PrismaPg } from "@prisma/adapter-pg";

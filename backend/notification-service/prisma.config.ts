@@ -1,12 +1,11 @@
-import { defineConfig } from "prisma/config";
-import dotenv from "dotenv";
+import { defineConfig } from '@prisma/config';
+import dotenv from 'dotenv';
+import path from 'path';
 
-dotenv.config({ path: ".env" });
+dotenv.config({ path: path.join(__dirname, '../.env') });
 
 export default defineConfig({
-  schema: "prisma/schema.prisma",
-  datasource: {
-    // ✅ Cette ligne est obligatoire pour prisma migrate
-    url: process.env.NOTIFICATION_DATABASE_URL,
-  },
+    datasource: {
+        url: process.env.NOTIFICATION_DATABASE_URL,
+    },
 });

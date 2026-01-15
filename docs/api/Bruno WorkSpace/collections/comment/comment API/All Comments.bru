@@ -19,6 +19,10 @@ headers {
   x-gateway-api-key: {{gatewayKey}}
 }
 
+script:post-response {
+  bru.setGlobalEnvVar("commentId", res.body.data.comments[0].id);
+}
+
 settings {
   encodeUrl: true
   timeout: 0

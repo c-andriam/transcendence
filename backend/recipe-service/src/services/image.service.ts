@@ -80,7 +80,6 @@ export async function uploadLocalImage(
     const imageCount = await db.recipeImage.count({ where: { recipeId } });
     const shouldBePrimary = options?.isPrimary || imageCount === 0;
 
-    // Créer l'entrée en base de données
     const image = await db.recipeImage.create({
         data: {
             url: cloudinaryResult.secureUrl,
@@ -94,9 +93,6 @@ export async function uploadLocalImage(
     return image;
 }
 
-/**
- * Upload une image depuis une URL externe
- */
 export async function uploadImageFromExternalUrl(
     recipeId: string,
     authorId: string,
@@ -106,7 +102,6 @@ export async function uploadImageFromExternalUrl(
         isPrimary?: boolean;
     }
 ): Promise<RecipeImageData> {
-    // Vérifier que la recette existe et appartient à l'auteur
     const recipe = await db.recipe.findUnique({
         where: { id: recipeId },
         select: { id: true, authorId: true }
@@ -120,19 +115,15 @@ export async function uploadImageFromExternalUrl(
         throw new BadRequestError('You are not authorized to add images to this recipe');
     }
 
-    // Valider l'URL
     try {
         new URL(imageUrl);
     } catch {
         throw new BadRequestError('Invalid image URL');
     }
 
-    // Upload vers Cloudinary depuis l'URL
     const cloudinaryResult = await uploadImageFromUrl(imageUrl, {
         folder: `recipes/${recipeId}`,
     });
-
-    // Si isPrimary est true, mettre à jour les autres images
     if (options?.isPrimary) {
         await db.recipeImage.updateMany({
             where: { recipeId, isPrimary: true },
@@ -140,18 +131,15 @@ export async function uploadImageFromExternalUrl(
         });
     }
 
-    // Obtenir le prochain sortOrder
     const lastImage = await db.recipeImage.findFirst({
         where: { recipeId },
         orderBy: { sortOrder: 'desc' }
     });
     const nextSortOrder = (lastImage?.sortOrder ?? -1) + 1;
 
-    // Vérifier si c'est la première image
     const imageCount = await db.recipeImage.count({ where: { recipeId } });
     const shouldBePrimary = options?.isPrimary || imageCount === 0;
 
-    // Créer l'entrée en base de données
     const image = await db.recipeImage.create({
         data: {
             url: cloudinaryResult.secureUrl,
@@ -165,14 +153,10 @@ export async function uploadImageFromExternalUrl(
     return image;
 }
 
-/**
- * Supprimer une image
- */
 export async function removeImage(
     imageId: string,
     authorId: string
 ): Promise<RecipeImageData> {
-    // Récupérer l'image avec la recette
     const image = await db.recipeImage.findUnique({
         where: { id: imageId },
         include: {
@@ -181,33 +165,23 @@ export async function removeImage(
             }
         }
     });
-
     if (!image) {
         throw new NotFoundError('Image not found');
     }
-
     if (image.recipe.authorId !== authorId) {
         throw new BadRequestError('You are not authorized to delete this image');
     }
-
-    // Extraire le publicId de l'URL Cloudinary
     const publicId = extractPublicIdFromUrl(image.url);
-    
     if (publicId) {
         try {
             await deleteImage(publicId);
         } catch (error) {
             console.error('Failed to delete image from Cloudinary:', error);
-            // Continue même si la suppression Cloudinary échoue
         }
     }
-
-    // Supprimer de la base de données
     const deletedImage = await db.recipeImage.delete({
         where: { id: imageId }
     });
-
-    // Si l'image supprimée était primary, définir la première image restante comme primary
     if (image.isPrimary) {
         const firstImage = await db.recipeImage.findFirst({
             where: { recipeId: image.recipeId },
@@ -225,9 +199,6 @@ export async function removeImage(
     return deletedImage;
 }
 
-/**
- * Mettre à jour une image
- */
 export async function updateImage(
     imageId: string,
     authorId: string,
@@ -237,7 +208,6 @@ export async function updateImage(
         sortOrder?: number;
     }
 ): Promise<RecipeImageData> {
-    // Récupérer l'image avec la recette
     const image = await db.recipeImage.findUnique({
         where: { id: imageId },
         include: {
@@ -255,7 +225,6 @@ export async function updateImage(
         throw new BadRequestError('You are not authorized to update this image');
     }
 
-    // Si on définit cette image comme primary, retirer le statut primary des autres
     if (data.isPrimary) {
         await db.recipeImage.updateMany({
             where: { recipeId: image.recipeId, isPrimary: true, id: { not: imageId } },
@@ -273,9 +242,6 @@ export async function updateImage(
     });
 }
 
-/**
- * Définir une image comme image principale
- */
 export async function setAsPrimaryImage(
     imageId: string,
     authorId: string
@@ -288,7 +254,6 @@ export async function reorderImages(
     authorId: string,
     imageIds: string[]
 ): Promise<RecipeImageData[]> {
-    // Vérifier que la recette existe et appartient à l'auteur
     const recipe = await db.recipe.findUnique({
         where: { id: recipeId },
         select: { id: true, authorId: true }
@@ -302,7 +267,6 @@ export async function reorderImages(
         throw new BadRequestError('You are not authorized to reorder images of this recipe');
     }
 
-    // Mettre à jour l'ordre de chaque image
     const updatePromises = imageIds.map((imageId, index) =>
         db.recipeImage.update({
             where: { id: imageId },
@@ -326,9 +290,6 @@ function extractPublicIdFromUrl(url: string): string | null {
     }
 }
 
-/**
- * Supprimer plusieurs images à la fois
- */
 export async function removeMultipleImages(
     imageIds: string[],
     authorId: string
@@ -348,9 +309,6 @@ export async function removeMultipleImages(
     return { deleted, failed };
 }
 
-/**
- * Upload plusieurs images depuis des URLs
- */
 export async function uploadMultipleImagesFromUrls(
     recipeId: string,
     authorId: string,
@@ -359,7 +317,6 @@ export async function uploadMultipleImagesFromUrls(
     const uploaded: RecipeImageData[] = [];
     const failed: { url: string; error: string }[] = [];
 
-    // La première image uploadée sera primary si aucune image n'existe
     let isFirst = true;
     const existingImageCount = await db.recipeImage.count({ where: { recipeId } });
 
@@ -379,9 +336,6 @@ export async function uploadMultipleImagesFromUrls(
     return { uploaded, failed };
 }
 
-/**
- * Upload plusieurs images locales (depuis des buffers)
- */
 export async function uploadMultipleLocalImages(
     recipeId: string,
     authorId: string,
@@ -390,10 +344,7 @@ export async function uploadMultipleLocalImages(
     const uploaded: RecipeImageData[] = [];
     const failed: { index: number; error: string }[] = [];
 
-    // Valider les types MIME
     const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif'];
-
-    // La première image uploadée sera primary si aucune image n'existe
     let isFirst = true;
     const existingImageCount = await db.recipeImage.count({ where: { recipeId } });
 
@@ -404,7 +355,6 @@ export async function uploadMultipleLocalImages(
             failed.push({ index: i, error: `Invalid file type: ${file.mimetype}` });
             continue;
         }
-
         try {
             const image = await uploadLocalImage(recipeId, authorId, file.buffer, {
                 altText: file.altText,
@@ -416,6 +366,5 @@ export async function uploadMultipleLocalImages(
             failed.push({ index: i, error: error.message || 'Unknown error' });
         }
     }
-
     return { uploaded, failed };
 }
