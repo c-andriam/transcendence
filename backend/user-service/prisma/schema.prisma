@@ -7,6 +7,7 @@ datasource db {
   provider = "postgresql"
 }
 
+// ==================== USERS ====================
 model User {
   id              String    @id @default(uuid())
   email           String    @unique
@@ -35,6 +36,7 @@ model User {
   @@index([username])
 }
 
+// ==================== FRIEND REQUESTS ====================
 model FriendRequest {
   id        String              @id @default(uuid())
   status    FriendRequestStatus @default(PENDING)
@@ -58,6 +60,7 @@ enum FriendRequestStatus {
   REJECTED
 }
 
+// ==================== FOLLOWERS ====================
 model Follow {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
@@ -73,6 +76,7 @@ model Follow {
   @@index([followingId])
 }
 
+// ==================== PASSWORD RESET TOKENS ====================
 model PasswordResetToken {
   id        String   @id @default(uuid())
   token     String   @unique
@@ -87,6 +91,7 @@ model PasswordResetToken {
   @@index([token])
 }
 
+// ==================== EMAIL VERIFICATION TOKENS ====================
 model EmailVerificationToken {
   id        String   @id @default(uuid())
   token     String   @unique
@@ -101,6 +106,7 @@ model EmailVerificationToken {
   @@index([token])
 }
 
+// ==================== BLOCKS ====================
 model Block {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())

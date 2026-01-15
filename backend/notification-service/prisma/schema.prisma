@@ -1,9 +1,11 @@
 generator client {
     provider = "prisma-client-js"
+    output   = "../src/generated/prisma"
 }
 
 datasource db {
     provider = "postgresql"
+    schemas  = ["notification_service"]
 }
 
 model Notification {
@@ -19,6 +21,7 @@ model Notification {
 
     @@index([userId, isRead])
     @@index([createdAt])
+    @@schema("notification_service")
 }
 
 enum NotificationType {
@@ -29,4 +32,6 @@ enum NotificationType {
     NEW_RATING
     NEW_MESSAGE
     RECIPE_FAVORITED
+
+    @@schema("notification_service")
 }

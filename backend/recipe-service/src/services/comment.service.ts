@@ -2,8 +2,10 @@ import db from "../utils/db";
 import {
     NotFoundError,
     UnauthorizedError,
-    ForbiddenError
+    ForbiddenError,
+    NotificationType
 } from "@transcendence/common";
+import { notifyUser } from "../utils/notifyUser";
 
 export async function getCommentsByRecipeId(
     recipeId: string,
@@ -71,6 +73,17 @@ export async function createComment(
             replies: true,
         }
     });
+
+    if (recipe.authorId !== userId) {
+        notifyUser(
+            recipe.authorId,
+            NotificationType.NEW_COMMENT,
+            'New Comment',
+            `Someone commented on your recipe "${recipe.title}"`,
+            { recipeId, commentId: comment.id }
+        );
+    }
+
     return comment;
 }
 

@@ -157,7 +157,6 @@ export async function proxyMultipart(
 
         return reply.status(responseData.statusCode).send(responseData.body);
     } catch (error: any) {
-        console.error('Multipart proxy error:', error);
         return sendError(reply, error.message || "Internal server error", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

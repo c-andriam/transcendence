@@ -43,12 +43,58 @@ import {
     sendDeleted,
     stripPassword,
     authMiddleware,
+    bodyValidator,
     generateApiKey,
-    sendNotFound,
-    sendBadRequest,
-    sendForbidden,
-    sendError
+    NotFoundError,
+    BadRequestError,
+    ForbiddenError,
+    InternalServerError
 } from "@transcendence/common";
+import { z } from "zod";
+
+const createUserSchema = z.object({
+    email: z.string().email("Invalid email format"),
+    username: z.string().min(3, "Username must be at least 3 characters").max(50),
+    password: z.string().min(8, "Password must be at least 8 characters").max(142),
+    firstName: z.string().max(50).optional(),
+    lastName: z.string().max(50).optional(),
+    avatarUrl: z.string().url().optional(),
+    bio: z.string().max(500).optional()
+});
+
+const updateUserSchema = z.object({
+    username: z.string().min(3).max(50).optional(),
+    firstName: z.string().max(50).optional(),
+    lastName: z.string().max(50).optional(),
+    avatarUrl: z.string().url().optional(),
+    bio: z.string().max(500).optional()
+});
+
+const changePasswordSchema = z.object({
+    oldPassword: z.string().min(1, "Old password is required"),
+    newPassword: z.string().min(8, "New password must be at least 8 characters").max(142)
+});
+
+const friendRequestSchema = z.object({
+    receiverId: z.string().min(1, "Receiver ID is required")
+});
+
+const tokenSchema = z.object({
+    token: z.string().min(1, "Token is required")
+});
+
+const updatePasswordSchema = z.object({
+    userId: z.string().min(1),
+    newPassword: z.string().min(8).max(142)
+});
+
+const userIdSchema = z.object({
+    userId: z.string().min(1)
+});
+
+const statusSchema = z.object({
+    isOnline: z.boolean()
+});
 
 export async function userRoutes(app: FastifyInstance) {
 
@@ -72,30 +118,16 @@ export async function userRoutes(app: FastifyInstance) {
         const { id } = request.params as { id: string };
         const user = await getUserById(id);
         if (!user) {
-            return sendNotFound(reply, 'User not found');
+            throw new NotFoundError('User not found');
         }
         sendSuccess(reply, stripPassword(user), 'User found');
     });
 
-    app.post("/users", async (request, reply) => {
-        const { email, username, password, firstName, lastName, avatarUrl, bio } = request.body as {
-            email: string;
-            username: string;
-            password: string;
-            firstName?: string;
-            lastName?: string;
-            avatarUrl?: string;
-            bio?: string;
-        };
-        const user = await createUser({
-            email,
-            username,
-            password,
-            firstName,
-            lastName,
-            avatarUrl,
-            bio
-        });
+    app.post("/users", {
+        preHandler: bodyValidator(createUserSchema)
+    }, async (request, reply) => {
+        const body = request.body as z.infer<typeof createUserSchema>;
+        const user = await createUser(body);
         sendCreated(reply, stripPassword(user), 'User created');
     });
 
@@ -103,23 +135,19 @@ export async function userRoutes(app: FastifyInstance) {
         const userId = request.user!.id;
         const user = await getUserById(userId);
         if (!user) {
-            return sendNotFound(reply, 'User not found');
+            throw new NotFoundError('User not found');
         }
         sendSuccess(reply, stripPassword(user), 'Profile retrieved');
     });
 
-    app.put("/users/:id", { preHandler: authMiddleware }, async (request, reply) => {
+    app.put("/users/:id", {
+        preHandler: [authMiddleware, bodyValidator(updateUserSchema)]
+    }, async (request, reply) => {
         const { id } = request.params as { id: string };
         if (request.user!.id !== id) {
-            return sendForbidden(reply, 'You can only update your own profile');
+            throw new ForbiddenError('You can only update your own profile');
         }
-        const body = request.body as {
-            username?: string;
-            firstName?: string;
-            lastName?: string;
-            avatarUrl?: string;
-            bio?: string;
-        };
+        const body = request.body as z.infer<typeof updateUserSchema>;
         const user = await updateUser(id, body);
         sendSuccess(reply, stripPassword(user), 'User updated');
     });
@@ -127,15 +155,17 @@ export async function userRoutes(app: FastifyInstance) {
     app.post("/users/me/avatar", { preHandler: authMiddleware }, async (request, reply) => {
         const data = await request.file();
         if (!data) {
-            return sendBadRequest(reply, "No image uploaded");
+            throw new BadRequestError("No image uploaded");
         }
         const userId = request.user!.id;
         const user = await updateAvatar(userId, data);
         sendSuccess(reply, stripPassword(user), "Avatar updated successfully");
     });
 
-    app.post("/users/change-password", { preHandler: authMiddleware }, async (request, reply) => {
-        const { oldPassword, newPassword } = request.body as { oldPassword: string, newPassword: string };
+    app.post("/users/change-password", {
+        preHandler: [authMiddleware, bodyValidator(changePasswordSchema)]
+    }, async (request, reply) => {
+        const { oldPassword, newPassword } = request.body as z.infer<typeof changePasswordSchema>;
         const userId = request.user!.id;
         await changePassword(userId, oldPassword, newPassword);
         sendSuccess(reply, {}, "Password changed successfully");
@@ -145,7 +175,7 @@ export async function userRoutes(app: FastifyInstance) {
     app.delete("/users/:id", { preHandler: authMiddleware }, async (request, reply) => {
         const { id } = request.params as { id: string };
         if (request.user!.id !== id) {
-            return sendForbidden(reply, 'You can only delete your own profile');
+            throw new ForbiddenError('You can only delete your own profile');
         }
         const user = await deleteUser(id);
         sendDeleted(reply, stripPassword(user), 'User deleted');
@@ -196,8 +226,10 @@ export async function userRoutes(app: FastifyInstance) {
         sendSuccess(reply, { isFollowing }, 'Follow status retrieved');
     });
 
-    app.post("/users/friend-requests", { preHandler: authMiddleware }, async (request, reply) => {
-        const { receiverId } = request.body as { receiverId: string };
+    app.post("/users/friend-requests", {
+        preHandler: [authMiddleware, bodyValidator(friendRequestSchema)]
+    }, async (request, reply) => {
+        const { receiverId } = request.body as z.infer<typeof friendRequestSchema>;
         const senderId = request.user!.id;
         const result = await sendFriendRequest(senderId, receiverId);
         sendCreated(reply, result, 'Friend request sent');
@@ -267,19 +299,23 @@ export async function userRoutes(app: FastifyInstance) {
         const { identifier } = request.params as { identifier: string };
         const user = await getUserByIdentifier(identifier);
         if (!user) {
-            return sendNotFound(reply, 'User not found');
+            throw new NotFoundError('User not found');
         }
         sendSuccess(reply, user, 'User found');
     });
 
-    app.post("/internal/verify-reset-token", async (request, reply) => {
-        const { token } = request.body as { token: string };
+    app.post("/internal/verify-reset-token", {
+        preHandler: bodyValidator(tokenSchema)
+    }, async (request, reply) => {
+        const { token } = request.body as z.infer<typeof tokenSchema>;
         const user = await verifyResetToken(token);
         sendSuccess(reply, user, 'Token verified');
     });
 
-    app.post("/internal/update-password", async (request, reply) => {
-        const { userId, newPassword } = request.body as { userId: string; newPassword: string };
+    app.post("/internal/update-password", {
+        preHandler: bodyValidator(updatePasswordSchema)
+    }, async (request, reply) => {
+        const { userId, newPassword } = request.body as z.infer<typeof updatePasswordSchema>;
         await updatePassword(userId, newPassword);
         sendSuccess(reply, {}, 'Password updated');
     });
@@ -290,14 +326,18 @@ export async function userRoutes(app: FastifyInstance) {
         sendSuccess(reply, user, 'User found');
     });
 
-    app.post("/internal/create-verification-token", async (request, reply) => {
-        const { userId } = request.body as { userId: string };
+    app.post("/internal/create-verification-token", {
+        preHandler: bodyValidator(userIdSchema)
+    }, async (request, reply) => {
+        const { userId } = request.body as z.infer<typeof userIdSchema>;
         const verificationToken = await createEmailVerificationToken(userId);
         sendSuccess(reply, { verificationToken }, 'Token created');
     });
 
-    app.post("/internal/verify-email-token", async (request, reply) => {
-        const { token } = request.body as { token: string };
+    app.post("/internal/verify-email-token", {
+        preHandler: bodyValidator(tokenSchema)
+    }, async (request, reply) => {
+        const { token } = request.body as z.infer<typeof tokenSchema>;
         const user = await verifyEmailToken(token);
         sendSuccess(reply, user, 'Token verified');
     });
@@ -307,16 +347,16 @@ export async function userRoutes(app: FastifyInstance) {
         const user = await getUserById(userId);
 
         if (!user) {
-            return sendNotFound(reply, 'User not found');
+            throw new NotFoundError('User not found');
         }
 
         if (!user.isEmailVerified) {
-            return sendForbidden(reply, 'Email must be verified to generate an API key');
+            throw new ForbiddenError('Email must be verified to generate an API key');
         }
 
         const masterSecret = process.env.API_MASTER_SECRET;
         if (!masterSecret) {
-            return sendError(reply, 'API_MASTER_SECRET not configured');
+            throw new InternalServerError('API_MASTER_SECRET not configured');
         }
 
         const apiKey = generateApiKey(userId, masterSecret);
@@ -332,9 +372,11 @@ export async function userRoutes(app: FastifyInstance) {
         }, 'API Key generated');
     });
 
-    app.put("/internal/users/:id/status", async (request, reply) => {
+    app.put("/internal/users/:id/status", {
+        preHandler: bodyValidator(statusSchema)
+    }, async (request, reply) => {
         const { id } = request.params as { id: string };
-        const { isOnline } = request.body as { isOnline: boolean };
+        const { isOnline } = request.body as z.infer<typeof statusSchema>;
         const user = await updateUserStatus(id, isOnline);
         sendSuccess(reply, { id: user.id, isOnline: user.isOnline }, 'Status updated');
     });

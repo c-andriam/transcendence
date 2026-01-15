@@ -1,16 +1,18 @@
 @baseUrl = http://localhost:3000
 @gatewayKey = AGK.h40KjfWN3Vc3mS0CcX9rV7Jx2uWfhjfxHv59eOeEAdM
-@jwtToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM1ZDFlMWYxLTM0ZDgtNGM5Yy1hZmRlLTU5ZmVkN2Q5MzM4MSIsInVzZXJuYW1lIjoiY2FuZHJpYW0iLCJpYXQiOjE3NjgzOTM3MDYsImV4cCI6MTc2ODM5NDYwNn0.Opr-0yl2Ghze_sBc1FqcVHkJakjUKt8W9pWBjtzefuk
+@jwtToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjM1ZDFlMWYxLTM0ZDgtNGM5Yy1hZmRlLTU5ZmVkN2Q5MzM4MSIsInVzZXJuYW1lIjoiY2FuZHJpYW0iLCJpYXQiOjE3Njg0NDcxMTgsImV4cCI6MTc2ODQ0ODAxOH0.KLu1fB4mRhnMKs9j3Hgyjhn_oOj2w8TlXS-xtaAGMXk
 @refreshToken = c7c49e363bbecd4301df4b04aaee85b1d8495ab99866762e7c57784c6b3f07cc438d22f53ac0d8ed51be3715f550f4ba75000447ce0d734cc4f02830937006fd
 @userApiKey = cs_661a324c-47fb-4b61-aaa5-aae783dc94c3_1767848230_df0465c5.5goFIdr2_1YSREeT2aUaPxPQKPGGJshe
 @authorId = 35d1e1f1-34d8-4c9c-afde-59fed7d93381
 @otherUserId = 2a64ed7e-29d7-4c4e-89e0-257b787fbf12
 @categoryId = 76201871-6a2c-4060-a112-e91dee221b75
-@recipeId = efabc8cf-6e97-4519-b2fb-efc7624978d0
+@recipeId = bf459cc8-6cc8-47a4-9f1d-38a474e587de
 @commentId = cc5aa65e-7489-43d2-bb90-bba6d83be01e
 @replyCommentId1 = 3c6c246c-551e-42d8-9b81-4583c6f3658a
 @replyCommentId2 = 5d059a4f-67f2-41b7-a5bd-6833e89ad48a
 @requestId = 4ad469b6-883d-4ef8-bc1d-e189fcb38c77
+@notificationId = 
+
 ### 1. Register a new user (requires email verification)
 POST {{baseUrl}}/api/v1/auth/register
 Content-Type: application/json
@@ -95,6 +97,30 @@ GET {{baseUrl}}/api/v1/users/me
 x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer {{jwtToken}}
 
+### Get All Users (Admin/Public?)
+GET {{baseUrl}}/api/v1/users
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Get User by ID
+GET {{baseUrl}}/api/v1/users/{{authorId}}
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Upload Avatar (Multipart Form - Logical Representation)
+# POST {{baseUrl}}/api/v1/users/me/avatar
+# Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+# Authorization: Bearer {{jwtToken}}
+# x-gateway-api-key: {{gatewayKey}}
+#
+# ------WebKitFormBoundary7MA4YWxkTrZu0gW
+# Content-Disposition: form-data; name="avatar"; filename="avatar.png"
+# Content-Type: image/png
+#
+# < ./avatar.png
+# ------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Get Current User Profile
 ### Update User Profile
 PUT {{baseUrl}}/api/v1/users/{{authorId}}
 Content-Type: application/json
@@ -128,22 +154,37 @@ x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer {{jwtToken}}
 
 {
-    "title": "Spaghetti Carbonara",
-    "description": "Classic Italian pasta dish with eggs, cheese, pancetta, and black pepper.",
+    "title": "Poulet Tikka Masala",
+    "description": "Un délicieux plat indien crémeux et épicé, parfait pour un dîner en famille. Le poulet est mariné dans des épices et du yaourt, puis cuit dans une sauce tomate onctueuse.",
+    "prepTime": 30,
+    "cookTime": 45,
+    "servings": 4,
+    "difficulty": "MEDIUM",
+    "isPublished": true,
+    "authorId": "{{authorId}}",
+    "categoryId": "{{categoryId}}",
     "ingredients": [
-        "Spaghetti",
-        "Eggs",
-        "Pecorino Romano",
-        "Guanciale",
-        "Black Pepper"
+        { "name": "Poulet", "quantityText": "500g", "isOptional": false },
+        { "name": "Yaourt nature", "quantityText": "200g", "isOptional": false },
+        { "name": "Crème fraîche", "quantityText": "200ml", "isOptional": false },
+        { "name": "Tomates concassées", "quantityText": "400g", "isOptional": false },
+        { "name": "Oignon", "quantityText": "1 gros", "isOptional": false },
+        { "name": "Ail", "quantityText": "3 gousses", "isOptional": false },
+        { "name": "Gingembre", "quantityText": "2 cm", "isOptional": false },
+        { "name": "Épices tikka masala", "quantityText": "2 c.s", "isOptional": false },
+        { "name": "Curcuma", "quantityText": "1 c.c", "isOptional": false },
+        { "name": "Coriandre fraîche", "quantityText": "1 bouquet", "isOptional": true }
     ],
     "instructions": [
-        "Boil pasta.",
-        "Fry guanciale.",
-        "Mix eggs and cheese.",
-        "Combine all with pasta water."
-    ],
-    "categoryId": "{{categoryId}}"
+        { "stepNumber": 1, "description": "Couper le poulet en morceaux et le faire mariner dans le yaourt avec les épices pendant 2 heures minimum." },
+        { "stepNumber": 2, "description": "Émincer l'oignon, hacher l'ail et le gingembre." },
+        { "stepNumber": 3, "description": "Dans une poêle, faire revenir l'oignon jusqu'à ce qu'il soit doré." },
+        { "stepNumber": 4, "description": "Ajouter l'ail et le gingembre, cuire 1 minute." },
+        { "stepNumber": 5, "description": "Ajouter le poulet mariné et le faire dorer de tous les côtés." },
+        { "stepNumber": 6, "description": "Incorporer les tomates concassées et les épices restantes. Laisser mijoter 20 minutes." },
+        { "stepNumber": 7, "description": "Ajouter la crème fraîche, mélanger et cuire encore 5 minutes." },
+        { "stepNumber": 8, "description": "Servir chaud avec du riz basmati, garni de coriandre fraîche." }
+    ]
 }
 
 ### Get All Recipes
@@ -205,17 +246,137 @@ Authorization: Bearer {{jwtToken}}
 ### ============================================
 ### CATEGORY ROUTES
 ### ============================================
-
-### Create Category
-POST {{baseUrl}}/api/v1/categories
+### create category
+### 1. Apéritifs
+POST http://localhost:3000/api/v1/categories
 Content-Type: application/json
 x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer {{jwtToken}}
 
 {
-    "name": "Desserts",
-    "description": "Sweet treats for after dinner."
+  "name": "Apéritifs",
+  "iconName": "wine-glass",
+  "color": "#FF6B6B",
+  "sortOrder": 1
 }
+
+### 2. Entrées
+POST http://localhost:3000/api/v1/categories
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+{
+  "name": "Entrées",
+  "iconName": "bowl-food",
+  "color": "#4ECDC4",
+  "sortOrder": 2
+}
+
+### 3. Plats Principaux
+POST http://localhost:3000/api/v1/categories
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+{
+  "name": "Plats Principaux",
+  "iconName": "utensils",
+  "color": "#1A535C",
+  "sortOrder": 3
+}
+
+### 4. Desserts
+POST http://localhost:3000/api/v1/categories
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+{
+  "name": "Desserts",
+  "iconName": "ice-cream",
+  "color": "#FF9F1C",
+  "sortOrder": 4
+}
+
+### 5. Accompagnements
+POST http://localhost:3000/api/v1/categories
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+{
+  "name": "Accompagnements",
+  "iconName": "carrot",
+  "color": "#9BC53D",
+  "sortOrder": 5
+}
+
+### 6. Boissons
+POST http://localhost:3000/api/v1/categories
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+{
+  "name": "Boissons",
+  "iconName": "mug-hot",
+  "color": "#5D576B",
+  "sortOrder": 6
+}
+
+### 7. Petit-Déjeuner
+POST http://localhost:3000/api/v1/categories
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+{
+  "name": "Petit-Déjeuner",
+  "iconName": "egg",
+  "color": "#F7B801",
+  "sortOrder": 7
+}
+
+### 8. Boulangerie
+POST http://localhost:3000/api/v1/categories
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+{
+  "name": "Boulangerie",
+  "iconName": "bread-slice",
+  "color": "#8D5B4C",
+  "sortOrder": 8
+}
+
+### 9. Sauces
+POST http://localhost:3000/api/v1/categories
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+{
+  "name": "Sauces & Bases",
+  "iconName": "jar",
+  "color": "#A5A58D",
+  "sortOrder": 9
+}
+
+### 10. Snacks
+POST http://localhost:3000/api/v1/categories
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+{
+  "name": "Snacks",
+  "iconName": "hamburger",
+  "color": "#FF6B6B",
+  "sortOrder": 10
+}
+
 
 ### Get All Categories
 GET {{baseUrl}}/api/v1/categories
@@ -224,6 +385,11 @@ Authorization: Bearer {{jwtToken}}
 
 ### Get Category by ID
 GET {{baseUrl}}/api/v1/categories/{{categoryId}}
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Get Category by Slug
+GET {{baseUrl}}/api/v1/categories/by-slug/plats-principaux
 x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer {{jwtToken}}
 
@@ -388,6 +554,34 @@ Authorization: Bearer {{jwtToken}}
 GET {{baseUrl}}/api/v1/recipes/{{recipeId}}/images
 x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer {{jwtToken}}
+
+### 4.1 Update Image Details (Alt Text, etc.)
+PUT {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/{{replyCommentId1}}
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+{
+    "altText": "Updated alt text for this delicious pizza",
+    "isPrimary": false,
+    "sortOrder": 5
+}
+
+### 4.2 Bulk Upload Local Images (Multipart - Logical Representation)
+# POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/uploads
+# Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryBulk
+# Authorization: Bearer {{jwtToken}}
+# x-gateway-api-key: {{gatewayKey}}
+#
+# ------WebKitFormBoundaryBulk
+# Content-Disposition: form-data; name="images"; filename="img1.jpg"
+# Content-Type: image/jpeg
+# ...
+# ------WebKitFormBoundaryBulk
+# Content-Disposition: form-data; name="images"; filename="img2.jpg"
+# Content-Type: image/jpeg
+# ...
+# ------WebKitFormBoundaryBulk--
 
 ### 5. Reorder Images
 PUT {{baseUrl}}/api/v1/recipes/{{recipeId}}/images/reorder
@@ -569,3 +763,51 @@ Authorization: Bearer {{jwtToken}}
 GET {{baseUrl}}/api/v1/recipes/by-slug/poulet-tikka-masala
 x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer {{jwtToken}}
+
+### ============================================
+### INTERNAL ROUTES (MANUAL TESTING)
+### ============================================
+
+### Manually Set User Online (Internal)
+PUT http://localhost:3003/api/v1/internal/users/{{authorId}}/status
+Content-Type: application/json
+x-internal-api-key: my-super-secret-internal-key
+
+{
+    "isOnline": true
+}
+
+### Manually Set User Offline (Internal)
+PUT http://localhost:3003/api/v1/internal/users/{{authorId}}/status
+Content-Type: application/json
+x-internal-api-key: my-super-secret-internal-key
+
+{
+    "isOnline": false
+}
+
+
+### ============================================
+### NOTIFICATION ROUTES
+### ============================================
+
+### Get My Notifications
+GET {{baseUrl}}/api/v1/notifications
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Mark Notification as Read
+PUT {{baseUrl}}/api/v1/notifications/{{notificationId}}/read
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Mark All Notifications as Read
+PUT {{baseUrl}}/api/v1/notifications/read-all
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Delete Notification
+DELETE {{baseUrl}}/api/v1/notifications/{{notificationId}}
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+

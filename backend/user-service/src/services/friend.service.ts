@@ -1,5 +1,7 @@
+
 import db from "../utils/dbPlugin";
-import { BadRequestError, NotFoundError, ConflictError } from "@transcendence/common";
+import { BadRequestError, NotFoundError, UnauthorizedError, NotificationType, ConflictError } from "@transcendence/common";
+import { notifyUser } from "../utils/notifyUser";
 
 export async function sendFriendRequest(senderId: string, receiverId: string) {
     if (senderId === receiverId) {
@@ -42,6 +44,16 @@ export async function sendFriendRequest(senderId: string, receiverId: string) {
             status: 'PENDING'
         }
     });
+
+    const sender = await db.user.findUnique({ where: { id: senderId }, select: { username: true } });
+    notifyUser(
+        receiverId,
+        NotificationType.NEW_FRIEND_REQUEST,
+        'New Friend Request',
+        `${sender?.username || 'Someone'} sent you a friend request`,
+        { senderId, requestId: request.id }
+    );
+
     return request;
 }
 
@@ -60,6 +72,16 @@ export async function acceptFriendRequest(requestId: string, userId: string) {
         where: { id: requestId },
         data: { status: 'ACCEPTED' }
     });
+
+    const acceptor = await db.user.findUnique({ where: { id: userId }, select: { username: true } });
+    notifyUser(
+        request.senderId,
+        NotificationType.FRIEND_REQUEST_ACCEPTED,
+        'Friend Request Accepted',
+        `${acceptor?.username || 'Someone'} accepted your friend request`,
+        { acceptorId: userId }
+    );
+
     return updatedRequest;
 }
 

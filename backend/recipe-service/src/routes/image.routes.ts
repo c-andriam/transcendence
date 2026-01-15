@@ -1,10 +1,11 @@
 import { FastifyInstance } from 'fastify';
-import { 
-    sendSuccess, 
-    sendCreated, 
+import {
+    sendSuccess,
+    sendCreated,
     sendDeleted,
     authMiddleware,
-    BadRequestError 
+    bodyValidator,
+    BadRequestError
 } from '@transcendence/common';
 import {
     getRecipeImages,
@@ -18,30 +19,34 @@ import {
     uploadMultipleImagesFromUrls,
     uploadMultipleLocalImages
 } from '../services/image.service';
+import { z } from 'zod';
 
-interface UploadUrlBody {
-    imageUrl: string;
-    altText?: string;
-    isPrimary?: boolean;
-}
+const uploadUrlSchema = z.object({
+    imageUrl: z.string().url("Invalid image URL"),
+    altText: z.string().max(255).optional(),
+    isPrimary: z.boolean().optional()
+});
 
-interface UploadMultipleUrlsBody {
-    images: { imageUrl: string; altText?: string }[];
-}
+const uploadMultipleUrlsSchema = z.object({
+    images: z.array(z.object({
+        imageUrl: z.string().url(),
+        altText: z.string().max(255).optional()
+    })).min(1).max(10)
+});
 
-interface DeleteMultipleBody {
-    imageIds: string[];
-}
+const deleteMultipleSchema = z.object({
+    imageIds: z.array(z.string().min(1)).min(1, "At least one image ID required")
+});
 
-interface UpdateImageBody {
-    altText?: string;
-    isPrimary?: boolean;
-    sortOrder?: number;
-}
+const updateImageSchema = z.object({
+    altText: z.string().max(255).optional(),
+    isPrimary: z.boolean().optional(),
+    sortOrder: z.number().int().min(0).optional()
+});
 
-interface ReorderImagesBody {
-    imageIds: string[];
-}
+const reorderImagesSchema = z.object({
+    imageIds: z.array(z.string().min(1)).min(1)
+});
 
 export async function imageRoutes(app: FastifyInstance) {
 
@@ -51,7 +56,7 @@ export async function imageRoutes(app: FastifyInstance) {
         sendSuccess(reply, images, images.length ? 'Images found' : 'No images for this recipe');
     });
 
-    app.post('/recipes/:recipeId/images/upload', 
+    app.post('/recipes/:recipeId/images/upload',
         { preHandler: authMiddleware },
         async (request, reply) => {
             const { recipeId } = request.params as { recipeId: string };
@@ -94,15 +99,11 @@ export async function imageRoutes(app: FastifyInstance) {
     );
 
     app.post('/recipes/:recipeId/images/url',
-        { preHandler: authMiddleware },
+        { preHandler: [authMiddleware, bodyValidator(uploadUrlSchema)] },
         async (request, reply) => {
             const { recipeId } = request.params as { recipeId: string };
             const userId = request.user!.id;
-            const body = request.body as UploadUrlBody;
-
-            if (!body.imageUrl) {
-                throw new BadRequestError('imageUrl is required');
-            }
+            const body = request.body as z.infer<typeof uploadUrlSchema>;
 
             const image = await uploadImageFromExternalUrl(recipeId, userId, body.imageUrl, {
                 altText: body.altText,
@@ -114,11 +115,11 @@ export async function imageRoutes(app: FastifyInstance) {
     );
 
     app.put('/recipes/:recipeId/images/:imageId',
-        { preHandler: authMiddleware },
+        { preHandler: [authMiddleware, bodyValidator(updateImageSchema)] },
         async (request, reply) => {
             const { imageId } = request.params as { recipeId: string; imageId: string };
             const userId = request.user!.id;
-            const body = request.body as UpdateImageBody;
+            const body = request.body as z.infer<typeof updateImageSchema>;
 
             const image = await updateImage(imageId, userId, body);
             sendSuccess(reply, image, 'Image updated successfully');
@@ -126,14 +127,10 @@ export async function imageRoutes(app: FastifyInstance) {
     );
 
     app.delete('/recipes/:recipeId/images/bulk',
-        { preHandler: authMiddleware },
+        { preHandler: [authMiddleware, bodyValidator(deleteMultipleSchema)] },
         async (request, reply) => {
             const userId = request.user!.id;
-            const body = request.body as DeleteMultipleBody;
-
-            if (!body.imageIds || !Array.isArray(body.imageIds) || body.imageIds.length === 0) {
-                throw new BadRequestError('imageIds array is required and cannot be empty');
-            }
+            const body = request.body as z.infer<typeof deleteMultipleSchema>;
 
             const result = await removeMultipleImages(body.imageIds, userId);
             sendSuccess(reply, result, `${result.deleted.length} image(s) deleted successfully`);
@@ -163,18 +160,12 @@ export async function imageRoutes(app: FastifyInstance) {
     );
 
     app.post('/recipes/:recipeId/images/urls',
-        { preHandler: authMiddleware },
+        { preHandler: [authMiddleware, bodyValidator(uploadMultipleUrlsSchema)] },
         async (request, reply) => {
             const { recipeId } = request.params as { recipeId: string };
             const userId = request.user!.id;
-            const body = request.body as UploadMultipleUrlsBody;
+            const body = request.body as z.infer<typeof uploadMultipleUrlsSchema>;
 
-            if (!body.images || !Array.isArray(body.images) || body.images.length === 0) {
-                throw new BadRequestError('images array is required and cannot be empty');
-            }
-            if (body.images.length > 10) {
-                throw new BadRequestError('Maximum 10 images per request');
-            }
             const result = await uploadMultipleImagesFromUrls(recipeId, userId, body.images);
             sendCreated(reply, result, `${result.uploaded.length} image(s) uploaded successfully`);
         }
@@ -187,7 +178,7 @@ export async function imageRoutes(app: FastifyInstance) {
             const userId = request.user!.id;
 
             const files: { buffer: Buffer; altText?: string; mimetype: string }[] = [];
-            
+
             const parts = request.parts();
             for await (const part of parts) {
                 if (part.type === 'file') {
@@ -216,14 +207,11 @@ export async function imageRoutes(app: FastifyInstance) {
     );
 
     app.put('/recipes/:recipeId/images/reorder',
-        { preHandler: authMiddleware },
+        { preHandler: [authMiddleware, bodyValidator(reorderImagesSchema)] },
         async (request, reply) => {
             const { recipeId } = request.params as { recipeId: string };
             const userId = request.user!.id;
-            const body = request.body as ReorderImagesBody;
-            if (!body.imageIds || !Array.isArray(body.imageIds)) {
-                throw new BadRequestError('imageIds array is required');
-            }
+            const body = request.body as z.infer<typeof reorderImagesSchema>;
             const images = await reorderImages(recipeId, userId, body.imageIds);
             sendSuccess(reply, images, 'Images reordered successfully');
         }

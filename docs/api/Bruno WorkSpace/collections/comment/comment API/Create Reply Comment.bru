@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: {{baseUrl}}{{commentPrefix}}{{replyComId}}/replies
+  url: {{baseUrl}}{{commentPrefix}}/{{commentId}}/replies
   body: json
   auth: bearer
 }
@@ -21,12 +21,12 @@ auth:bearer {
 
 body:json {
   {
-      "content": "Merci, c'est gentil !"
+      "content": "Merci !"
   }
 }
 
 script:post-response {
-  bru.setGlobalEnvVar("commentId", res.body.data.id);
+  bru.setGlobalEnvVar("replyComId", res.body.data.id);
 }
 
 settings {

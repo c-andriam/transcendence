@@ -1,4 +1,5 @@
 export * from './error';
+export * from './config';
 export * from './error/prisma-error-handler';
 export * from './middleware';
 export * from './middleware/apikey.middleware';
@@ -13,3 +14,4 @@ export * from './utils/sanitize.util';
 export * from './utils/email.util';
 export * from './utils/rate-limiter.util';
 export * from './utils/api-key.utils';
+export * from './types/notification.types';

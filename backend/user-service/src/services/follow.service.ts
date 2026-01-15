@@ -1,5 +1,6 @@
 import db from "../utils/dbPlugin";
-import { BadRequestError, NotFoundError, ConflictError } from "@transcendence/common";
+import { BadRequestError, NotFoundError, ConflictError, NotificationType } from "@transcendence/common";
+import { notifyUser } from "../utils/notifyUser";
 
 export async function followUser(followerId: string, followingId: string) {
     if (followerId === followingId) {
@@ -18,6 +19,16 @@ export async function followUser(followerId: string, followingId: string) {
                 followingId
             }
         });
+
+        const follower = await db.user.findUnique({ where: { id: followerId }, select: { username: true } });
+        notifyUser(
+            followingId,
+            NotificationType.NEW_FOLLOWER,
+            'New Follower',
+            `${follower?.username || 'Someone'} started following you`,
+            { followerId }
+        );
+
         return follow;
     } catch (error: any) {
         if (error.code === 'P2002') {

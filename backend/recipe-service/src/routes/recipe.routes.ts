@@ -29,7 +29,6 @@ import {
 } from "@transcendence/common";
 import { authMiddleware, bodyValidator } from "@transcendence/common";
 import { getCategoryById } from "../services/category.service";
-import { request } from "node:http";
 import { z } from "zod";
 import {
     getComments,
@@ -39,6 +38,50 @@ import {
     createReplyHandler
 } from "../controllers/comment.controller";
 
+const createRecipeSchema = z.object({
+    title: z.string().min(1, "Title is required").max(200),
+    description: z.string().min(1, "Description is required").max(2000),
+    ingredients: z.array(z.object({
+        name: z.string().min(1),
+        quantityText: z.string().min(1),
+        isOptional: z.boolean().optional()
+    })),
+    instructions: z.array(z.object({
+        stepNumber: z.number().int().min(1),
+        description: z.string().min(1)
+    })),
+    prepTime: z.number().int().min(0),
+    cookTime: z.number().int().min(0),
+    servings: z.number().int().min(1),
+    difficulty: z.enum(["EASY", "MEDIUM", "HARD"]).optional(),
+    categoryId: z.string().min(1, "Category is required"),
+    isPublished: z.boolean().optional()
+});
+
+const updateRecipeSchema = z.object({
+    title: z.string().min(1).max(200).optional(),
+    description: z.string().max(2000).optional(),
+    ingredients: z.array(z.object({
+        name: z.string().min(1),
+        quantityText: z.string().min(1),
+        isOptional: z.boolean().optional()
+    })).optional(),
+    instructions: z.array(z.object({
+        stepNumber: z.number().int().min(1),
+        description: z.string().min(1)
+    })).optional(),
+    prepTime: z.number().int().min(0).optional(),
+    cookTime: z.number().int().min(0).optional(),
+    servings: z.number().int().min(1).optional(),
+    difficulty: z.enum(["EASY", "MEDIUM", "HARD"]).optional(),
+    categoryId: z.string().optional(),
+    isPublished: z.boolean().optional()
+});
+
+const commentSchema = z.object({
+    content: z.string().min(1, "Comment content is required").max(2000)
+});
+
 export async function recipesRoutes(app: FastifyInstance) {
 
     app.get("/recipes", async (request, reply) => {
@@ -46,8 +89,10 @@ export async function recipesRoutes(app: FastifyInstance) {
         sendSuccess(reply, data, data.length ? 'Recipes found' : 'No recipes yet');
     });
 
-    app.post("/recipes", { preHandler: authMiddleware }, async (request, reply) => {
-        const body = request.body as any;
+    app.post("/recipes", {
+        preHandler: [authMiddleware, bodyValidator(createRecipeSchema)]
+    }, async (request, reply) => {
+        const body = request.body as z.infer<typeof createRecipeSchema>;
         const recipe = await createRecipe({
             ...body,
             authorId: request.user!.id
@@ -61,7 +106,9 @@ export async function recipesRoutes(app: FastifyInstance) {
         sendSuccess(reply, recipe, 'Recipe found');
     });
 
-    app.put("/recipes/:id", { preHandler: authMiddleware }, async (request, reply) => {
+    app.put("/recipes/:id", {
+        preHandler: [authMiddleware, bodyValidator(updateRecipeSchema)]
+    }, async (request, reply) => {
         const { id } = request.params as { id: string };
         const existingRecipe = await getRecipeById(id);
         if (!existingRecipe) {
@@ -70,7 +117,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         if (existingRecipe.authorId !== request.user!.id) {
             throw new ForbiddenError('You do not have access to update this recipe');
         }
-        const body = request.body as any;
+        const body = request.body as z.infer<typeof updateRecipeSchema>;
         const recipe = await updateRecipe(id, body);
         sendSuccess(reply, recipe, 'Recipe updated successfully');
     });
@@ -341,13 +388,17 @@ export async function recipesRoutes(app: FastifyInstance) {
         sendSuccess(reply, comments, "Comments retrieved successfully");
     });
 
-    app.post("/recipes/:id/comments", { preHandler: authMiddleware }, async (request, reply) => {
+    app.post("/recipes/:id/comments", {
+        preHandler: [authMiddleware, bodyValidator(commentSchema)]
+    }, async (request, reply) => {
         const { id } = request.params as { id: string };
         const comment = await createCommentHandler(request, reply);
         sendCreated(reply, comment, "Comment created successfully");
     });
 
-    app.put("/recipes/:id/comments/:commentId", { preHandler: authMiddleware }, async (request, reply) => {
+    app.put("/recipes/:id/comments/:commentId", {
+        preHandler: [authMiddleware, bodyValidator(commentSchema)]
+    }, async (request, reply) => {
         const { id, commentId } = request.params as { id: string; commentId: string };
         const comment = await updateCommentHandler(request, reply);
         sendSuccess(reply, comment, "Comment updated successfully");
@@ -359,7 +410,9 @@ export async function recipesRoutes(app: FastifyInstance) {
         sendSuccess(reply, result, "Comment deleted successfully");
     });
 
-    app.post("/recipes/:id/comments/:commentId/replies", { preHandler: authMiddleware }, async (request, reply) => {
+    app.post("/recipes/:id/comments/:commentId/replies", {
+        preHandler: [authMiddleware, bodyValidator(commentSchema)]
+    }, async (request, reply) => {
         const { id, commentId } = request.params as { id: string; commentId: string };
         const replyComment = await createReplyHandler(request, reply);
         sendCreated(reply, replyComment, "Reply created successfully");

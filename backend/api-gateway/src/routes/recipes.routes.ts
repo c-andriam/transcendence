@@ -18,7 +18,6 @@ if (!RECIPE_SERVICE_URL) {
 
 export async function recipesRoutes(app: FastifyInstance) {
     app.get("/recipes", async (request, reply) => {
-        console.log("Recipe service URL: ", RECIPE_SERVICE_URL);
         return proxyHydrate(app, request, reply, "/api/v1/recipes", RECIPE_SERVICE_URL);
     });
 
@@ -71,7 +70,6 @@ export async function recipesRoutes(app: FastifyInstance) {
     });
 
     app.get("/categories", async (request, reply) => {
-        console.log("Recipe service URL: ", RECIPE_SERVICE_URL);
         return proxyHydrate(app, request, reply, "/api/v1/categories", RECIPE_SERVICE_URL);
     });
 

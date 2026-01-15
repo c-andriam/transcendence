@@ -1,96 +1,104 @@
 import { FastifyInstance } from "fastify";
 import { createCategory, deleteCategory, getAllCategories, getCategoryById, getCategoryBySlug, updateCategory } from "../services/category.service";
-import { HttpStatus, sendConflict, sendError, sendNotFound, sendCreated, sendSuccess } from "@transcendence/common";
+import {
+    sendCreated,
+    sendSuccess,
+    sendDeleted,
+    authMiddleware,
+    bodyValidator,
+    NotFoundError,
+    ConflictError
+} from "@transcendence/common";
+import { z } from "zod";
+
+const createCategorySchema = z.object({
+    name: z.string().min(1).max(100),
+    iconName: z.string().optional(),
+    color: z.string().regex(/^#[0-9A-Fa-f]{6}$/).optional(),
+    sortOrder: z.number().int().min(0).optional()
+});
+
+const updateCategorySchema = z.object({
+    name: z.string().min(1).max(100).optional(),
+    iconName: z.string().optional(),
+    color: z.string().regex(/^#[0-9A-Fa-f]{6}$/).optional(),
+    sortOrder: z.number().int().min(0).optional()
+});
 
 export async function categoryRoutes(app: FastifyInstance) {
-    app.post("/categories", async (request, reply) => {
-        const body = request.body as {
-            name: string;
-            iconName?: string;
-            color?: string;
-            sortOrder?: number;
-        };
+
+    app.post("/categories", {
+        preHandler: [authMiddleware, bodyValidator(createCategorySchema)]
+    }, async (request, reply) => {
+        const body = request.body as z.infer<typeof createCategorySchema>;
         try {
             const category = await createCategory(body);
-            return sendCreated(reply, category);
+            return sendCreated(reply, category, "Category created successfully");
         } catch (error) {
             if ((error as any).code === "P2002") {
-                return sendConflict(reply, "Category name already exists");
+                throw new ConflictError("Category name already exists");
             }
-            sendError(reply, "Internal server error");
+            throw error;
         }
     });
 
     app.get("/categories", async (request, reply) => {
-        try {
-            const categories = await getAllCategories();
-            return sendSuccess(reply, categories);
-        } catch (error) {
-            sendError(reply, "Internal server error");
-        }
+        const categories = await getAllCategories();
+        return sendSuccess(reply, categories, "Categories retrieved successfully");
     });
 
     app.get("/categories/:id", async (request, reply) => {
         const { id } = request.params as { id: string };
-        try {
-            const category = await getCategoryById(id);
-            if (!category) {
-                return sendNotFound(reply, "Category not found");
-            }
-            return sendSuccess(reply, category);
-        } catch (error) {
-            sendError(reply, "Internal server error");
+        const category = await getCategoryById(id);
+        if (!category) {
+            throw new NotFoundError("Category not found");
         }
+        return sendSuccess(reply, category, "Category retrieved successfully");
     });
 
     app.get("/categories/by-slug/:slug", async (request, reply) => {
         const { slug } = request.params as { slug: string };
-        try {
-            const category = await getCategoryBySlug(slug);
-            if (!category) {
-                return sendNotFound(reply, "Category not found");
-            }
-            return sendSuccess(reply, category);
-        } catch (error) {
-            sendError(reply, "Internal server error");
+        const category = await getCategoryBySlug(slug);
+        if (!category) {
+            throw new NotFoundError("Category not found");
         }
+        return sendSuccess(reply, category, "Category retrieved successfully");
     });
 
-    app.put("/categories/:id", async (request, reply) => {
+    app.put("/categories/:id", {
+        preHandler: [authMiddleware, bodyValidator(updateCategorySchema)]
+    }, async (request, reply) => {
         const { id } = request.params as { id: string };
-        const body = request.body as {
-            name?: string;
-            iconName?: string;
-            color?: string;
-            sortOrder?: number;
-        };
+        const body = request.body as z.infer<typeof updateCategorySchema>;
         try {
             const category = await updateCategory(id, body);
             if (!category) {
-                return sendNotFound(reply, "Category not found");
+                throw new NotFoundError("Category not found");
             }
-            return sendSuccess(reply, category);
+            return sendSuccess(reply, category, "Category updated successfully");
         } catch (error) {
             if ((error as any).code === "P2025") {
-                return sendNotFound(reply, "Category not found");
+                throw new NotFoundError("Category not found");
             }
-            sendError(reply, "Internal server error");
+            throw error;
         }
     });
 
-    app.delete("/categories/:id", async (request, reply) => {
+    app.delete("/categories/:id", {
+        preHandler: [authMiddleware]
+    }, async (request, reply) => {
         const { id } = request.params as { id: string };
         try {
             const category = await deleteCategory(id);
             if (!category) {
-                return sendNotFound(reply, "Category not found");
+                throw new NotFoundError("Category not found");
             }
-            return sendSuccess(reply, category);
+            return sendDeleted(reply, category, "Category deleted successfully");
         } catch (error) {
             if ((error as any).code === "P2025") {
-                return sendNotFound(reply, "Category not found");
+                throw new NotFoundError("Category not found");
             }
-            sendError(reply, "Internal server error");
+            throw error;
         }
     });
 }

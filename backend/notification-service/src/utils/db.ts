@@ -6,13 +6,13 @@ import dotenv from "dotenv";
 import path from "path";
 
 dotenv.config({
-  path: path.resolve(__dirname, "../../../.env"),
+    path: path.resolve(__dirname, "../../../.env"),
 });
 
-const connectionString = `${process.env.RECIPE_DATABASE_URL}`;
+const connectionString = `${process.env.NOTIFICATION_DATABASE_URL}`;
 const pool = new Pool({ connectionString, connectionTimeoutMillis: 15000 });
 pool.on('connect', (client) => {
-  client.query('SET search_path TO recipe_service');
+    client.query('SET search_path TO notification_service');
 });
 const adapter = new PrismaPg(pool);
 const db = new PrismaClient({ adapter });

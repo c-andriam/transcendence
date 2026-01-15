@@ -23,7 +23,7 @@ export async function authRoutes(app: FastifyInstance) {
         preHandler: [strictRateLimiter(15, 60000)],
         handler: async (request, reply) => {
             try {
-                const { statusCode, body } = await proxyRequest(request, reply, "/auth/register", AUTH_SERVICE_URL);
+                const { statusCode, body } = await proxyRequest(request, reply, "/api/v1/auth/register", AUTH_SERVICE_URL);
                 return reply.status(statusCode).send(body);
             } catch (error) {
                 app.log.error(error);
@@ -36,7 +36,7 @@ export async function authRoutes(app: FastifyInstance) {
         preHandler: [strictRateLimiter(15, 60000)],
         handler: async (request, reply) => {
             try {
-                const { statusCode, body } = await proxyRequest(request, reply, "/auth/login", AUTH_SERVICE_URL);
+                const { statusCode, body } = await proxyRequest(request, reply, "/api/v1/auth/login", AUTH_SERVICE_URL);
                 return reply.status(statusCode).send(body);
             } catch (error) {
                 app.log.error(error);
@@ -46,10 +46,10 @@ export async function authRoutes(app: FastifyInstance) {
     });
 
     app.post("/auth/refresh", {
-        preHandler: [moderateRateLimiter(20, 60000)],
+        preHandler: [moderateRateLimiter(10, 60000)],
         handler: async (request, reply) => {
             try {
-                const { statusCode, body } = await proxyRequest(request, reply, "/auth/refresh", AUTH_SERVICE_URL);
+                const { statusCode, body } = await proxyRequest(request, reply, "/api/v1/auth/refresh", AUTH_SERVICE_URL);
                 return reply.status(statusCode).send(body);
             } catch (error) {
                 app.log.error(error);
@@ -60,7 +60,7 @@ export async function authRoutes(app: FastifyInstance) {
 
     app.post("/auth/logout", async (request, reply) => {
         try {
-            const { statusCode, body } = await proxyRequest(request, reply, "/auth/logout", AUTH_SERVICE_URL);
+            const { statusCode, body } = await proxyRequest(request, reply, "/api/v1/auth/logout", AUTH_SERVICE_URL);
             return reply.status(statusCode).send(body);
         } catch (error) {
             app.log.error(error);
@@ -72,7 +72,7 @@ export async function authRoutes(app: FastifyInstance) {
         preHandler: [moderateRateLimiter(5, 60000)],
         handler: async (request, reply) => {
             try {
-                const { statusCode, body } = await proxyRequest(request, reply, "/auth/forgot-password", AUTH_SERVICE_URL);
+                const { statusCode, body } = await proxyRequest(request, reply, "/api/v1/auth/forgot-password", AUTH_SERVICE_URL);
                 return reply.status(statusCode).send(body);
             } catch (error) {
                 app.log.error(error);
@@ -85,7 +85,7 @@ export async function authRoutes(app: FastifyInstance) {
         preHandler: [moderateRateLimiter(5, 60000)],
         handler: async (request, reply) => {
             try {
-                const { statusCode, body } = await proxyRequest(request, reply, "/auth/reset-password", AUTH_SERVICE_URL);
+                const { statusCode, body } = await proxyRequest(request, reply, "/api/v1/auth/reset-password", AUTH_SERVICE_URL);
                 return reply.status(statusCode).send(body);
             } catch (error) {
                 app.log.error(error);
@@ -95,10 +95,10 @@ export async function authRoutes(app: FastifyInstance) {
     });
 
     app.post("/auth/verify-email", {
-        preHandler: [moderateRateLimiter(10, 60000)],
+        preHandler: [moderateRateLimiter(5, 60000)],
         handler: async (request, reply) => {
             try {
-                const { statusCode, body } = await proxyRequest(request, reply, "/auth/verify-email", AUTH_SERVICE_URL);
+                const { statusCode, body } = await proxyRequest(request, reply, "/api/v1/auth/verify-email", AUTH_SERVICE_URL);
                 return reply.status(statusCode).send(body);
             } catch (error) {
                 app.log.error(error);
@@ -111,7 +111,7 @@ export async function authRoutes(app: FastifyInstance) {
         preHandler: [moderateRateLimiter(5, 60000)],
         handler: async (request, reply) => {
             try {
-                const { statusCode, body } = await proxyRequest(request, reply, "/auth/resend-verification", AUTH_SERVICE_URL);
+                const { statusCode, body } = await proxyRequest(request, reply, "/api/v1/auth/resend-verification", AUTH_SERVICE_URL);
                 return reply.status(statusCode).send(body);
             } catch (error) {
                 app.log.error(error);
