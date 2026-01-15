@@ -24,6 +24,7 @@ export async function notificationsRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Notifications"],
             summary: "Get all notifications",
+            description: "### Overview\nRetrieves a list of notifications for the authenticated user.\n\n### Technical Details\n- Fetches data from the `notification-service`.\n- Supports pagination (default: page 1, limit 20).\n- Includes metadata (data field) for deep-linking in the frontend.\n\n### Security\n- Requires a valid JWT Bearer Token.\n- Only returns notifications belonging to the authenticated user.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             querystring: {
                 type: "object",
@@ -81,6 +82,7 @@ export async function notificationsRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Notifications"],
             summary: "Mark notification as read",
+            description: "### Overview\nUpdates the status of a specific notification to 'read'.\n\n### Technical Details\n- Updates the `isRead` flag in the `notification-service` database.\n- Validates that the notification belongs to the requester.\n\n### Side Effects\n- Decrements the unread notification count in the frontend (via WebSocket or polling).",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -111,6 +113,7 @@ export async function notificationsRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Notifications"],
             summary: "Mark all notifications as read",
+            description: "### Overview\nBulk updates all unread notifications for the user to 'read'.\n\n### Technical Details\n- Performs a batch update in the `notification-service`.\n\n### Side Effects\n- Resets the unread notification count to zero.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             response: {
                 200: createResponseSchema({
@@ -134,6 +137,7 @@ export async function notificationsRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Notifications"],
             summary: "Delete notification",
+            description: "### Overview\nPermanently removes a notification.\n\n### Technical Details\n- Deletes the record from the `notification-service` database.\n\n### Security\n- Requires ownership of the notification.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",

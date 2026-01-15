@@ -63,9 +63,9 @@ const start = async () => {
       {
         openapi: "3.0.3",
         info: {
-          title: "API GATEWAY",
+          title: "Transcendence API Gateway",
           version: "1.0.0",
-          description: "API Gateway for Transcendence application"
+          description: "Central entry point for the Transcendence microservices architecture. This gateway handles authentication, rate limiting, and request routing to specialized services (Auth, User, Recipe, Notification, etc.)."
         },
         servers: [
           {

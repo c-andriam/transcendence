@@ -22,8 +22,8 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Recipes"],
             summary: "Get all recipes",
+            description: "### Overview\nRetrieves a global list of published recipes.\n\n### Technical Details\n- Proxies request to `recipe-service`.\n- Returns a summary version of recipes (no full ingredients/instructions).\n- Filters out unpublished drafts by default.\n\n### Security\n- Publicly accessible.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            description: "Retrieve a list of all published recipes. Note: For paginated search, use /recipes/search",
             response: {
                 200: createResponseSchema({
                     type: "array",
@@ -40,8 +40,8 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Recipes"],
             summary: "Get recipe by ID",
+            description: "### Overview\nRetrieves the complete details of a specific recipe.\n\n### Technical Details\n- Fetches full data including ingredients, instructions, and dietary tags.\n- Increments the `viewCount` for the recipe.\n\n### Validation & Constraints\n- **id**: Must be a valid UUID.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            description: "Retrieve full details of a specific recipe including ingredients and instructions.",
             params: {
                 type: "object",
                 required: ["id"],
@@ -63,8 +63,8 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Recipes"],
             summary: "Create a new recipe",
+            description: "### Overview\nPublishes a new recipe to the platform.\n\n### Technical Details\n1. Validates input data (ingredients, instructions, times).\n2. Associates the recipe with the authenticated user (author).\n3. Automatically generates a unique slug based on the title.\n\n### Validation & Constraints\n- **title**: 3-200 characters.\n- **ingredients**: At least 1 required.\n- **instructions**: At least 1 required.\n\n### Side Effects\n- Creates records in `Recipe`, `Ingredient`, and `Instruction` tables.\n- Triggers a notification to followers of the author.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            description: "Create a new recipe. Requires authentication. categoryId and authorId are required.",
             body: {
                 type: "object",
                 required: ["title", "description", "prepTime", "cookTime", "servings", "categoryId"],
@@ -118,8 +118,8 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Recipes"],
             summary: "Update recipe",
+            description: "### Overview\nModifies an existing recipe.\n\n### Technical Details\n- Supports partial updates.\n- Recalculates the slug if the title changes.\n\n### Security\n- Only the original author or an administrator can update the recipe.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            description: "Partially update a recipe. Only the author can perform this action.",
             params: {
                 type: "object",
                 required: ["id"],
@@ -180,8 +180,8 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Recipes"],
             summary: "Delete recipe",
+            description: "### Overview\nRemoves a recipe from the platform.\n\n### Technical Details\n- Performs a permanent delete from the database.\n- All associated ingredients and instructions are also removed.\n\n### Security\n- Requires Owner or Admin privileges.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            description: "Soft delete a recipe. Only the author or an admin can perform this action.",
             params: {
                 type: "object",
                 required: ["id"],
@@ -208,8 +208,8 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Recipes"],
             summary: "Get recipe by Slug",
+            description: "### Overview\nRetrieves a recipe using its SEO-friendly slug.\n\n### Technical Details\n- Fetches full data including ingredients, instructions, and dietary tags.\n- Increments the `viewCount` for the recipe.\n\n### Validation & Constraints\n- **slug**: Must be a valid URL-friendly string.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            description: "Retrieve a recipe using its SEO-friendly slug.",
             params: {
                 type: "object",
                 properties: {
@@ -231,8 +231,8 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Recipes"],
             summary: "Rate a recipe",
+            description: "### Overview\nAllows users to rate a recipe on a scale of 1 to 5 stars.\n\n### Technical Details\n- Uses an upsert operation: creates a new rating or updates an existing one.\n- Recalculates the average score for the recipe.\n\n### Validation & Constraints\n- **score**: Must be an integer between 1 and 5.\n- **author**: Users cannot rate their own recipes.\n\n### Side Effects\n- Sends a notification to the recipe author.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            description: "Add a rating from 1 to 5 stars. Author cannot rate their own recipe.",
             params: {
                 type: "object",
                 required: ["id"],
@@ -268,8 +268,8 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Recipes"],
             summary: "Get ratings summary for a recipe",
+            description: "### Overview\nRetrieves the aggregated rating statistics for a specific recipe.\n\n### Technical Details\n- Calculates the average score from all user ratings.\n- Counts the total number of unique users who rated the recipe.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            description: "Retrieve average score and total number of raters.",
             params: {
                 type: "object",
                 required: ["id"],
@@ -298,6 +298,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Recipes"],
             summary: "Update rating",
+            description: "### Overview\nChanges the score of an existing rating.\n\n### Technical Details\n- Updates the `score` field in the `Ratings` table.\n- Triggers a recalculation of the recipe's average score.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -328,8 +329,8 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Recipes"],
             summary: "Delete rating",
+            description: "### Overview\nRemoves a user's rating from a recipe.\n\n### Technical Details\n- Deletes the rating record from the database.\n- Triggers a recalculation of the recipe's average score and total raters.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            description: "Remove your rating from a recipe.",
             params: {
                 type: "object",
                 required: ["id"],
@@ -359,8 +360,8 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Categories"],
             summary: "Create category",
+            description: "### Overview\nAdds a new category for recipe classification.\n\n### Technical Details\n- Generates a unique slug from the category name.\n- Used for filtering and organization.\n\n### Security\n- Restricted to administrators.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            description: "Create a new recipe category. Required for grouping recipes.",
             body: {
                 type: "object",
                 required: ["name"],
@@ -382,6 +383,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Categories"],
             summary: "Get all categories",
+            description: "### Overview\nRetrieves a list of all available recipe categories.\n\n### Technical Details\n- Returns category names, slugs, and descriptions.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             response: {
                 200: createResponseSchema({
@@ -399,7 +401,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Categories"],
             summary: "Get category by ID",
-            description: "Retrieve a specific category by its unique identifier.",
+            description: "### Overview\nRetrieves detailed information for a specific category using its UUID.\n\n### Technical Details\n- Fetches category name, slug, description, and associated metadata.\n\n### Validation & Constraints\n- **id**: Must be a valid UUID.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -422,7 +424,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Categories"],
             summary: "Get category by slug",
-            description: "Retrieve a specific category by its URL-friendly slug.",
+            description: "### Overview\nRetrieves category details using its SEO-friendly slug.\n\n### Technical Details\n- Fetches category name, slug, description, and associated metadata.\n\n### Validation & Constraints\n- **slug**: Must be a valid URL-friendly string.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -445,7 +447,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Categories"],
             summary: "Update category",
-            description: "Update an existing category. Admin access required.",
+            description: "### Overview\nModifies an existing category.\n\n### Technical Details\n- Supports partial updates for name, description, icon, and sort order.\n- Recalculates the slug if the name changes.\n\n### Security\n- Restricted to administrators.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -477,7 +479,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Categories"],
             summary: "Delete category",
-            description: "Delete a category. Admin access required. Will fail if recipes are using this category.",
+            description: "### Overview\nPermanently removes a category.\n\n### Technical Details\n- Deletes the category record from the database.\n- Checks for associated recipes; deletion will fail if recipes are still linked to this category.\n\n### Security\n- Restricted to administrators.\n\n### Side Effects\n- Recipes associated with this category may need to be reassigned or will have a null category.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -506,8 +508,8 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Recipes"],
             summary: "Search recipes",
+            description: "### Overview\nAdvanced search engine for recipes.\n\n### Technical Details\n- Supports filtering by category, difficulty, time, and dietary tags.\n- Uses full-text search on title and description.\n- Returns paginated results with metadata.\n\n### Validation & Constraints\n- **page**: Default 1.\n- **limit**: Default 10, max 100.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            description: "Advanced search with multiple filters and pagination.",
             querystring: {
                 type: "object",
                 properties: {
@@ -545,6 +547,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Recipes"],
             summary: "Get recipes by category",
+            description: "### Overview\nLists all published recipes belonging to a specific category.\n\n### Technical Details\n- Filters recipes by the provided `categoryId`.\n- Returns summary data for each recipe.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -580,6 +583,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Recipes"],
             summary: "Get recipes by author",
+            description: "### Overview\nLists all published recipes created by a specific user.\n\n### Technical Details\n- Filters recipes by the provided `authorId`.\n- Returns summary data for each recipe.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -615,6 +619,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Recipes"],
             summary: "Get recipes by difficulty",
+            description: "### Overview\nLists all published recipes with a specific difficulty level.\n\n### Technical Details\n- Filters recipes by the provided `difficulty` (EASY, MEDIUM, HARD).\n- Returns summary data for each recipe.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -650,8 +655,8 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Recipes"],
             summary: "Get my recipes",
+            description: "### Overview\nRetrieves a list of recipes created by the authenticated user.\n\n### Technical Details\n- Includes both published and draft recipes.\n- Returns summary data for each recipe.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            description: "Retrieve professional recipes created by the authenticated user, including unpublished drafts.",
             querystring: {
                 type: "object",
                 properties: {
@@ -680,6 +685,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Comments"],
             summary: "Get comments for a recipe",
+            description: "### Overview\nRetrieves all comments for a specific recipe.\n\n### Technical Details\n- Returns a threaded list of comments (including replies).\n- Includes user profile data for each commenter.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -726,6 +732,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Comments"],
             summary: "Post a comment on a recipe",
+            description: "### Overview\nAdds a user comment to a recipe.\n\n### Technical Details\n- Stores the comment text and associates it with the user and recipe.\n- Supports markdown-lite (optional/recommended).\n\n### Side Effects\n- Notifies the recipe author of the new comment.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -761,7 +768,8 @@ export async function recipesRoutes(app: FastifyInstance) {
     app.put("/recipes/:id/comments/:commentId", {
         schema: {
             tags: ["Comments"],
-            summary: "Update your comment",
+            summary: "Update comment",
+            description: "### Overview\nModifies the text of an existing comment.\n\n### Security\n- Only the original author can update their comment.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -773,7 +781,6 @@ export async function recipesRoutes(app: FastifyInstance) {
             },
             body: {
                 type: "object",
-                required: ["content"],
                 properties: {
                     content: { type: "string", minLength: 1, maxLength: 2000 }
                 }
@@ -798,7 +805,8 @@ export async function recipesRoutes(app: FastifyInstance) {
     app.delete("/recipes/:id/comments/:commentId", {
         schema: {
             tags: ["Comments"],
-            summary: "Delete your comment",
+            summary: "Delete comment",
+            description: "### Overview\nPermanently removes a comment.\n\n### Side Effects\n- All replies to this comment are also deleted (cascading delete).",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -825,6 +833,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Comments"],
             summary: "Reply to a comment",
+            description: "### Overview\nAllows users to reply to an existing comment, creating a threaded conversation.\n\n### Technical Details\n- Links the new comment to a `parentId`.\n\n### Side Effects\n- Notifies the original commenter of the reply.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -863,8 +872,8 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Recipes"],
             summary: "Add to favorites",
+            description: "### Overview\nMarks a recipe as a personal favorite.\n\n### Technical Details\n- Creates a link between the user and the recipe in the `Favorites` table.\n\n### Side Effects\n- Notifies the recipe author that their work has been favorited.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            description: "Add a recipe to your personal favorites list.",
             params: {
                 type: "object",
                 required: ["id"],
@@ -894,6 +903,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Recipes"],
             summary: "Remove from favorites",
+            description: "### Overview\nRemoves a recipe from the user's personal favorites list.\n\n### Technical Details\n- Deletes the link between the user and the recipe in the `Favorites` table.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -923,7 +933,8 @@ export async function recipesRoutes(app: FastifyInstance) {
     app.get("/me/favorites", {
         schema: {
             tags: ["Recipes"],
-            summary: "Get my favorite recipes",
+            summary: "Get user favorites",
+            description: "### Overview\nRetrieves a list of all recipes favorited by a specific user.\n\n### Technical Details\n- Queries the `Favorites` table for the provided `userId`.\n- Returns summary data for each favorited recipe.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             querystring: {
                 type: "object",
@@ -955,6 +966,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Images"],
             summary: "Get recipe images",
+            description: "### Overview\nRetrieves all images associated with a specific recipe.\n\n### Technical Details\n- Returns a list of image URLs and metadata (primary status, sort order).",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -978,8 +990,8 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Images"],
             summary: "Upload recipe image",
+            description: "### Overview\nUploads a new image for a recipe.\n\n### Technical Details\n- Processes multipart/form-data.\n- Uploads the file to Cloudinary.\n- Stores the resulting URL and metadata in the database.\n\n### Validation & Constraints\n- **file**: Must be a valid image (JPEG, PNG, WebP).",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
-            description: "Upload a single image file for a recipe.",
             consumes: ['multipart/form-data'],
             params: {
                 type: "object",
@@ -1008,6 +1020,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Images"],
             summary: "Add image by URL",
+            description: "### Overview\nAssociates an external image URL with a recipe.\n\n### Technical Details\n- Validates the URL format.\n- Stores the URL directly in the database (no Cloudinary upload).",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -1038,6 +1051,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Images"],
             summary: "Bulk delete images",
+            description: "### Overview\nRemoves multiple images from a recipe in a single request.\n\n### Technical Details\n- Deletes records from the database.\n- Triggers deletion of files from Cloudinary storage.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -1065,6 +1079,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Images"],
             summary: "Update image metadata",
+            description: "### Overview\nModifies the metadata (e.g., alt text, sort order) for a specific image.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -1095,7 +1110,8 @@ export async function recipesRoutes(app: FastifyInstance) {
     app.post("/recipes/:recipeId/images/:imageId/primary", {
         schema: {
             tags: ["Images"],
-            summary: "Set as primary image",
+            summary: "Set primary image",
+            description: "### Overview\nDesignates a specific image as the main thumbnail for the recipe.\n\n### Technical Details\n- Updates the `isPrimary` flag.\n- Ensures only one image is marked as primary per recipe.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -1119,13 +1135,13 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Images"],
             summary: "Delete recipe image",
+            description: "### Overview\nPermanently removes a single image from a recipe.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
                 required: ["recipeId", "imageId"],
                 properties: {
-                    recipeId: { type: "string", format: "uuid", description: "Recipe ID" },
-                    imageId: { type: "string", format: "uuid", description: "Image ID" }
+                    recipeId: { type: "string", format: "uuid", description: "Recipe ID" }
                 }
             },
             response: {
@@ -1142,6 +1158,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Images"],
             summary: "Add multiple images by URLs",
+            description: "### Overview\nAssociates multiple external image URLs with a recipe in a single operation.\n\n### Technical Details\n- Validates each URL.\n- Creates multiple records in the `Images` table.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -1179,6 +1196,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Images"],
             summary: "Upload multiple images",
+            description: "### Overview\nUploads multiple image files for a recipe.\n\n### Technical Details\n- Processes `multipart/form-data` with multiple files.\n- Uploads all files to Cloudinary.\n- Creates multiple `Images` records.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             consumes: ['multipart/form-data'],
             params: {
@@ -1208,6 +1226,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Images"],
             summary: "Reorder recipe images",
+            description: "### Overview\nUpdates the display sequence of images for a recipe.\n\n### Technical Details\n- Updates the `sortOrder` field for multiple images.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -1237,6 +1256,7 @@ export async function recipesRoutes(app: FastifyInstance) {
             hide: true,
             tags: ["Dietary Tags"],
             summary: "Create dietary tag",
+            description: "### Overview\nAdds a new dietary tag (e.g., Vegan, Gluten-Free).\n\n### Security\n- Restricted to administrators.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             body: {
                 type: "object",
@@ -1268,6 +1288,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Dietary Tags"],
             summary: "Get all dietary tags",
+            description: "### Overview\nLists all available dietary tags for recipe classification.\n\n### Technical Details\n- Returns tag names, slugs, descriptions, and icon names.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             response: {
                 200: createResponseSchema({
@@ -1293,6 +1314,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Dietary Tags"],
             summary: "Get dietary tag by ID",
+            description: "### Overview\nRetrieves detailed information for a specific dietary tag using its UUID.\n\n### Technical Details\n- Fetches tag name, slug, description, and icon name.\n\n### Validation & Constraints\n- **id**: Must be a valid UUID.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -1324,6 +1346,7 @@ export async function recipesRoutes(app: FastifyInstance) {
             hide: true,
             tags: ["Dietary Tags"],
             summary: "Update dietary tag",
+            description: "### Overview\nModifies an existing dietary tag.\n\n### Technical Details\n- Supports partial updates for name, description, and icon name.\n- Recalculates the slug if the name changes.\n\n### Security\n- Restricted to administrators.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -1363,6 +1386,7 @@ export async function recipesRoutes(app: FastifyInstance) {
             hide: true,
             tags: ["Dietary Tags"],
             summary: "Delete dietary tag",
+            description: "### Overview\nPermanently removes a dietary tag.\n\n### Technical Details\n- Deletes the tag record from the database.\n- Checks for associated recipes; deletion will fail if recipes are still linked to this tag.\n\n### Security\n- Restricted to administrators.\n\n### Side Effects\n- Recipes associated with this tag may need to be updated or will lose the tag.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -1394,6 +1418,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Collections"],
             summary: "Create collection",
+            description: "### Overview\nCreates a custom folder/collection to organize recipes.\n\n### Technical Details\n- Collections can be public or private.\n- Users can add multiple recipes to a single collection.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             body: {
                 type: "object",
@@ -1417,6 +1442,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Collections"],
             summary: "Get all collections",
+            description: "### Overview\nRetrieves a list of all public collections or the user's private collections.\n\n### Technical Details\n- Filters by `isPublic` or `userId`.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             response: {
                 200: createResponseSchema({
@@ -1434,6 +1460,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Collections"],
             summary: "Get collection details",
+            description: "### Overview\nRetrieves the full details of a collection, including all recipes contained within it.\n\n### Technical Details\n- Joins the `Collection` and `Recipe` tables via the `CollectionRecipe` link.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -1499,6 +1526,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Collections"],
             summary: "Update collection",
+            description: "### Overview\nModifies an existing collection.\n\n### Technical Details\n- Supports partial updates for name, description, and public/private status.\n\n### Security\n- Only the owner of the collection can update it.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -1536,6 +1564,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Collections"],
             summary: "Delete collection",
+            description: "### Overview\nPermanently removes a collection.\n\n### Technical Details\n- Deletes the collection record from the database.\n- All links to recipes in this collection are also removed.\n\n### Security\n- Only the collection owner can delete it.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -1561,6 +1590,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Collections"],
             summary: "Add recipe to collection",
+            description: "### Overview\nLinks a recipe to a specific collection.\n\n### Technical Details\n- Creates a record in the `CollectionRecipe` table.\n\n### Security\n- Only the collection owner can add recipes.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -1591,6 +1621,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Collections"],
             summary: "Remove recipe from collection",
+            description: "### Overview\nRemoves a recipe from a collection.\n\n### Technical Details\n- Deletes the record from the `CollectionRecipe` table.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -1618,6 +1649,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Shopping List"],
             summary: "Get my shopping list",
+            description: "### Overview\nRetrieves all items currently in the user's shopping list.\n\n### Technical Details\n- Returns item names, quantities, and checked status.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             response: {
                 200: createResponseSchema({
@@ -1643,6 +1675,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Shopping List"],
             summary: "Add item manually to list",
+            description: "### Overview\nAllows users to add custom items to their shopping list.\n\n### Technical Details\n- Creates a new record in the `ShoppingListItem` table.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             body: {
                 type: "object",
@@ -1674,6 +1707,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Shopping List"],
             summary: "Add all recipe ingredients to list",
+            description: "### Overview\nAutomatically adds all ingredients from a specific recipe to the user's shopping list.\n\n### Technical Details\n- Fetches the recipe's ingredient list.\n- Creates multiple items in the `ShoppingListItem` table.\n- Skips ingredients already present in the list (optional/implementation dependent).",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -1699,6 +1733,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Shopping List"],
             summary: "Update shopping list item",
+            description: "### Overview\nModifies an existing shopping list item (e.g., changing quantity or checking it off).",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -1732,6 +1767,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Shopping List"],
             summary: "Remove item from list",
+            description: "### Overview\nPermanently removes an item from the shopping list.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -1757,6 +1793,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Shopping List"],
             summary: "Remove all checked items",
+            description: "### Overview\nBulk deletes all items that have been marked as 'checked' from the shopping list.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             response: {
                 200: createResponseSchema({
@@ -1774,6 +1811,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Shopping List"],
             summary: "Clear all items from list",
+            description: "### Overview\nRemoves every item from the user's shopping list, resetting it to empty.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             response: {
                 200: createResponseSchema({
@@ -1792,6 +1830,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Meal Plans"],
             summary: "Plan a meal",
+            description: "### Overview\nSchedules a recipe for a specific date and meal type (e.g., Breakfast, Lunch).\n\n### Technical Details\n- Creates a record in the `MealPlan` table.\n- Used for generating weekly meal calendars.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             body: {
                 type: "object",
@@ -1827,6 +1866,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Meal Plans"],
             summary: "Get my meal plans",
+            description: "### Overview\nRetrieves all meal plans scheduled by the authenticated user.\n\n### Technical Details\n- Supports date range filtering via `startDate` and `endDate`.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             querystring: {
                 type: "object",
@@ -1863,6 +1903,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Meal Plans"],
             summary: "Get meal plans for a specific date",
+            description: "### Overview\nRetrieves all recipes planned for a single day.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -1900,6 +1941,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Meal Plans"],
             summary: "Update meal plan",
+            description: "### Overview\nChanges the date or meal type of an existing meal plan.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -1941,6 +1983,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Meal Plans"],
             summary: "Delete meal plan",
+            description: "### Overview\nRemoves a recipe from the meal calendar.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -1977,6 +2020,7 @@ export async function recipesRoutes(app: FastifyInstance) {
             hide: true,
             tags: ["Reports"],
             summary: "Report a recipe",
+            description: "### Overview\nAllows users to report inappropriate or incorrect recipes.\n\n### Technical Details\n- Creates a `Report` record with a reason and description.\n- Sets status to `PENDING` for moderator review.\n\n### Side Effects\n- May trigger an alert to the moderation team.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -2018,6 +2062,7 @@ export async function recipesRoutes(app: FastifyInstance) {
             hide: true,
             tags: ["Reports"],
             summary: "Report a comment",
+            description: "### Overview\nFlags a comment for administrative review.\n\n### Technical Details\n- Creates a record in the `Reports` table.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -2055,20 +2100,36 @@ export async function recipesRoutes(app: FastifyInstance) {
     });
 
     app.get("/admin/reports", {
-        schema: { hide: true, tags: ["Admin"], summary: "Get all reports", security: [{ bearerAuth: [] }] }
+        schema: {
+            hide: true,
+            tags: ["Admin"],
+            summary: "Get all reports",
+            description: "### Overview\nRetrieves a comprehensive list of all reports submitted by users.\n\n### Technical Details\n- Supports filtering by status (PENDING, RESOLVED, etc.) and target type.\n- Returns paginated results.\n\n### Security\n- Restricted to administrators (Bearer Token required).",
+            security: [{ bearerAuth: [] }]
+        }
     }, async (request, reply) => {
         return proxyHydrate(app, request, reply, "/api/v1/admin/reports", RECIPE_SERVICE_URL);
     });
 
     app.get("/admin/reports/stats", {
-        schema: { hide: true, tags: ["Admin"], summary: "Get reports statistics", security: [{ bearerAuth: [] }] }
+        schema: {
+            hide: true,
+            tags: ["Admin"],
+            summary: "Get reports statistics",
+            description: "### Overview\nProvides a high-level summary of moderation activity.\n\n### Technical Details\n- Returns counts of reports grouped by status and priority.\n\n### Security\n- Restricted to administrators.",
+            security: [{ bearerAuth: [] }]
+        }
     }, async (request, reply) => {
         return proxyHydrate(app, request, reply, "/api/v1/admin/reports/stats", RECIPE_SERVICE_URL);
     });
 
     app.get("/admin/reports/:id", {
         schema: {
-            hide: true, tags: ["Admin"], summary: "Get report by ID", security: [{ bearerAuth: [] }],
+            hide: true,
+            tags: ["Admin"],
+            summary: "Get report by ID",
+            description: "### Overview\nRetrieves the full details of a specific report for investigation.\n\n### Technical Details\n- Includes reporter details and the target content (recipe or comment).\n\n### Security\n- Restricted to administrators.",
+            security: [{ bearerAuth: [] }],
             params: {
                 type: "object",
                 required: ["id"],
@@ -2084,7 +2145,11 @@ export async function recipesRoutes(app: FastifyInstance) {
 
     app.put("/admin/reports/:id", {
         schema: {
-            hide: true, tags: ["Admin"], summary: "Update report status", security: [{ bearerAuth: [] }],
+            hide: true,
+            tags: ["Admin"],
+            summary: "Update report status",
+            description: "### Overview\nUpdates the moderation status of a report.\n\n### Technical Details\n- Allows changing status to `REVIEWED`, `RESOLVED`, or `DISMISSED`.\n- Records the moderator ID and timestamp.\n\n### Security\n- Restricted to administrators.",
+            security: [{ bearerAuth: [] }],
             params: {
                 type: "object",
                 required: ["id"],
