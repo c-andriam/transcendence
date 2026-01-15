@@ -4,7 +4,7 @@ import { strictRateLimiter, moderateRateLimiter } from "../middleware/rateLimite
 import dotenv from "dotenv";
 import path from "path";
 import { bodyValidator, HttpStatus, sendError } from "@transcendence/common";
-import { commonResponses } from "../utils/swagger.schemas";
+import { commonResponses, createResponseSchema } from "../utils/swagger.schemas";
 
 dotenv.config({
     path: path.resolve(__dirname, "../../../.env"),
@@ -36,7 +36,7 @@ export async function authRoutes(app: FastifyInstance) {
                 }
             },
             response: {
-                201: {
+                200: createResponseSchema({
                     type: "object",
                     properties: {
                         message: { type: "string" },
@@ -49,7 +49,7 @@ export async function authRoutes(app: FastifyInstance) {
                             }
                         }
                     }
-                },
+                }),
                 ...commonResponses
             }
         },
@@ -72,14 +72,14 @@ export async function authRoutes(app: FastifyInstance) {
             security: [],
             body: {
                 type: "object",
-                required: ["email", "password"],
+                required: ["identifier", "password"],
                 properties: {
-                    email: { type: "string", format: "email" },
+                    identifier: { type: "string", minLength: 3 },
                     password: { type: "string" }
                 }
             },
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "object",
                     properties: {
                         message: { type: "string" },
@@ -94,7 +94,7 @@ export async function authRoutes(app: FastifyInstance) {
                             }
                         }
                     }
-                },
+                }),
                 ...commonResponses
             }
         },
@@ -116,12 +116,12 @@ export async function authRoutes(app: FastifyInstance) {
             summary: "Refresh access token",
             security: [],
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "object",
                     properties: {
                         accessToken: { type: "string" }
                     }
-                },
+                }),
                 ...commonResponses
             }
         },
@@ -143,12 +143,12 @@ export async function authRoutes(app: FastifyInstance) {
             summary: "Logout user",
             security: [],
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "object",
                     properties: {
                         message: { type: "string" }
                     }
-                },
+                }),
                 ...commonResponses
             }
         }
@@ -175,12 +175,12 @@ export async function authRoutes(app: FastifyInstance) {
                 }
             },
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "object",
                     properties: {
                         message: { type: "string" }
                     }
-                },
+                }),
                 ...commonResponses
             }
         },
@@ -210,12 +210,12 @@ export async function authRoutes(app: FastifyInstance) {
                 }
             },
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "object",
                     properties: {
                         message: { type: "string" }
                     }
-                },
+                }),
                 ...commonResponses
             }
         },
@@ -244,12 +244,12 @@ export async function authRoutes(app: FastifyInstance) {
                 }
             },
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "object",
                     properties: {
                         message: { type: "string" }
                     }
-                },
+                }),
                 ...commonResponses
             }
         },
@@ -278,12 +278,12 @@ export async function authRoutes(app: FastifyInstance) {
                 }
             },
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "object",
                     properties: {
                         message: { type: "string" }
                     }
-                },
+                }),
                 ...commonResponses
             }
         },

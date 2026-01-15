@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
 import { proxyRequest } from "../utils/proxy";
 import { HttpStatus, sendError } from "@transcendence/common";
-import { commonResponses } from "../utils/swagger.schemas";
+import { commonResponses, createResponseSchema } from "../utils/swagger.schemas";
 import dotenv from "dotenv";
 import path from "path";
 
@@ -24,8 +24,9 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Users"],
             summary: "Get current user profile",
+            security: [{ bearerAuth: [] }],
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "object",
                     properties: {
                         id: { type: "string", format: "uuid" },
@@ -35,7 +36,7 @@ export async function usersRoutes(app: FastifyInstance) {
                         avatarUrl: { type: "string" },
                         createdAt: { type: "string" }
                     }
-                },
+                }),
                 ...commonResponses
             }
         }
@@ -54,7 +55,7 @@ export async function usersRoutes(app: FastifyInstance) {
             tags: ["Users"],
             summary: "Get all users",
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "array",
                     items: {
                         type: "object",
@@ -64,7 +65,7 @@ export async function usersRoutes(app: FastifyInstance) {
                             avatarUrl: { type: "string" }
                         }
                     }
-                },
+                }),
                 ...commonResponses
             }
         }
@@ -89,7 +90,7 @@ export async function usersRoutes(app: FastifyInstance) {
                 }
             },
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "array",
                     items: {
                         type: "object",
@@ -99,7 +100,7 @@ export async function usersRoutes(app: FastifyInstance) {
                             avatarUrl: { type: "string" }
                         }
                     }
-                },
+                }),
                 ...commonResponses
             }
         }
@@ -124,7 +125,7 @@ export async function usersRoutes(app: FastifyInstance) {
                 }
             },
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "object",
                     properties: {
                         id: { type: "string", format: "uuid" },
@@ -133,7 +134,7 @@ export async function usersRoutes(app: FastifyInstance) {
                         avatarUrl: { type: "string" },
                         createdAt: { type: "string" }
                     }
-                },
+                }),
                 ...commonResponses
             }
         }
@@ -166,6 +167,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Users"],
             summary: "Change password",
+            security: [{ bearerAuth: [] }],
             body: {
                 type: "object",
                 required: ["currentPassword", "newPassword"],
@@ -175,12 +177,12 @@ export async function usersRoutes(app: FastifyInstance) {
                 }
             },
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "object",
                     properties: {
                         message: { type: "string" }
                     }
-                },
+                }),
                 ...commonResponses
             }
         }
@@ -198,6 +200,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Users"],
             summary: "Update user profile",
+            security: [{ bearerAuth: [] }],
             params: {
                 type: "object",
                 properties: {
@@ -212,14 +215,14 @@ export async function usersRoutes(app: FastifyInstance) {
                 }
             },
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "object",
                     properties: {
                         id: { type: "string", format: "uuid" },
                         username: { type: "string" },
                         fullName: { type: "string" }
                     }
-                },
+                }),
                 ...commonResponses
             }
         }
@@ -238,6 +241,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Users"],
             summary: "Delete user",
+            security: [{ bearerAuth: [] }],
             params: {
                 type: "object",
                 properties: {
@@ -245,12 +249,12 @@ export async function usersRoutes(app: FastifyInstance) {
                 }
             },
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "object",
                     properties: {
                         message: { type: "string" }
                     }
-                },
+                }),
                 ...commonResponses
             }
         }
@@ -269,6 +273,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Follow a user",
+            security: [{ bearerAuth: [] }],
             params: {
                 type: "object",
                 properties: {
@@ -276,12 +281,12 @@ export async function usersRoutes(app: FastifyInstance) {
                 }
             },
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "object",
                     properties: {
                         message: { type: "string" }
                     }
-                },
+                }),
                 ...commonResponses
             }
         }
@@ -300,6 +305,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Unfollow a user",
+            security: [{ bearerAuth: [] }],
             params: {
                 type: "object",
                 properties: {
@@ -307,12 +313,12 @@ export async function usersRoutes(app: FastifyInstance) {
                 }
             },
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "object",
                     properties: {
                         message: { type: "string" }
                     }
-                },
+                }),
                 ...commonResponses
             }
         }
@@ -331,8 +337,9 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Get my followers",
+            security: [{ bearerAuth: [] }],
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "array",
                     items: {
                         type: "object",
@@ -342,7 +349,7 @@ export async function usersRoutes(app: FastifyInstance) {
                             followingId: { type: "string" }
                         }
                     }
-                },
+                }),
                 ...commonResponses
             }
         }
@@ -360,8 +367,9 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Get people I follow",
+            security: [{ bearerAuth: [] }],
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "array",
                     items: {
                         type: "object",
@@ -371,7 +379,7 @@ export async function usersRoutes(app: FastifyInstance) {
                             followingId: { type: "string" }
                         }
                     }
-                },
+                }),
                 ...commonResponses
             }
         }
@@ -396,7 +404,7 @@ export async function usersRoutes(app: FastifyInstance) {
                 }
             },
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "array",
                     items: {
                         type: "object",
@@ -406,7 +414,7 @@ export async function usersRoutes(app: FastifyInstance) {
                             followingId: { type: "string" }
                         }
                     }
-                },
+                }),
                 ...commonResponses
             }
         }
@@ -432,7 +440,7 @@ export async function usersRoutes(app: FastifyInstance) {
                 }
             },
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "array",
                     items: {
                         type: "object",
@@ -442,7 +450,7 @@ export async function usersRoutes(app: FastifyInstance) {
                             followingId: { type: "string" }
                         }
                     }
-                },
+                }),
                 ...commonResponses
             }
         }
@@ -461,6 +469,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Check if following",
+            security: [{ bearerAuth: [] }],
             params: {
                 type: "object",
                 properties: {
@@ -468,12 +477,12 @@ export async function usersRoutes(app: FastifyInstance) {
                 }
             },
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "object",
                     properties: {
                         isFollowing: { type: "boolean" }
                     }
-                },
+                }),
                 ...commonResponses
             }
         }
@@ -492,6 +501,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Send friend request",
+            security: [{ bearerAuth: [] }],
             body: {
                 type: "object",
                 required: ["receiverId"],
@@ -500,13 +510,13 @@ export async function usersRoutes(app: FastifyInstance) {
                 }
             },
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "object",
                     properties: {
                         id: { type: "string", format: "uuid" },
                         status: { type: "string" }
                     }
-                },
+                }),
                 ...commonResponses
             }
         }
@@ -524,6 +534,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Accept friend request",
+            security: [{ bearerAuth: [] }],
             params: {
                 type: "object",
                 properties: {
@@ -531,12 +542,12 @@ export async function usersRoutes(app: FastifyInstance) {
                 }
             },
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "object",
                     properties: {
                         message: { type: "string" }
                     }
-                },
+                }),
                 ...commonResponses
             }
         }
@@ -555,6 +566,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Reject friend request",
+            security: [{ bearerAuth: [] }],
             params: {
                 type: "object",
                 properties: {
@@ -562,12 +574,12 @@ export async function usersRoutes(app: FastifyInstance) {
                 }
             },
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "object",
                     properties: {
                         message: { type: "string" }
                     }
-                },
+                }),
                 ...commonResponses
             }
         }
@@ -586,6 +598,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Remove a friend",
+            security: [{ bearerAuth: [] }],
             params: {
                 type: "object",
                 properties: {
@@ -593,12 +606,12 @@ export async function usersRoutes(app: FastifyInstance) {
                 }
             },
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "object",
                     properties: {
                         message: { type: "string" }
                     }
-                },
+                }),
                 ...commonResponses
             }
         }
@@ -617,8 +630,9 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Get my friends list",
+            security: [{ bearerAuth: [] }],
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "array",
                     items: {
                         type: "object",
@@ -628,7 +642,7 @@ export async function usersRoutes(app: FastifyInstance) {
                             avatarUrl: { type: "string" }
                         }
                     }
-                },
+                }),
                 ...commonResponses
             }
         }
@@ -646,8 +660,9 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Get pending friend requests",
+            security: [{ bearerAuth: [] }],
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "array",
                     items: {
                         type: "object",
@@ -663,7 +678,7 @@ export async function usersRoutes(app: FastifyInstance) {
                             }
                         }
                     }
-                },
+                }),
                 ...commonResponses
             }
         }
@@ -681,6 +696,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Block a user",
+            security: [{ bearerAuth: [] }],
             params: {
                 type: "object",
                 properties: {
@@ -688,12 +704,12 @@ export async function usersRoutes(app: FastifyInstance) {
                 }
             },
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "object",
                     properties: {
                         message: { type: "string" }
                     }
-                },
+                }),
                 ...commonResponses
             }
         }
@@ -712,6 +728,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Unblock a user",
+            security: [{ bearerAuth: [] }],
             params: {
                 type: "object",
                 properties: {
@@ -719,12 +736,12 @@ export async function usersRoutes(app: FastifyInstance) {
                 }
             },
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "object",
                     properties: {
                         message: { type: "string" }
                     }
-                },
+                }),
                 ...commonResponses
             }
         }
@@ -743,8 +760,9 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Get blocked users",
+            security: [{ bearerAuth: [] }],
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "array",
                     items: {
                         type: "object",
@@ -754,7 +772,7 @@ export async function usersRoutes(app: FastifyInstance) {
                             avatarUrl: { type: "string" }
                         }
                     }
-                },
+                }),
                 ...commonResponses
             }
         }
@@ -772,13 +790,14 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Users"],
             summary: "Generate API Key",
+            security: [{ bearerAuth: [] }],
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "object",
                     properties: {
                         apiKey: { type: "string" }
                     }
-                },
+                }),
                 ...commonResponses
             }
         }
@@ -796,6 +815,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Users"],
             summary: "Upload avatar",
+            security: [{ bearerAuth: [] }],
             consumes: ['multipart/form-data'],
             body: {
                 type: 'object',

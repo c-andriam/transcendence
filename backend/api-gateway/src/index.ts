@@ -23,6 +23,16 @@ const env = validateEnv();
 export const app = fastify({
   logger: {
     level: env.LOG_LEVEL
+  },
+  ajv: {
+    customOptions: {
+      removeAdditional: true,
+      useDefaults: true,
+      coerceTypes: true,
+      allErrors: true,
+      strict: false,
+      keywords: ["example"]
+    }
   }
 });
 
@@ -58,7 +68,7 @@ const start = async () => {
         },
         servers: [
           {
-            url: `http://localhost:${env.API_GATEWAY_PORT}/api/v1`,
+            url: `http://localhost:${env.API_GATEWAY_PORT}`,
             description: "Local development server"
           }
         ],
@@ -68,6 +78,11 @@ const start = async () => {
               type: "apiKey",
               name: "x-gateway-api-key",
               in: "header"
+            },
+            bearerAuth: {
+              type: "http",
+              scheme: "bearer",
+              bearerFormat: "JWT"
             }
           }
         },

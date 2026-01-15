@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
 import { proxyRequest } from "../utils/proxy";
 import { HttpStatus, sendError } from "@transcendence/common";
-import { commonResponses } from "../utils/swagger.schemas";
+import { commonResponses, createResponseSchema } from "../utils/swagger.schemas";
 import dotenv from "dotenv";
 import path from "path";
 
@@ -24,8 +24,9 @@ export async function notificationsRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Notifications"],
             summary: "Get all notifications",
+            security: [{ bearerAuth: [] }],
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "array",
                     items: {
                         type: "object",
@@ -37,7 +38,7 @@ export async function notificationsRoutes(app: FastifyInstance) {
                             createdAt: { type: "string" }
                         }
                     }
-                },
+                }),
                 ...commonResponses
             }
         }
@@ -55,6 +56,7 @@ export async function notificationsRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Notifications"],
             summary: "Get notification by ID",
+            security: [{ bearerAuth: [] }],
             params: {
                 type: "object",
                 properties: {
@@ -62,7 +64,7 @@ export async function notificationsRoutes(app: FastifyInstance) {
                 }
             },
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "object",
                     properties: {
                         id: { type: "string", format: "uuid" },
@@ -71,7 +73,7 @@ export async function notificationsRoutes(app: FastifyInstance) {
                         read: { type: "boolean" },
                         createdAt: { type: "string" }
                     }
-                },
+                }),
                 ...commonResponses
             }
         }
@@ -90,6 +92,7 @@ export async function notificationsRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Notifications"],
             summary: "Mark notification as read",
+            security: [{ bearerAuth: [] }],
             params: {
                 type: "object",
                 properties: {
@@ -97,13 +100,13 @@ export async function notificationsRoutes(app: FastifyInstance) {
                 }
             },
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "object",
                     properties: {
                         id: { type: "string", format: "uuid" },
                         read: { type: "boolean" }
                     }
-                },
+                }),
                 ...commonResponses
             }
         }
@@ -122,13 +125,14 @@ export async function notificationsRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Notifications"],
             summary: "Mark all notifications as read",
+            security: [{ bearerAuth: [] }],
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "object",
                     properties: {
                         count: { type: "integer" }
                     }
-                },
+                }),
                 ...commonResponses
             }
         }
@@ -146,6 +150,7 @@ export async function notificationsRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Notifications"],
             summary: "Delete notification",
+            security: [{ bearerAuth: [] }],
             params: {
                 type: "object",
                 properties: {
@@ -153,12 +158,12 @@ export async function notificationsRoutes(app: FastifyInstance) {
                 }
             },
             response: {
-                200: {
+                200: createResponseSchema({
                     type: "object",
                     properties: {
                         message: { type: "string" }
                     }
-                },
+                }),
                 ...commonResponses
             }
         }
