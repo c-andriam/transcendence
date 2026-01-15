@@ -7,7 +7,7 @@ import {
     markAllAsRead,
     markAsRead
 } from "../services/notification.service";
-import { sendSuccess, sendError, HttpStatus, authMiddleware, bodyValidator, ForbiddenError, NotFoundError, NotificationType } from "@transcendence/common";
+import { sendSuccess, authMiddleware, bodyValidator, ForbiddenError, NotificationType } from "@transcendence/common";
 import { z } from "zod";
 
 const resetEmailSchema = z.object({

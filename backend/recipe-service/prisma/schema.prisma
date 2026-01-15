@@ -36,6 +36,7 @@ model Recipe {
     comments     Comment[]
     favorites    Favorite[]
     dietaryTags  RecipeDietaryTag[]
+    collections  CollectionRecipe[]
 
     @@index([authorId])
     @@index([categoryId])
@@ -118,7 +119,7 @@ model RecipeImage {
 
 model DietaryTag {
     id       String  @id @default(uuid())
-    name     String  @unique 
+    name     String  @unique
     slug     String  @unique
     iconName String?
 
@@ -196,5 +197,121 @@ model Favorite {
     @@unique([userId, recipeId])
     @@index([userId])
     @@index([recipeId])
+    @@schema("recipe_service")
+}
+
+// ==================== COLLECTIONS ====================
+
+model Collection {
+    id          String   @id @default(uuid())
+    name        String
+    description String?
+    userId      String
+    isPublic    Boolean  @default(false)
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    recipes CollectionRecipe[]
+
+    @@index([userId])
+    @@schema("recipe_service")
+}
+
+model CollectionRecipe {
+    id String @id @default(uuid())
+
+    collectionId String
+    collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+
+    recipeId String
+    recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+    addedAt DateTime @default(now())
+
+    @@unique([collectionId, recipeId])
+    @@index([collectionId])
+    @@index([recipeId])
+    @@schema("recipe_service")
+}
+
+// ==================== SHOPPING LIST ====================
+
+model ShoppingListItem {
+    id          String   @id @default(uuid())
+    userId      String
+    name        String
+    quantity    String?
+    isChecked   Boolean  @default(false)
+    recipeId    String? // Optional: trace where this item came from
+    recipeTitle String? // Optional: display recipe name in shopping list
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    @@index([userId])
+    @@index([recipeId])
+    @@schema("recipe_service")
+}
+
+// ==================== MEAL PLANNER ====================
+
+enum MealType {
+    BREAKFAST
+    LUNCH
+    DINNER
+    SNACK
+
+    @@schema("recipe_service")
+}
+
+model MealPlan {
+    id        String   @id @default(uuid())
+    userId    String
+    date      DateTime @db.Date
+    mealType  MealType
+    recipeId  String
+    notes     String?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([userId, date, mealType])
+    @@index([userId])
+    @@index([date])
+    @@index([recipeId])
+    @@schema("recipe_service")
+}
+
+// ==================== REPORTS ====================
+
+enum ReportType {
+    RECIPE
+    COMMENT
+
+    @@schema("recipe_service")
+}
+
+enum ReportStatus {
+    PENDING
+    REVIEWED
+    RESOLVED
+    DISMISSED
+
+    @@schema("recipe_service")
+}
+
+model Report {
+    id          String       @id @default(uuid())
+    reporterId  String
+    targetType  ReportType
+    targetId    String
+    reason      String
+    description String?
+    status      ReportStatus @default(PENDING)
+    reviewedBy  String?
+    reviewedAt  DateTime?
+    createdAt   DateTime     @default(now())
+
+    @@index([status])
+    @@index([targetType, targetId])
+    @@index([reporterId])
     @@schema("recipe_service")
 }

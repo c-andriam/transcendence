@@ -2,9 +2,12 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import { UnauthorizedError } from '../error';
 import '@fastify/jwt';
 
+export type UserRole = 'USER' | 'MODERATOR' | 'ADMIN';
+
 export interface JwtSignPayload {
     id: string;
     username: string;
+    role: UserRole;
 }
 
 export interface JwtPayload extends JwtSignPayload {

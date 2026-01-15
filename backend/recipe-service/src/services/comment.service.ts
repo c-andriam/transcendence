@@ -7,6 +7,10 @@ import {
 } from "@transcendence/common";
 import { notifyUser } from "../utils/notifyUser";
 
+export async function getCommentById(commentId: string) {
+    return db.comment.findUnique({ where: { id: commentId } });
+}
+
 export async function getCommentsByRecipeId(
     recipeId: string,
     page: number = 1,

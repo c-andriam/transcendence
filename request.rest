@@ -12,6 +12,7 @@
 @replyCommentId2 = 5d059a4f-67f2-41b7-a5bd-6833e89ad48a
 @requestId = 4ad469b6-883d-4ef8-bc1d-e189fcb38c77
 @notificationId = 
+@itemId = 
 
 ### 1. Register a new user (requires email verification)
 POST {{baseUrl}}/api/v1/auth/register
@@ -811,3 +812,389 @@ DELETE {{baseUrl}}/api/v1/notifications/{{notificationId}}
 x-gateway-api-key: {{gatewayKey}}
 Authorization: Bearer {{jwtToken}}
 
+
+### ============================================
+### DIETARY TAGS ROUTES
+### ============================================
+
+### Create Dietary Tag (Vegan)
+# @name createVeganTag
+POST {{baseUrl}}/api/v1/dietary-tags
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+Content-Type: application/json
+
+{
+    "name": "Vegan"
+}
+
+### Create Dietary Tag (Gluten-Free)
+# @name createGFTag
+POST {{baseUrl}}/api/v1/dietary-tags
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+Content-Type: application/json
+
+{
+    "name": "Gluten-Free"
+}
+
+### List Dietary Tags
+GET {{baseUrl}}/api/v1/dietary-tags
+x-gateway-api-key: {{gatewayKey}}
+
+@veganTagId = {{createVeganTag.response.body.id}}
+
+### Update Dietary Tag
+PUT {{baseUrl}}/api/v1/dietary-tags/{{veganTagId}}
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+Content-Type: application/json
+
+{
+    "name": "Végan",
+    "iconName": "leaf"
+}
+
+### Get Dietary Tag by ID
+GET {{baseUrl}}/api/v1/dietary-tags/{{veganTagId}}
+x-gateway-api-key: {{gatewayKey}}
+
+### Delete Dietary Tag
+DELETE {{baseUrl}}/api/v1/dietary-tags/{{veganTagId}}
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Create Recipe with Dietary Tags
+POST {{baseUrl}}/api/v1/recipes
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+Content-Type: application/json
+
+{
+  "title": "Vegan Quinoa Salad",
+  "description": "A healthy vegan and gluten-free salad",
+  "prepTime": 15,
+  "cookTime": 0,
+  "servings": 2,
+  "difficulty": "EASY",
+  "categoryId": "{{categoryId}}", 
+  "isPublished": true,
+  "ingredients": [
+    { "name": "Quinoa", "quantityText": "1 cup" },
+    { "name": "Tomatoes", "quantityText": "2 diced" }
+  ],
+  "instructions": [
+    { "stepNumber": 1, "description": "Cook quinoa" },
+    { "stepNumber": 2, "description": "Mix with tomatoes" }
+  ],
+  "dietaryTagIds": ["{{veganTagId}}"]
+}
+
+### Search Recipes by Dietary Tag (Vegan)
+GET {{baseUrl}}/api/v1/recipes/search?dietaryTags=vegan
+x-gateway-api-key: {{gatewayKey}}
+
+### ============================================
+### COLLECTIONS ROUTES
+### ============================================
+
+### Create Collection
+# @name createCollection
+POST {{baseUrl}}/api/v1/collections
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+Content-Type: application/json
+
+{
+    "name": "Sunday Brunch Ideas",
+    "description": "Recipes for a perfect relaxing Sunday",
+    "isPublic": true
+}
+
+@collectionId = {{createCollection.response.body.id}}
+
+### Get My Collections
+GET {{baseUrl}}/api/v1/collections
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Add Recipe to Collection
+POST {{baseUrl}}/api/v1/collections/{{collectionId}}/recipes
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+Content-Type: application/json
+
+{
+    "recipeId": "{{recipeId}}"
+}
+
+### Get Collection Details
+GET {{baseUrl}}/api/v1/collections/{{collectionId}}
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Update Collection
+PUT {{baseUrl}}/api/v1/collections/{{collectionId}}
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+Content-Type: application/json
+
+{
+    "name": "Weekend Brunch Ideas",
+    "description": "Updated: Perfect recipes for Saturday and Sunday"
+}
+
+### Remove Recipe from Collection
+DELETE {{baseUrl}}/api/v1/collections/{{collectionId}}/recipes/{{recipeId}}
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Delete Collection
+DELETE {{baseUrl}}/api/v1/collections/{{collectionId}}
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### ============================================
+### SHOPPING LIST ROUTES
+### ============================================
+
+### Add Custom Item
+POST {{baseUrl}}/api/v1/shopping-list/items
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+Content-Type: application/json
+
+{
+    "name": "Organic Milk",
+    "quantity": "2L"
+}
+
+### Add Recipe Ingredients (will include recipeId & recipeTitle)
+POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/shopping-list
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Get Shopping List (check recipeId/recipeTitle on items)
+GET {{baseUrl}}/api/v1/shopping-list
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Update Item (Check)
+# Example using first item ID from list response
+PUT {{baseUrl}}/api/v1/shopping-list/items/{{itemId}}
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+Content-Type: application/json
+
+{
+    "isChecked": true
+}
+
+### Delete Single Item
+DELETE {{baseUrl}}/api/v1/shopping-list/items/{{itemId}}
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Clear Checked Items
+DELETE {{baseUrl}}/api/v1/shopping-list/checked
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Clear All Shopping List Items
+DELETE {{baseUrl}}/api/v1/shopping-list
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### ============================================
+### MEAL PLANNER ROUTES
+### ============================================
+
+@mealPlanId = 
+
+### Add Recipe to Meal Plan
+# @name createMealPlan
+POST {{baseUrl}}/api/v1/meal-plans
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+Content-Type: application/json
+
+{
+    "date": "2026-01-20",
+    "mealType": "DINNER",
+    "recipeId": "{{recipeId}}",
+    "notes": "Family dinner"
+}
+
+### Add Breakfast
+POST {{baseUrl}}/api/v1/meal-plans
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+Content-Type: application/json
+
+{
+    "date": "2026-01-20",
+    "mealType": "BREAKFAST",
+    "recipeId": "{{recipeId}}"
+}
+
+### Get Week Meal Plans (default: current week)
+GET {{baseUrl}}/api/v1/meal-plans
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Get Meal Plans by Date Range
+GET {{baseUrl}}/api/v1/meal-plans?startDate=2026-01-20&endDate=2026-01-26
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Get Meals for Specific Date
+GET {{baseUrl}}/api/v1/meal-plans/2026-01-20
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Update Meal Plan
+PUT {{baseUrl}}/api/v1/meal-plans/{{mealPlanId}}
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+Content-Type: application/json
+
+{
+    "notes": "Updated: Special occasion dinner"
+}
+
+### Delete Meal Plan
+DELETE {{baseUrl}}/api/v1/meal-plans/{{mealPlanId}}
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### ============================================
+### MODERATION & REPORTING ROUTES
+### ============================================
+
+@reportId = 
+
+### Report a Recipe
+# @name reportRecipe
+POST {{baseUrl}}/api/v1/recipes/{{recipeId}}/report
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+Content-Type: application/json
+
+{
+    "reason": "INAPPROPRIATE_CONTENT",
+    "description": "This recipe contains misleading nutritional information"
+}
+
+### Report a Comment
+POST {{baseUrl}}/api/v1/comments/{{commentId}}/report
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+Content-Type: application/json
+
+{
+    "reason": "SPAM",
+    "description": "This comment is promotional spam"
+}
+
+### ============================================
+### ADMIN MODERATION ROUTES
+### ============================================
+
+### Get Report Stats
+GET {{baseUrl}}/api/v1/admin/reports/stats
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Get All Pending Reports
+GET {{baseUrl}}/api/v1/admin/reports?status=PENDING
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Get All Reports (paginated)
+GET {{baseUrl}}/api/v1/admin/reports?page=1&limit=10
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Get Single Report
+GET {{baseUrl}}/api/v1/admin/reports/{{reportId}}
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Resolve Report
+PUT {{baseUrl}}/api/v1/admin/reports/{{reportId}}
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+Content-Type: application/json
+
+{
+    "status": "RESOLVED"
+}
+
+### Dismiss Report
+PUT {{baseUrl}}/api/v1/admin/reports/{{reportId}}
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+Content-Type: application/json
+
+{
+    "status": "DISMISSED"
+}
+
+### ============================================
+### RBAC VERIFICATION
+### ============================================
+
+### Login as Admin (candriam)
+# @name loginAdmin
+POST {{baseUrl}}/api/v1/auth/login
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+
+{
+    "identifier": "candriam",
+    "password": "newpassword123"
+}
+
+### Login as User (candriam21)
+# @name loginUser
+POST {{baseUrl}}/api/v1/auth/login
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+
+{
+    "identifier": "candriam21",
+    "password": "newpassword123"
+}
+
+### Admin Access Test (Should Succeed)
+GET {{baseUrl}}/api/v1/admin/reports/stats
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{loginAdmin.response.body.data.accessToken}}
+
+### Admin Access Test (Should Fail 403)
+GET {{baseUrl}}/api/v1/admin/reports/stats
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{loginUser.response.body.data.accessToken}}
+
+### Create Category (Admin - Should Succeed 201)
+POST {{baseUrl}}/api/v1/categories
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{loginAdmin.response.body.data.accessToken}}
+
+{
+    "name": "Admin Category",
+    "sortOrder": 1
+}
+
+### Create Category (User - Should Fail 403)
+POST {{baseUrl}}/api/v1/categories
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{loginUser.response.body.data.accessToken}}
+
+{
+    "name": "User Category",
+    "sortOrder": 2
+}

@@ -55,7 +55,8 @@ const createRecipeSchema = z.object({
     servings: z.number().int().min(1),
     difficulty: z.enum(["EASY", "MEDIUM", "HARD"]).optional(),
     categoryId: z.string().min(1, "Category is required"),
-    isPublished: z.boolean().optional()
+    isPublished: z.boolean().optional(),
+    dietaryTagIds: z.array(z.string()).optional()
 });
 
 const updateRecipeSchema = z.object({
@@ -75,7 +76,8 @@ const updateRecipeSchema = z.object({
     servings: z.number().int().min(1).optional(),
     difficulty: z.enum(["EASY", "MEDIUM", "HARD"]).optional(),
     categoryId: z.string().optional(),
-    isPublished: z.boolean().optional()
+    isPublished: z.boolean().optional(),
+    dietaryTagIds: z.array(z.string()).optional()
 });
 
 const commentSchema = z.object({
@@ -157,7 +159,8 @@ export async function recipesRoutes(app: FastifyInstance) {
             maxPrepTime,
             minCookTime,
             maxCookTime,
-            servings
+            servings,
+            dietaryTags
         } = request.query as {
             q?: string;
             categoryId?: string;
@@ -171,6 +174,7 @@ export async function recipesRoutes(app: FastifyInstance) {
             minCookTime?: string;
             maxCookTime?: string;
             servings?: string;
+            dietaryTags?: string | string[];
         }
         const pageNum = page ? parseInt(page, 10) : 1;
         const limitNum = limit ? parseInt(limit, 10) : 10;
@@ -179,6 +183,8 @@ export async function recipesRoutes(app: FastifyInstance) {
         const minCookTimeNum = minCookTime ? parseInt(minCookTime, 10) : undefined;
         const maxCookTimeNum = maxCookTime ? parseInt(maxCookTime, 10) : undefined;
         const servingsNum = servings ? parseInt(servings, 10) : undefined;
+        const dietaryTagsArray = dietaryTags ? (Array.isArray(dietaryTags) ? dietaryTags : [dietaryTags]) : undefined;
+
         const validDifficulties = ['EASY', 'MEDIUM', 'HARD'];
         const difficultyEnum = difficulty && validDifficulties.includes(difficulty.toUpperCase())
             ? difficulty.toUpperCase() as 'EASY' | 'MEDIUM' | 'HARD'
@@ -201,7 +207,8 @@ export async function recipesRoutes(app: FastifyInstance) {
             maxPrepTimeNum,
             minCookTimeNum,
             maxCookTimeNum,
-            servingsNum
+            servingsNum,
+            dietaryTagsArray
         );
         sendSuccess(reply, data, 'Recipes found');
     });
@@ -382,41 +389,21 @@ export async function recipesRoutes(app: FastifyInstance) {
         sendSuccess(reply, result, 'Rating removed successfully');
     });
 
-    app.get("/recipes/:id/comments", async (request, reply) => {
-        const { id } = request.params as { id: string };
-        const comments = await getComments(request, reply);
-        sendSuccess(reply, comments, "Comments retrieved successfully");
-    });
+    app.get("/recipes/:id/comments", getComments);
 
     app.post("/recipes/:id/comments", {
         preHandler: [authMiddleware, bodyValidator(commentSchema)]
-    }, async (request, reply) => {
-        const { id } = request.params as { id: string };
-        const comment = await createCommentHandler(request, reply);
-        sendCreated(reply, comment, "Comment created successfully");
-    });
+    }, createCommentHandler);
 
     app.put("/recipes/:id/comments/:commentId", {
         preHandler: [authMiddleware, bodyValidator(commentSchema)]
-    }, async (request, reply) => {
-        const { id, commentId } = request.params as { id: string; commentId: string };
-        const comment = await updateCommentHandler(request, reply);
-        sendSuccess(reply, comment, "Comment updated successfully");
-    });
+    }, updateCommentHandler);
 
-    app.delete("/recipes/:id/comments/:commentId", { preHandler: authMiddleware }, async (request, reply) => {
-        const { id, commentId } = request.params as { id: string; commentId: string };
-        const result = await deleteCommentHandler(request, reply);
-        sendSuccess(reply, result, "Comment deleted successfully");
-    });
+    app.delete("/recipes/:id/comments/:commentId", { preHandler: authMiddleware }, deleteCommentHandler);
 
     app.post("/recipes/:id/comments/:commentId/replies", {
         preHandler: [authMiddleware, bodyValidator(commentSchema)]
-    }, async (request, reply) => {
-        const { id, commentId } = request.params as { id: string; commentId: string };
-        const replyComment = await createReplyHandler(request, reply);
-        sendCreated(reply, replyComment, "Reply created successfully");
-    });
+    }, createReplyHandler);
 
     app.post("/recipes/:id/favorite", { preHandler: authMiddleware }, async (request, reply) => {
         const { id } = request.params as { id: string };

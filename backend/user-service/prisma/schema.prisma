@@ -8,6 +8,13 @@ datasource db {
 }
 
 // ==================== USERS ====================
+
+enum UserRole {
+  USER
+  MODERATOR
+  ADMIN
+}
+
 model User {
   id              String    @id @default(uuid())
   email           String    @unique
@@ -19,6 +26,7 @@ model User {
   avatarUrl       String?   @default("/default-avatar.png")
   isOnline        Boolean   @default(false)
   lastSeenAt      DateTime?
+  role            UserRole  @default(USER)
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
   isEmailVerified Boolean   @default(false)
@@ -34,6 +42,7 @@ model User {
 
   @@index([email])
   @@index([username])
+  @@index([role])
 }
 
 // ==================== FRIEND REQUESTS ====================
@@ -112,10 +121,10 @@ model Block {
   createdAt DateTime @default(now())
 
   blockerId String
-  blocker   User     @relation("BlocksSent", fields: [blockerId], references: [id], onDelete: Cascade)
+  blocker   User   @relation("BlocksSent", fields: [blockerId], references: [id], onDelete: Cascade)
 
   blockedId String
-  blocked   User     @relation("BlocksReceived", fields: [blockedId], references: [id], onDelete: Cascade)
+  blocked   User   @relation("BlocksReceived", fields: [blockedId], references: [id], onDelete: Cascade)
 
   @@unique([blockerId, blockedId])
   @@index([blockerId])

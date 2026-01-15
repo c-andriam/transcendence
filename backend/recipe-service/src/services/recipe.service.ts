@@ -16,6 +16,7 @@ export async function createRecipe(
         categoryId: string;
         ingredients: { name: string; quantityText: string; isOptional?: boolean }[];
         instructions: { stepNumber: number; description: string }[];
+        dietaryTagIds?: string[];
     }) {
     const slug = slugify(data.title);
     const recipe = await db.recipe.create({
@@ -44,6 +45,11 @@ export async function createRecipe(
                     description: ins.description,
                 })),
             },
+            dietaryTags: {
+                create: data.dietaryTagIds?.map(tagId => ({
+                    dietaryTagId: tagId
+                }))
+            }
         },
         include: {
             ingredients: {
@@ -56,9 +62,17 @@ export async function createRecipe(
             },
             instructions: { orderBy: { stepNumber: 'asc' } },
             category: true,
+            dietaryTags: {
+                include: {
+                    dietaryTag: true
+                }
+            }
         }
     });
-    return recipe;
+    return {
+        ...recipe,
+        dietaryTags: recipe.dietaryTags.map(dt => dt.dietaryTag)
+    };
 }
 
 export async function getAllRecipes() {
@@ -441,7 +455,8 @@ export async function getAllRecipesBySearch(
     maxPrepTime?: number,
     minCookTime?: number,
     maxCookTime?: number,
-    servings?: number
+    servings?: number,
+    dietaryTags?: string[]
 ) {
     const where: any = {};
 
@@ -480,6 +495,15 @@ export async function getAllRecipesBySearch(
     }
     if (servings !== undefined) {
         where.servings = servings;
+    }
+    if (dietaryTags && dietaryTags.length > 0) {
+        where.dietaryTags = {
+            some: {
+                dietaryTag: {
+                    slug: { in: dietaryTags }
+                }
+            }
+        };
     }
 
     const [recipes, total] = await Promise.all([

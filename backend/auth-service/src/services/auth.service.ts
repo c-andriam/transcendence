@@ -70,7 +70,7 @@ export async function registerUser(userData: any) {
         throw new Error(result.message || "Failed to register user");
     }
 
-    if (result.data && result.data.password) {
+    if (result.data !== null && result.data.password) {
         const { password: _, ...userWithoutPassword } = result.data;
         result.data = userWithoutPassword;
     }
@@ -185,7 +185,7 @@ export async function createRefreshToken(userId: string, username: string): Prom
     return token;
 }
 
-export async function refreshAccessToken(refreshToken: string): Promise<{ userId: string; username: string; refreshToken: string }> {
+export async function refreshAccessToken(refreshToken: string): Promise<{ userId: string; username: string; role: string; refreshToken: string }> {
     const hashedToken = createHash('sha256').update(refreshToken).digest('hex');
     console.log("Hashed token for lookup:", hashedToken);
     const storedToken = await prisma.refreshToken.findUnique({ where: { token: hashedToken } });
@@ -198,9 +198,23 @@ export async function refreshAccessToken(refreshToken: string): Promise<{ userId
         throw new BadRequestError('Invalid or expired refresh token');
     }
     console.log("Token found for user:", storedToken.userId);
+
+    let role = 'USER';
+    try {
+        const response = await fetch(`${USER_SERVICE_URL}/api/v1/internal/users/${storedToken.userId}`, {
+            headers: { 'x-internal-api-key': INTERNAL_API_KEY }
+        });
+        const result = await response.json();
+        if (result.status === 'success' && result.data?.role) {
+            role = result.data.role;
+        }
+    } catch (error) {
+        console.error("Failed to fetch user role:", error);
+    }
+
     await prisma.refreshToken.delete({ where: { token: hashedToken } });
     const newRefreshToken = await createRefreshToken(storedToken.userId, storedToken.username);
-    return { userId: storedToken.userId, username: storedToken.username, refreshToken: newRefreshToken };
+    return { userId: storedToken.userId, username: storedToken.username, role, refreshToken: newRefreshToken };
 }
 
 export async function deleteRefreshToken(refreshToken: string): Promise<void> {

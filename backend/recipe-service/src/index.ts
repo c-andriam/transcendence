@@ -3,7 +3,12 @@ import fastify from 'fastify';
 import db from './utils/db';
 import { recipesRoutes } from './routes/recipe.routes';
 import { categoryRoutes } from './routes/category.routes';
+import { collectionRoutes } from './routes/collection.routes';
+import { shoppingListRoutes } from './routes/shoppingList.routes';
 import { imageRoutes } from './routes/image.routes';
+import { dietaryTagRoutes } from './routes/dietaryTag.routes';
+import { mealPlanRoutes } from './routes/mealPlan.routes';
+import { reportRoutes } from './routes/report.routes';
 import { globalErrorHandler, internalApiKeyMiddleware, validateEnv } from '@transcendence/common';
 import fastifyJwt from '@fastify/jwt';
 import fastifyMultipart from '@fastify/multipart';
@@ -44,6 +49,11 @@ const start = async () => {
             await api.register(recipesRoutes, { prefix: '/api/v1' });
             await api.register(categoryRoutes, { prefix: '/api/v1' });
             await api.register(imageRoutes, { prefix: '/api/v1' });
+            await api.register(dietaryTagRoutes, { prefix: '/api/v1' });
+            await api.register(collectionRoutes, { prefix: '/api/v1' });
+            await api.register(shoppingListRoutes, { prefix: '/api/v1' });
+            await api.register(mealPlanRoutes, { prefix: '/api/v1' });
+            await api.register(reportRoutes, { prefix: '/api/v1' });
         });
 
         await app.ready();

@@ -295,6 +295,15 @@ export async function userRoutes(app: FastifyInstance) {
         sendSuccess(reply, users.map(stripPassword), 'Users retrieved');
     });
 
+    app.get("/internal/users/:id", async (request, reply) => {
+        const { id } = request.params as { id: string };
+        const user = await getUserById(id);
+        if (!user) {
+            throw new NotFoundError('User not found');
+        }
+        sendSuccess(reply, { id: user.id, username: user.username, role: user.role }, 'User found');
+    });
+
     app.get("/internal/users/by-identifier/:identifier", async (request, reply) => {
         const { identifier } = request.params as { identifier: string };
         const user = await getUserByIdentifier(identifier);

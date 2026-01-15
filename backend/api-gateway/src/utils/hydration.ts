@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import path from "path";
 
 dotenv.config({
-  path: path.resolve(__dirname, "../../../.env"),
+    path: path.resolve(__dirname, "../../../.env"),
 });
 
 const INTERNAL_API_KEY = process.env.INTERNAL_API_KEY;
@@ -15,37 +15,64 @@ export async function hydrateRecipes(app: FastifyInstance, data: any) {
     if (!data)
         return data;
     const isArray = Array.isArray(data);
-    const recipes = isArray ? data : [data];
-    const authorIds = Array.from(new Set(recipes.map((r: any) => r.authorId).filter(Boolean)));
+    const recipesToHydrate: any[] = [];
+
+    const addIfRecipe = (item: any) => {
+        if (item && item.authorId) {
+            recipesToHydrate.push(item);
+        }
+    };
+
+    const items = isArray ? data : [data];
+    items.forEach((item: any) => {
+        addIfRecipe(item);
+        if (item.recipes && Array.isArray(item.recipes)) {
+            item.recipes.forEach((subItem: any) => {
+                addIfRecipe(subItem);
+                if (subItem.recipe) {
+                    addIfRecipe(subItem.recipe);
+                }
+            });
+        }
+    });
+
+    if (recipesToHydrate.length === 0)
+        return data;
+
+    const authorIds = Array.from(new Set(recipesToHydrate.map((r: any) => r.authorId).filter(Boolean)));
     if (authorIds.length === 0)
         return data;
+
     const response = await fetch(`${USER_SERVICE_URL}/api/v1/internal/users/batch?ids=${authorIds.join(",")}`, {
         method: "GET",
         headers: {
-            "x-internal-api-key": INTERNAL_API_KEY,
+            "x-internal-api-key": INTERNAL_API_KEY!,
             "Content-Type": "application/json"
         }
     });
+
     if (!response.ok) {
-        throw new Error(`Failed to fetch users: ${response.statusText}`);
+        return data;
     }
+
     const json = await response.json();
     const users = json.data || [];
     const usersMap = users.reduce((acc: any, user: any) => {
         acc[user.id] = user;
         return acc;
     }, {});
-    recipes.forEach((recipe: any) => {
+
+    recipesToHydrate.forEach((recipe: any) => {
         if (recipe.authorId && usersMap[recipe.authorId]) {
             recipe.author = usersMap[recipe.authorId];
-        }
-        else {
+        } else {
             recipe.author = {
                 id: recipe.authorId,
-                username: "Unknown user",
-                avatarUrl: "/default-avatar.png"
+                username: "Unknown User",
+                avatarUrl: null
             };
         }
     });
-    return isArray ? recipes : recipes[0];
+
+    return data;
 }

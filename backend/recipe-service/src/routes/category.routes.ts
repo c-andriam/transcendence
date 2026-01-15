@@ -5,6 +5,7 @@ import {
     sendSuccess,
     sendDeleted,
     authMiddleware,
+    adminMiddleware,
     bodyValidator,
     NotFoundError,
     ConflictError
@@ -28,7 +29,7 @@ const updateCategorySchema = z.object({
 export async function categoryRoutes(app: FastifyInstance) {
 
     app.post("/categories", {
-        preHandler: [authMiddleware, bodyValidator(createCategorySchema)]
+        preHandler: [authMiddleware, adminMiddleware, bodyValidator(createCategorySchema)]
     }, async (request, reply) => {
         const body = request.body as z.infer<typeof createCategorySchema>;
         try {
@@ -66,7 +67,7 @@ export async function categoryRoutes(app: FastifyInstance) {
     });
 
     app.put("/categories/:id", {
-        preHandler: [authMiddleware, bodyValidator(updateCategorySchema)]
+        preHandler: [authMiddleware, adminMiddleware, bodyValidator(updateCategorySchema)]
     }, async (request, reply) => {
         const { id } = request.params as { id: string };
         const body = request.body as z.infer<typeof updateCategorySchema>;
@@ -85,7 +86,7 @@ export async function categoryRoutes(app: FastifyInstance) {
     });
 
     app.delete("/categories/:id", {
-        preHandler: [authMiddleware]
+        preHandler: [authMiddleware, adminMiddleware]
     }, async (request, reply) => {
         const { id } = request.params as { id: string };
         try {

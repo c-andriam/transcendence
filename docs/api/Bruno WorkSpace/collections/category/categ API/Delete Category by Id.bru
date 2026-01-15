@@ -7,12 +7,16 @@ meta {
 delete {
   url: {{baseUrl}}{{categPrefix}}/{{aperiCatId}}
   body: none
-  auth: inherit
+  auth: bearer
 }
 
 headers {
   x-gateway-api-key: {{gatewayKey}}
   ~Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{bearerToken}}
 }
 
 body:json {

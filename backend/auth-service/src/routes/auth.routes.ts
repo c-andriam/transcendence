@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 import { z } from "zod";
-import { bodyValidator, sendSuccess, sendCreated, authMiddleware, sendBadRequest, sendConflict, sendError, HttpStatus } from "@transcendence/common";
+import { bodyValidator, sendSuccess, sendCreated, authMiddleware, sendBadRequest, sendConflict, sendError, HttpStatus, UserRole } from "@transcendence/common";
 import { loginUser, registerUser, createRefreshToken, refreshAccessToken, deleteRefreshToken } from "../services/auth.service";
 import path from "path";
 import { resetPassword, forgotPasswordByEmailIdentifier } from "../services/auth.service";
@@ -70,6 +70,7 @@ export async function authRoutes(app: FastifyInstance) {
                 {
                     id: user.id,
                     username: user.username,
+                    role: user.role || 'USER',
                 },
                 {
                     expiresIn: '15m',
@@ -110,6 +111,7 @@ export async function authRoutes(app: FastifyInstance) {
                 {
                     id: result.userId,
                     username: result.username,
+                    role: (result.role as UserRole) || 'USER',
                 },
                 {
                     expiresIn: '15m',
