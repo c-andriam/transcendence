@@ -178,13 +178,15 @@ jobs:
           done
 
           # Fetch the actual OpenAPI spec from the correct endpoint
-          # Fastify-swagger default is {routePrefix}/json
-          curl -s http://127.0.0.1:3000/documentation/json -o ../../openapi-spec.json
+          # Use our debug route which is more reliable
+          curl -s http://127.0.0.1:3000/documentation/json-debug -o ../../openapi-spec.json
 
           # Check if we got an error message instead of the spec
-          if grep -q "Route GET" ../../openapi-spec.json || grep -q "Not Found" ../../openapi-spec.json; then
-            echo "Failed to fetch spec from /documentation/json, trying /api/v1/json..."
-            curl -s http://127.0.0.1:3000/api/v1/json -o ../../openapi-spec.json
+          if grep -q "Route GET" ../../openapi-spec.json || grep -q "Not Found" ../../openapi-spec.json || [ ! -s ../../openapi-spec.json ]; then
+            echo "Failed to fetch spec from /documentation/json-debug. API Gateway Logs:"
+            cat /tmp/api-gateway.log
+            echo "Trying fallback /documentation/json..."
+            curl -s http://127.0.0.1:3000/documentation/json -o ../../openapi-spec.json
           fi
 
           kill $SERVER_PID 2>/dev/null || true

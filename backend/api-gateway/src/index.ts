@@ -61,7 +61,7 @@ const start = async () => {
     await app.register(swagger, {
       openapi:
       {
-        openapi: "3.0.0",
+        openapi: "3.0.3",
         info: {
           title: "API GATEWAY",
           version: "1.0.0",
@@ -95,6 +95,11 @@ const start = async () => {
       }
     });
     await app.register(swaggerUi, { routePrefix: "/documentation" });
+
+    // Debug route to ensure we can always fetch the JSON
+    app.get('/documentation/json-debug', async () => {
+      return app.swagger();
+    });
 
     await app.register(authRoutes, { prefix: '/api/v1' });
 
