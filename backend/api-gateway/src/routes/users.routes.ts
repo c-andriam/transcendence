@@ -24,7 +24,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Users"],
             summary: "Get current user profile",
-            security: [{ bearerAuth: [] }],
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
             response: {
                 200: createResponseSchema({
                     type: "object",
@@ -167,7 +167,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Users"],
             summary: "Change password",
-            security: [{ bearerAuth: [] }],
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
             body: {
                 type: "object",
                 required: ["currentPassword", "newPassword"],
@@ -200,7 +200,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Users"],
             summary: "Update user profile",
-            security: [{ bearerAuth: [] }],
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
                 properties: {
@@ -241,7 +241,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Users"],
             summary: "Delete user",
-            security: [{ bearerAuth: [] }],
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
                 properties: {
@@ -273,7 +273,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Follow a user",
-            security: [{ bearerAuth: [] }],
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
                 properties: {
@@ -305,7 +305,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Unfollow a user",
-            security: [{ bearerAuth: [] }],
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
                 properties: {
@@ -337,7 +337,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Get my followers",
-            security: [{ bearerAuth: [] }],
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
             response: {
                 200: createResponseSchema({
                     type: "array",
@@ -367,7 +367,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Get people I follow",
-            security: [{ bearerAuth: [] }],
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
             response: {
                 200: createResponseSchema({
                     type: "array",
@@ -469,7 +469,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Check if following",
-            security: [{ bearerAuth: [] }],
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
                 properties: {
@@ -501,7 +501,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Send friend request",
-            security: [{ bearerAuth: [] }],
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
             body: {
                 type: "object",
                 required: ["receiverId"],
@@ -534,7 +534,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Accept friend request",
-            security: [{ bearerAuth: [] }],
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
                 properties: {
@@ -566,7 +566,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Reject friend request",
-            security: [{ bearerAuth: [] }],
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
                 properties: {
@@ -598,7 +598,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Remove a friend",
-            security: [{ bearerAuth: [] }],
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
                 properties: {
@@ -630,7 +630,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Get my friends list",
-            security: [{ bearerAuth: [] }],
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
             response: {
                 200: createResponseSchema({
                     type: "array",
@@ -660,7 +660,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Get pending friend requests",
-            security: [{ bearerAuth: [] }],
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
             response: {
                 200: createResponseSchema({
                     type: "array",
@@ -696,7 +696,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Block a user",
-            security: [{ bearerAuth: [] }],
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
                 properties: {
@@ -728,7 +728,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Unblock a user",
-            security: [{ bearerAuth: [] }],
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
                 properties: {
@@ -760,7 +760,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Get blocked users",
-            security: [{ bearerAuth: [] }],
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
             response: {
                 200: createResponseSchema({
                     type: "array",
@@ -790,7 +790,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Users"],
             summary: "Generate API Key",
-            security: [{ bearerAuth: [] }],
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
             response: {
                 200: createResponseSchema({
                     type: "object",

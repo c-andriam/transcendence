@@ -24,7 +24,7 @@ export async function authRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Authentication"],
             summary: "Register a new user",
-            security: [],
+            security: [{ apiKeyAuth: [] }],
             body: {
                 type: "object",
                 required: ["email", "password", "username", "fullName"],
@@ -69,7 +69,7 @@ export async function authRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Authentication"],
             summary: "Login user",
-            security: [],
+            security: [{ apiKeyAuth: [] }],
             body: {
                 type: "object",
                 required: ["identifier", "password"],
@@ -114,7 +114,7 @@ export async function authRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Authentication"],
             summary: "Refresh access token",
-            security: [],
+            security: [{ apiKeyAuth: [] }],
             response: {
                 200: createResponseSchema({
                     type: "object",
@@ -141,7 +141,7 @@ export async function authRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Authentication"],
             summary: "Logout user",
-            security: [],
+            security: [{ apiKeyAuth: [] }],
             response: {
                 200: createResponseSchema({
                     type: "object",
@@ -166,7 +166,7 @@ export async function authRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Authentication"],
             summary: "Request password reset email",
-            security: [],
+            security: [{ apiKeyAuth: [] }],
             body: {
                 type: "object",
                 required: ["email"],
@@ -200,7 +200,7 @@ export async function authRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Authentication"],
             summary: "Reset password using token",
-            security: [],
+            security: [{ apiKeyAuth: [] }],
             body: {
                 type: "object",
                 required: ["token", "newPassword"],
@@ -235,7 +235,7 @@ export async function authRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Authentication"],
             summary: "Verify email address",
-            security: [],
+            security: [{ apiKeyAuth: [] }],
             body: {
                 type: "object",
                 required: ["token"],
@@ -269,7 +269,7 @@ export async function authRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Authentication"],
             summary: "Resend verification email",
-            security: [],
+            security: [{ apiKeyAuth: [] }],
             body: {
                 type: "object",
                 required: ["email"],

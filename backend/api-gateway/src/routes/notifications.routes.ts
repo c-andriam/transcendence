@@ -24,7 +24,7 @@ export async function notificationsRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Notifications"],
             summary: "Get all notifications",
-            security: [{ bearerAuth: [] }],
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
             response: {
                 200: createResponseSchema({
                     type: "array",
@@ -56,7 +56,7 @@ export async function notificationsRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Notifications"],
             summary: "Get notification by ID",
-            security: [{ bearerAuth: [] }],
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
                 properties: {
@@ -92,7 +92,7 @@ export async function notificationsRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Notifications"],
             summary: "Mark notification as read",
-            security: [{ bearerAuth: [] }],
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
                 properties: {
@@ -125,7 +125,7 @@ export async function notificationsRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Notifications"],
             summary: "Mark all notifications as read",
-            security: [{ bearerAuth: [] }],
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
             response: {
                 200: createResponseSchema({
                     type: "object",
@@ -150,7 +150,7 @@ export async function notificationsRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Notifications"],
             summary: "Delete notification",
-            security: [{ bearerAuth: [] }],
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
                 properties: {
