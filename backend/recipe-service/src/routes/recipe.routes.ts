@@ -213,7 +213,8 @@ export async function recipesRoutes(app: FastifyInstance) {
             servingsNum,
             dietaryTagsArray
         );
-        sendSuccess(reply, data, 'Recipes found');
+        const message = data.recipes.length > 0 ? 'Recipes found' : 'No recipes found';
+        sendSuccess(reply, data, message);
     });
 
     app.get("/recipes/category/:categoryId", async (request, reply) => {
@@ -246,7 +247,8 @@ export async function recipesRoutes(app: FastifyInstance) {
             sortByValidated,
             sortOrderValidated,
         );
-        sendSuccess(reply, data, 'Recipes found');
+        const message = data.recipes.length > 0 ? 'Recipes found' : 'No recipes found';
+        sendSuccess(reply, data, message);
     });
 
     app.get("/recipes/author/:authorId", async (request, reply) => {
@@ -276,7 +278,8 @@ export async function recipesRoutes(app: FastifyInstance) {
             sortByValidated,
             sortOrderValidated
         );
-        sendSuccess(reply, data, 'Recipes found');
+        const message = data.recipes.length > 0 ? 'Recipes found' : 'No recipes found';
+        sendSuccess(reply, data, message);
     });
 
     app.get("/recipes/difficulty/:difficulty", async (request, reply) => {
@@ -309,7 +312,8 @@ export async function recipesRoutes(app: FastifyInstance) {
             sortByValidated,
             sortOrderValidated
         );
-        sendSuccess(reply, data, 'Recipes found');
+        const message = data.recipes.length > 0 ? 'Recipes found' : 'No recipes found';
+        sendSuccess(reply, data, message);
     });
 
     app.get("/recipes/me", { preHandler: authMiddleware }, async (request, reply) => {
