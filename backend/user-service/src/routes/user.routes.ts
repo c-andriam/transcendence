@@ -123,11 +123,25 @@ export async function userRoutes(app: FastifyInstance) {
         sendSuccess(reply, stripPassword(user), 'User retrieved successfully');
     });
 
-    app.post("/users", {
-        preHandler: bodyValidator(createUserSchema)
-    }, async (request, reply) => {
-        const body = request.body as z.infer<typeof createUserSchema>;
-        const user = await createUser(body);
+    app.post("/users", async (request, reply) => {
+        let body: any;
+        let file: any;
+
+        if (request.isMultipart()) {
+            const data = await request.file();
+            if (data) {
+                file = data;
+                body = {};
+                for (const key in data.fields) {
+                    body[key] = (data.fields[key] as any).value;
+                }
+            }
+        } else {
+            body = request.body;
+        }
+
+        const validatedBody = createUserSchema.parse(body);
+        const user = await createUser(validatedBody, file);
         sendCreated(reply, stripPassword(user), 'User created');
     });
 

@@ -45,13 +45,31 @@ const emailSchema = z.object({
 });
 
 export async function authRoutes(app: FastifyInstance) {
-    app.post("/auth/register", {
-        preHandler: bodyValidator(registerSchema)
-    }, async (request, reply) => {
+    app.post("/auth/register", async (request, reply) => {
+        let body: any;
+        let file: any;
+
+        if (request.isMultipart()) {
+            const data = await request.file();
+            if (data) {
+                file = data;
+                body = {};
+                for (const key in data.fields) {
+                    body[key] = (data.fields[key] as any).value;
+                }
+            }
+        } else {
+            body = request.body;
+        }
+
         try {
-            const result = await registerUser(request.body);
+            const validatedBody = registerSchema.parse(body);
+            const result = await registerUser(validatedBody, file);
             sendCreated(reply, result, 'User registered successfully');
         } catch (error: any) {
+            if (error instanceof z.ZodError) {
+                return sendBadRequest(reply, error.issues[0].message);
+            }
             if (error.code === 'P2002' || error.message.includes('exists')) {
                 return sendConflict(reply, "User with this email or username already exists");
             }

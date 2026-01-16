@@ -45,24 +45,42 @@ if (!INTERNAL_API_KEY) {
     throw new Error("INTERNAL_API_KEY is not defined");
 }
 
-export async function registerUser(userData: any) {
+export async function registerUser(userData: any, avatarFile?: any) {
     const isSafeEmail = await isValidEmail(userData.email);
     if (!isSafeEmail) {
         throw new BadRequestError("Invalid email or email address doesn't exist");
     }
-    const userToCreate = {
-        ...userData,
-    };
 
     const path = "/api/v1/users";
-    const response = await fetch(`${USER_SERVICE_URL}${path}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'x-internal-api-key': INTERNAL_API_KEY
-        },
-        body: JSON.stringify(userToCreate)
-    });
+    let response: Response;
+
+    if (avatarFile) {
+        const formData = new FormData();
+        for (const key in userData) {
+            if (userData[key] !== undefined) {
+                formData.append(key, userData[key].toString());
+            }
+        }
+        const buffer = await avatarFile.toBuffer();
+        formData.append('avatar', new Blob([buffer]), avatarFile.filename);
+
+        response = await fetch(`${USER_SERVICE_URL}${path}`, {
+            method: 'POST',
+            headers: {
+                'x-internal-api-key': INTERNAL_API_KEY as string
+            },
+            body: formData
+        });
+    } else {
+        response = await fetch(`${USER_SERVICE_URL}${path}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-internal-api-key': INTERNAL_API_KEY as string
+            },
+            body: JSON.stringify(userData)
+        });
+    }
 
     const result = await response.json();
 

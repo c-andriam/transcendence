@@ -2,6 +2,7 @@ import fastify from 'fastify';
 import jwt from '@fastify/jwt';
 import { authRoutes } from './routes/auth.routes';
 import { globalErrorHandler, validateEnv } from '@transcendence/common';
+import fastifyMultipart from '@fastify/multipart';
 import cookie from "@fastify/cookie";
 import path from "path";
 import dotenv from 'dotenv';
@@ -22,6 +23,13 @@ app.setErrorHandler(globalErrorHandler);
 
 app.register(jwt, {
     secret: env.JWT_SECRET
+});
+
+app.register(fastifyMultipart, {
+    limits: {
+        fileSize: 10 * 1024 * 1024,
+        files: 1
+    }
 });
 
 app.register(cookie, {

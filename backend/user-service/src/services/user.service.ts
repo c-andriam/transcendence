@@ -7,12 +7,12 @@ import {
 } from "@transcendence/common";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
+import { MultipartFile } from "@fastify/multipart";
 import {
     uploadImageFromBuffer,
     deleteImage,
     getThumbnailUrl
 } from "./cloudinary.service";
-import { MultipartFile } from "@fastify/multipart";
 
 export async function createUser(data: {
     email: string;
@@ -22,7 +22,7 @@ export async function createUser(data: {
     lastName?: string;
     avatarUrl?: string;
     bio?: string;
-}) {
+}, avatarFile?: MultipartFile) {
     const isSafeEmail = await isValidEmail(data.email);
     if (!isSafeEmail) {
         throw new BadRequestError("Invalid email or email address doesn't exist");
@@ -34,10 +34,27 @@ export async function createUser(data: {
 
     const hashedPassword = await hashPassword(data.password);
 
+    let finalAvatarUrl = data.avatarUrl;
+
+    if (avatarFile) {
+        const buffer = await avatarFile.toBuffer();
+        const result = await uploadImageFromBuffer(buffer, {
+            folder: 'avatars',
+            publicId: `avatar_${Date.now()}_${data.username}`,
+            transformation: [
+                { width: 400, height: 400, crop: 'fill', gravity: 'face' },
+                { quality: 'auto:good' },
+                { fetch_format: 'auto' }
+            ]
+        });
+        finalAvatarUrl = result.secureUrl;
+    }
+
     const user = await db.user.create({
         data: {
             ...data,
-            password: hashedPassword
+            password: hashedPassword,
+            avatarUrl: finalAvatarUrl
         }
     });
     return user;
