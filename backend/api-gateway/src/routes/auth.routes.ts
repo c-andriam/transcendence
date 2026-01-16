@@ -26,6 +26,7 @@ export async function authRoutes(app: FastifyInstance) {
             summary: "Register a new user",
             description: "### Overview\nCreates a new user account in the Transcendence ecosystem.\n\n### Technical Details\n1. Validates input data against schema.\n2. Proxies request to `auth-service` for credential creation.\n3. `auth-service` internally calls `user-service` to create the user profile.\n4. Uses bcrypt for password hashing (rounds: 10).\n\n### Validation & Constraints\n- **Email**: Must be unique and valid format.\n- **Username**: Must be unique, 3-30 characters.\n- **Password**: Minimum 8 characters, should include mixed cases and symbols.\n\n### Side Effects\n- Creates records in `User` and `Auth` tables.\n- Sends a verification email to the user.\n\n### Security\n- Requires a valid Gateway API Key.",
             security: [{ apiKeyAuth: [] }],
+            consumes: ["multipart/form-data"],
             body: {
                 type: "object",
                 required: ["email", "password", "username"],
@@ -35,8 +36,8 @@ export async function authRoutes(app: FastifyInstance) {
                     username: { type: "string", minLength: 3 },
                     firstName: { type: "string" },
                     lastName: { type: "string" },
-                    avatarUrl: { type: "string" },
-                    bio: { type: "string" }
+                    bio: { type: "string" },
+                    avatar: { type: "string", format: "binary", description: "Optional profile picture" }
                 }
             },
             response: {

@@ -14,7 +14,7 @@
 @notificationId = 
 @itemId = 
 
-### 1. Register a new user (requires email verification)
+### 1. Register a new user (JSON - no avatar)
 POST {{baseUrl}}/api/v1/auth/register
 Content-Type: application/json
 x-gateway-api-key: {{gatewayKey}}
@@ -26,6 +26,30 @@ x-gateway-api-key: {{gatewayKey}}
     "firstName": "Test",
     "lastName": "User"
 }
+
+### 1.1 Register a new user (Multipart - with avatar)
+# POST {{baseUrl}}/api/v1/auth/register
+# Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryRegister
+# x-gateway-api-key: {{gatewayKey}}
+#
+# ------WebKitFormBoundaryRegister
+# Content-Disposition: form-data; name="email"
+#
+# candriam22.test@example.com
+# ------WebKitFormBoundaryRegister
+# Content-Disposition: form-data; name="password"
+#
+# password123
+# ------WebKitFormBoundaryRegister
+# Content-Disposition: form-data; name="username"
+#
+# candriam22
+# ------WebKitFormBoundaryRegister
+# Content-Disposition: form-data; name="avatar"; filename="my-avatar.png"
+# Content-Type: image/png
+#
+# < ./my-avatar.png
+# ------WebKitFormBoundaryRegister--
 
 ### 2. Login (get JWT)
 POST {{baseUrl}}/api/v1/auth/login
