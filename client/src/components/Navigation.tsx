@@ -1,5 +1,5 @@
-import React from "react";
-import { useState, useRef } from 'react';
+import { useRef } from 'react';
+import { NavLink } from 'react-router-dom';
 import { IoHomeOutline } from "react-icons/io5";
 import { MdOutlinePersonOutline, MdOutlineAddBox } from "react-icons/md";
 import { PiCookingPotBold } from "react-icons/pi";
@@ -8,91 +8,85 @@ import { GiShadowFollower } from "react-icons/gi";
 import NewRecipe from "./Modal/NewRecipe";
 
 const Navigation = () => {
-    const [active, setActive] = useState('home');
     const modalRef = useRef<HTMLDialogElement>(null);
+
+    const linkClass = "navigation-button flex flex-rows gap-4 items-center text-lg text-center hover:bg-[#242424] text-white/70 w-full rounded-lg p-2 px-12 no-underline"
 
     return (
         <div className="navigation m-2 p-2 h-[76vh] shadow-lg bg-[#18191a] rounded-lg flex flex-col gap-2 z-1000">
             <div className='mt-6'>
-                <button
-                    onClick={() => setActive('home')}
-                    className='navigation-button flex 
-                    flex-rows gap-4 items-center
-                    text-lg text-center
-                    hover:bg-[#242424] text-white/70
-                    w-full rounded-lg p-2 px-12 text-semibold'
+                <NavLink
+                    to="/home/feed"
+                    className={linkClass}
                 >
-                    <IoHomeOutline size={24} className={active === 'home' ? 'text-orange-500' : ''} />
-                    Home
-                </button>
+                    {({ isActive }) => (
+                        <>
+                            <IoHomeOutline size={24} className={isActive ? 'text-orange-500' : ''} />
+                            Home
+                        </>
+                    )}
+                </NavLink>
+            </div>
+            <div>
+                <NavLink
+                    to="/home/for-you"
+                    className={linkClass}
+                >
+                    {({ isActive }) => (
+                        <>
+                            <MdOutlinePersonOutline size={24} className={isActive ? 'text-orange-500' : ''} />
+                            For you
+                        </>
+                    )}
+                </NavLink>
             </div>
             <div>
                 <button
-                    onClick={() => setActive('for-you')}
-                    className='navigation-button flex 
-                    flex-rows gap-4 items-center
-                    text-lg text-center
-                    hover:bg-[#242424] text-white/70
-                    w-full rounded-lg p-2 px-12 text-semibold'
+                    onClick={() => modalRef.current?.showModal()}
+                    className={linkClass}
                 >
-                    <MdOutlinePersonOutline size={24} className={active === 'for-you' ? 'text-orange-500' : ''} />
-                    For you
-                </button>
-            </div>
-            <div>
-                <button
-                    onClick={() => {
-                        setActive('new-recipe');
-                        modalRef.current?.showModal();
-                    }}
-                    className='navigation-button flex 
-                    flex-rows gap-4 items-center
-                    text-lg text-center
-                    hover:bg-[#242424] text-white/70
-                    w-full rounded-lg p-2 px-12 text-semibold'
-                >
-                    <MdOutlineAddBox size={24} className={active === 'new-recipe' ? 'text-orange-500' : ''} />
+                    <MdOutlineAddBox size={24} />
                     New recipe
                 </button>
             </div>
             <div>
-                <button
-                    onClick={() => setActive('my-recipe')}
-                    className='navigation-button flex 
-                    flex-rows gap-4 items-center
-                    text-lg text-center
-                    hover:bg-[#242424] text-white/70
-                    w-full rounded-lg p-2 px-12 text-semibold'
+                <NavLink
+                    to="/home/my-recipes"
+                    className={linkClass}
                 >
-                    <PiCookingPotBold size={24} className={active === 'my-recipe' ? 'text-orange-500' : ''} />
-                    My recipe
-                </button>
+                    {({ isActive }) => (
+                        <>
+                            <PiCookingPotBold size={24} className={isActive ? 'text-orange-500' : ''} />
+                            My recipe
+                        </>
+                    )}
+                </NavLink>
             </div>
             <div>
-                <button
-                    onClick={() => setActive('followers')}
-                    className='navigation-button flex 
-                    flex-rows gap-4 items-center
-                    text-lg text-center
-                    hover:bg-[#242424] text-white/70
-                    w-full rounded-lg p-2 px-12 text-semibold'
+                <NavLink
+                    to="/home/followers"
+                    className={linkClass}
                 >
-                    <GiShadowFollower size={24} className={active === 'followers' ? 'text-orange-500' : ''} />
-                    Followers
-                </button>
+                    {({ isActive }) => (
+                        <>
+                            <GiShadowFollower size={24} className={isActive ? 'text-orange-500' : ''} />
+                            Followers
+                        </>
+                    )}
+                </NavLink>
             </div>
             <div>
-                <button
-                    onClick={() => setActive('followings')}
-                    className='navigation-button flex 
-                    flex-rows gap-4 items-center
-                    text-lg text-center
-                    hover:bg-[#242424] text-white/70
-                    w-full rounded-lg p-2 px-12'
+                <NavLink
+                    to="/home/followings"
+                    className={linkClass}
                 >
-                    <RiUserFollowLine size={24} className={active === 'followings' ? 'text-orange-500' : ''} />
-                    Followings
-                </button>
+                    {({ isActive }) => (
+                        <>
+                            <RiUserFollowLine size={24} className={isActive ? 'text-orange-500' : ''} />
+                            Followings
+                        </>
+                    )}
+                </NavLink>
             </div>
             <NewRecipe modalRef={modalRef} />
         </div >

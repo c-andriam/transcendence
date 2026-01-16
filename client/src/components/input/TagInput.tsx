@@ -6,15 +6,10 @@ const TagInput = () => {
 
     const [tags, setTags] = useState<string[]>([]);
     const [inputValue, setInputValue] = useState<string>("");
-    const [boolean, setBoolean] = useState<boolean>(false);
     const handleAddTag = () => {
         if (inputValue.trim() !== "" && tags.length < 5) {
             setTags([...tags, inputValue.trim()]);
             setInputValue("");
-            setBoolean(false);
-        }
-        else if (tags.length === 5) {
-            setBoolean(true);
         }
     };
 

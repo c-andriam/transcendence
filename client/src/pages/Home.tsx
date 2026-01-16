@@ -1,10 +1,8 @@
 import { useRef } from "react";
+import { Outlet } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Navigation from "../components/Navigation";
-import PostFeed from "../components/Feeds/PostFeed";
-import FriendFeed from "../components/Feeds/FriendsFeed";
-import OwnRecipeFeed from "../components/Feeds/OwnRecipeFeed";
 import NewRecipe from "../components/Modal/NewRecipe";
 
 const Home = () => {
@@ -19,9 +17,9 @@ const Home = () => {
                     <Navigation />
                 </aside>
                 <main className="flex-1 main-content">
-                    {/* <PostFeed />
-                    <FriendFeed />
-                    <OwnRecipeFeed /> */}
+                    {/* Le composant de la route enfant s'affiche ici */}
+                    <Outlet />
+                    <NewRecipe modalRef={modalRef} />
                 </main>
             </div>
             <Footer />

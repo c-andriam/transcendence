@@ -10,11 +10,6 @@ interface Ingredient {
 }
 
 const IngredientInput = () => {
-    // const [ingredient, setIngredient] = useState<Ingredient>({
-    //     name: "",
-    //     quantity: "",
-    //     unit: ""
-    // });
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
     const [ingredientNameValue, setIngredientNameValue] = useState<string>("");
     const [ingredientQuantityValue, setIngredientQuantityValue] = useState<string>("");
@@ -91,6 +86,7 @@ const IngredientInput = () => {
                         placeholder="Banana"
                         value={ingredientNameValue}
                         onChange={(e) => setIngredientNameValue(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddIngredient())}
                         className="bg-white/2 border-2
                             placeholder:text-gray-600 text-sm
                             p-2 rounded-lg text-white/70 w-full
@@ -114,6 +110,7 @@ const IngredientInput = () => {
                         placeholder="10"
                         value={ingredientQuantityValue}
                         onChange={(e) => setIngredientQuantityValue(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddIngredient())}
                         className="bg-white/2 border-2 w-[10ch]
                             placeholder:text-gray-600 text-sm
                             p-2 rounded-lg text-white/70
@@ -137,6 +134,7 @@ const IngredientInput = () => {
                         placeholder="g"
                         value={ingredientUnitValue}
                         onChange={(e) => setIngredientUnitValue(e.target.value)}
+                        onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddIngredient())}
                         className="bg-white/2 border-2 w-[10ch]
                             placeholder:text-gray-600 text-sm
                             p-2 rounded-lg text-white/70
