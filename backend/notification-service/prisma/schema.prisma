@@ -32,6 +32,7 @@ enum NotificationType {
     NEW_RATING
     NEW_MESSAGE
     RECIPE_FAVORITED
+    NEW_RECIPE
 
     @@schema("notification_service")
 }
