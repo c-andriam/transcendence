@@ -38,7 +38,7 @@ const env = `
 AUTH_DATABASE_URL="postgresql://postgres.mufeesdzdecsncjbcoyr:Database42@aws-1-eu-west-1.pooler.supabase.com:5432/postgres?schema=auth_service"
 RECIPE_DATABASE_URL="postgresql://postgres.mufeesdzdecsncjbcoyr:Database42@aws-1-eu-west-1.pooler.supabase.com:5432/postgres?schema=recipe_service"
 USER_DATABASE_URL="postgresql://postgres.mufeesdzdecsncjbcoyr:Database42@aws-1-eu-west-1.pooler.supabase.com:5432/postgres?schema=user_service"
-NOTIFICATION_DATABASE_URL=
+NOTIFICATION_DATABASE_URL="postgresql://postgres.mufeesdzdecsncjbcoyr:Database42@aws-1-eu-west-1.pooler.supabase.com:5432/postgres?schema=notification_service"
 CHAT_DATABASE_URL=
 
 # ===============================
