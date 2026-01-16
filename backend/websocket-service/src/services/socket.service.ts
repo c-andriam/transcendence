@@ -69,6 +69,28 @@ export class SocketService {
                 }
             });
 
+            socket.on('join_recipe', ({ recipeId }: { recipeId: string }) => {
+                socket.join(`recipe_${recipeId}`);
+            });
+
+            socket.on('leave_recipe', ({ recipeId }: { recipeId: string }) => {
+                socket.leave(`recipe_${recipeId}`);
+            });
+
+            socket.on('comment_typing_start', ({ recipeId }: { recipeId: string }) => {
+                socket.to(`recipe_${recipeId}`).emit('comment_typing_start', {
+                    senderId: userId,
+                    recipeId: recipeId
+                });
+            });
+
+            socket.on('comment_typing_stop', ({ recipeId }: { recipeId: string }) => {
+                socket.to(`recipe_${recipeId}`).emit('comment_typing_stop', {
+                    senderId: userId,
+                    recipeId: recipeId
+                });
+            });
+
             socket.on('disconnect', async () => {
                 app.log.info(`User disconnected: ${userId} (Socket: ${socketId})`);
                 const sockets = this.userSockets.get(userId) || [];
@@ -103,7 +125,7 @@ export class SocketService {
             if (!response.ok) {
                 const text = await response.text();
                 console.error(`[SocketService] Failed to update status: ${response.status} ${text}`);
-            } 
+            }
         } catch (err) {
             console.error(`Failed to update user status for ${userId}:`, err);
         }

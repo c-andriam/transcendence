@@ -1,15 +1,38 @@
 import db from "../utils/dbPlugin";
 import { notifyUser } from "../utils/websocket.util";
-import { NotFoundError, ForbiddenError } from "@transcendence/common";
+import { NotFoundError, ForbiddenError, validateEnv } from "@transcendence/common";
+
+const env = validateEnv();
 
 export async function createMessage(senderId: string, receiverId: string, content: string) {
+    try {
+        const userServiceUrl = `http://localhost:${env.USER_SERVICE_PORT}/api/v1/internal/users/${senderId}/block-status/${receiverId}`;
+        const response = await fetch(userServiceUrl, {
+            headers: { 'x-internal-api-key': env.INTERNAL_API_KEY }
+        });
+        const result = await response.json();
+
+        if (result.status === 'success') {
+            if (result.data.isBlockedBy) {
+                throw new ForbiddenError("You cannot send messages to this user (Blocked)");
+            }
+            if (result.data.hasBlocked) {
+                throw new ForbiddenError("You strictly blocked this user. Unblock to send message.");
+            }
+        }
+    } catch (error) {
+        if (error instanceof ForbiddenError) throw error;
+        console.error("Failed to check block status:", error);
+    }
+
     let conversation = await db.conversation.findFirst({
         where: {
             AND: [
                 { participants: { some: { userId: senderId } } },
                 { participants: { some: { userId: receiverId } } }
             ]
-        }
+        },
+        include: { participants: true }
     });
 
     if (!conversation) {
@@ -21,7 +44,8 @@ export async function createMessage(senderId: string, receiverId: string, conten
                         { userId: receiverId }
                     ]
                 }
-            }
+            },
+            include: { participants: true }
         });
     }
 
@@ -36,8 +60,8 @@ export async function createMessage(senderId: string, receiverId: string, conten
     await notifyUser(receiverId, 'new_message', {
         id: message.id,
         conversationId: conversation.id,
-        senderId: message.senderId,
-        content: message.content,
+        senderId,
+        content,
         createdAt: message.createdAt
     });
 

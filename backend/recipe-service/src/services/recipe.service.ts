@@ -69,6 +69,35 @@ export async function createRecipe(
             }
         }
     });
+
+    try {
+        const USER_SERVICE_URL = `${process.env.DOMAIN}:${process.env.USER_SERVICE_PORT}`;
+        const response = await fetch(`${USER_SERVICE_URL}/api/v1/users/${data.authorId}/followers`, {
+            headers: {
+                'x-internal-api-key': process.env.INTERNAL_API_KEY!
+            }
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+
+            if (result.status === 'success' && Array.isArray(result.data)) {
+                const followers = result.data;
+                Promise.all(followers.map((follower: any) =>
+                    notifyUser(
+                        follower.id,
+                        NotificationType.NEW_RECIPE,
+                        'New Recipe',
+                        `Chef has posted a new recipe: "${data.title}"`,
+                        { recipeId: recipe.id, slug: recipe.slug, authorId: data.authorId }
+                    )
+                )).catch(err => console.error("Failed to notify followers:", err));
+            }
+        }
+    } catch (error) {
+        console.error("Error fetching followers to notify:", error);
+    }
+
     return {
         ...recipe,
         dietaryTags: recipe.dietaryTags.map(dt => dt.dietaryTag)
