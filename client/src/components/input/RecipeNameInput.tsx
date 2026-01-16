@@ -7,9 +7,9 @@ const RecipeNameInput = () => {
     const options = ["Easy", "Medium", "Hard"];
     return (
         <div
-            className="flex flex-row gap-4 items-center justify-center"
+            className="flex flex-row gap-4 py-2 w-full max-w-[516px] mx-auto"
         >
-            <div className="flex flex-col gap-1 items-start justify-center">
+            <div className="flex flex-col gap-1 items-start w-full justify-center">
                 <label htmlFor="name"
                     className="text-white/40 text-xs"
                 >
@@ -17,7 +17,7 @@ const RecipeNameInput = () => {
                 </label>
                 <input type="text" name="name" id="name"
                     placeholder="Enter recipe name"
-                    className="bg-transparent border-2
+                    className="bg-white/2 border-2 w-full
                         placeholder:text-gray-600 text-sm
                         p-2 rounded-lg text-white/70
                         outline-none hover:border-white/20
@@ -33,7 +33,7 @@ const RecipeNameInput = () => {
                 </label>
                 <input type="text" name="time" id="time"
                     placeholder="Time to cook"
-                    className="bg-transparent border-2
+                    className="bg-white/2 border-2
                         placeholder:text-gray-600 text-sm
                         p-2 rounded-lg text-white/70 w-[15ch]
                         outline-none hover:border-white/20
@@ -47,7 +47,7 @@ const RecipeNameInput = () => {
                 >
                     Difficulty
                 </label>
-                <div className="relative w-[15ch] text-white/70">
+                <div className="relative w-[15ch] bg-white/2 text-white/70">
                     <div
                         onClick={() => setIsOpen(!isOpen)}
                         className="flex items-center justify-between 

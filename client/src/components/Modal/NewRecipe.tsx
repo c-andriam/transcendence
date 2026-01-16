@@ -1,7 +1,9 @@
 import { IoMdClose } from "react-icons/io";
-import { CgAddR } from "react-icons/cg";
 import PictureInput from "../input/PictureInput";
 import RecipeNameInput from "../input/RecipeNameInput";
+import TagInput from "../input/TagInput";
+import IngredientInput from "../input/IngredientInput";
+import StepInput from "../input/StepInput";
 
 const NewRecipe = ({ modalRef }: any) => {
     return (
@@ -28,37 +30,16 @@ const NewRecipe = ({ modalRef }: any) => {
                 </button>
                 <h3 className="text-2xl font-semibold
                     p-4">What’s Cooking?</h3>
-                <form action="">
-                    <div
-                        className="flex items-center justify-center"
-                    >
-                        <RecipeNameInput />
-                    </div>
-                    {/* Tags */}
-                    <div>
-                        <button type="button">
-                            <CgAddR size={20} />
-                        </button>
-                    </div>
-                    {/* Ingredients */}
-                    <div>
-                        <button type="button">
-                            <CgAddR size={20} />
-                        </button>
-                    </div>
-                    {/* Instructions */}
-                    <div>
-                        <button type="button">
-                            <CgAddR size={20} />
-                        </button>
-                    </div>
-                    {/* Image */}
-                    <div
-                        className="flex items-center justify-center"
-                    >
+                <form action=""
+                    className="flex flex-col gap-2"
+                >
+                    <RecipeNameInput />
+                    <TagInput />
+                    <IngredientInput />
+                    <StepInput />
+                    <div className="flex items-center justify-center">
                         <PictureInput />
                     </div>
-                    {/* Buttons */}
                     <div className="flex flex-row justify-end gap-4">
                         <button
                             type="button"
