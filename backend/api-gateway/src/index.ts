@@ -13,6 +13,7 @@ import cookie from "@fastify/cookie";
 import cors from "@fastify/cors";
 import multipart from "@fastify/multipart";
 import path from "path";
+import { chatRoutes } from "./routes/chat.routes";
 
 dotenv.config({
   path: path.resolve(__dirname, "../../.env"),
@@ -96,7 +97,6 @@ const start = async () => {
     });
     await app.register(swaggerUi, { routePrefix: "/documentation" });
 
-    // Debug route to ensure we can always fetch the JSON
     app.get('/documentation/json-debug', async () => {
       return app.swagger();
     });
@@ -108,6 +108,7 @@ const start = async () => {
       await api.register(recipesRoutes, { prefix: '/api/v1' });
       await api.register(usersRoutes, { prefix: '/api/v1' });
       await api.register(notificationsRoutes, { prefix: '/api/v1' });
+      await api.register(chatRoutes, { prefix: '/api/v1' });
     });
 
     await app.ready();

@@ -4,6 +4,7 @@ import fastifyJwt from '@fastify/jwt';
 import { globalErrorHandler, internalApiKeyMiddleware, validateEnv } from '@transcendence/common';
 import path from 'path';
 import dotenv from 'dotenv';
+import { chatRoutes } from './routes/chat.routes';
 
 dotenv.config({
     path: path.resolve(__dirname, "../../.env"),
@@ -30,6 +31,8 @@ const start = async () => {
         await app.register(async (api) => {
             api.addHook('preHandler', internalApiKeyMiddleware);
         });
+
+        await app.register(chatRoutes, { prefix: '/api/v1' });
 
         await app.ready();
         await app.listen({
