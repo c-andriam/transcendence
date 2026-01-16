@@ -35,7 +35,8 @@ import {
 import {
     blockUser,
     unblockUser,
-    getBlockedUsers
+    getBlockedUsers,
+    checkIsBlocked
 } from "../services/block.service";
 import {
     sendSuccess,
@@ -402,5 +403,12 @@ export async function userRoutes(app: FastifyInstance) {
         const { isOnline } = request.body as z.infer<typeof statusSchema>;
         const user = await updateUserStatus(id, isOnline);
         sendSuccess(reply, { id: user.id, isOnline: user.isOnline }, 'User status updated successfully');
+    });
+    app.get("/internal/users/:id/block-status/:otherId", async (request, reply) => {
+        const { id, otherId } = request.params as { id: string, otherId: string };
+        const isBlockedBy = await checkIsBlocked(otherId, id); // Is 'id' blocked by 'otherId'?
+        const hasBlocked = await checkIsBlocked(id, otherId);  // Has 'id' blocked 'otherId'?
+
+        sendSuccess(reply, { isBlockedBy, hasBlocked }, 'Block status retrieved');
     });
 }
