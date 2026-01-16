@@ -81,7 +81,8 @@ waf/
 ├── .gitignore                    # Exclusion des logs
 ├── README.md                     # Ce fichier
 ├── docker-compose.yml            # Orchestration Docker
-├── test_custom_rules.sh          # Tests automatisés
+├── test_custom_rules.sh          # Tests automatisés des regles personnalise
+├── test_rate_limit.sh            # Tests automatisés du rate limiting
 ├── certs/                        # Certificats SSL
 │   ├── cert.pem
 │   └── key.pem
