@@ -80,7 +80,8 @@ export async function proxyMultipart(
     request: FastifyRequest,
     reply: FastifyReply,
     path: string,
-    serviceUrl: string
+    serviceUrl: string,
+    options: { fileRequired?: boolean } = { fileRequired: true }
 ) {
     const url = new URL(`${serviceUrl}${path}`);
     const query = request.query as Record<string, any>;
@@ -111,7 +112,8 @@ export async function proxyMultipart(
                 formData.append(part.fieldname, part.value);
             }
         }
-        if (!hasFile) {
+
+        if (options.fileRequired && !hasFile) {
             return reply.status(400).send({
                 status: "error",
                 message: "No file uploaded"

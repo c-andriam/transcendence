@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { proxyRequest } from "../utils/proxy";
+import { proxyRequest, proxyMultipart } from "../utils/proxy";
 import { strictRateLimiter, moderateRateLimiter } from "../middleware/rateLimiter.middleware";
 import dotenv from "dotenv";
 import path from "path";
@@ -57,9 +57,13 @@ export async function authRoutes(app: FastifyInstance) {
                 ...commonResponses
             }
         },
+        validatorCompiler: () => () => true,
         preHandler: [strictRateLimiter(15, 60000)],
         handler: async (request, reply) => {
             try {
+                if (request.isMultipart()) {
+                    return proxyMultipart(request, reply, "/api/v1/auth/register", AUTH_SERVICE_URL, { fileRequired: false });
+                }
                 const { statusCode, body } = await proxyRequest(request, reply, "/api/v1/auth/register", AUTH_SERVICE_URL);
                 return reply.status(statusCode as any).send(body);
             } catch (error) {
