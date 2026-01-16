@@ -2,7 +2,9 @@
 
 Bienvenue dans le coffre-fort de secrets du projet **ft_transcendence**.
 
-## 🚀 Démarrage Rapide (En 30 secondes)
+## 🚀 Démarrage Rapide
+
+## Vault non automatisé (En 30 secondes)
 
 1. **Lancer le conteneur** :
    ```bash
@@ -16,16 +18,26 @@ Bienvenue dans le coffre-fort de secrets du projet **ft_transcendence**.
    ```
    *Ce script va tout configurer et vous donner le **Token** à partager.*
 
+## Vault automatisé (Plus long)
+
+**Lancer le conteneur** :
+  ```bash
+  cd docker/vault
+  docker compose up -d
+  ```
+
+=> C'est tout! Vault est démarré en meme temps que le script (vault-entrypoint.sh) s'exécute et les token sont automatiquement envoyes vers les services qui y correspondent.
+
 ---
 
 ## 📚 Documentation par Rôle
 
 Pour éviter de compromettre des informations sensibles, merci de lire le guide correspondant à votre rôle :
 
-- **Équipe Backend / IA** : [Guide d'utilisation et Token](../../docs/security/vault/onboarding-team.md)  
-  *(Pour mranaivo, candriam, rdiary)*
-- **Équipe DevOps** : [Notes d'intégration infra](../../docs/security/vault/devops-notes.md)  
-  *(Pour arazafin)*
+- **Integration de vault pour tout le monde** : [Integration_guide](../../docs/security/vault/GUIDE_Utilisation.md)
+- **Équipe Backend** :       [Guide d'utilisation et Token (Back)](../../docs/security/vault/Integration_back.md) 
+- **Équipe API** :            [Guide d'utilisation et Token (API)](../../docs/security/vault/Integration_API.md)
+- **Équipe DevOps** :        [Notes d'intégration infra](../../docs/security/vault/devops-notes.md)  
 - **Responsable Sécurité** : [Administration avancée](../../docs/security/vault/admin-vault.md)  
   *(Privé)*
 

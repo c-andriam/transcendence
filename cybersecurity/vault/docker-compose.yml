@@ -1,3 +1,6 @@
+# shared volume where vault tokens will be stored
+volumes:
+  vault-tokens:
 
 services:
   vault:
@@ -11,4 +14,31 @@ services:
       VAULT_API_ADDR: 'http://0.0.0.0:8200'
     cap_add:
       - IPC_LOCK
-    command: server -dev
+    entrypoint: /vault/scripts/vault-entrypoint.sh
+    volumes:
+      - vault-tokens:/vault/tokens
+      - ./scripts:/vault/scripts
+    # Verified that vault is up and running before executing others services
+    healthcheck:
+      test: ["CMD", "vault", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
+  # Other service who needs vault can be added here (API, DB, etc...)
+  # For example, the test-backend service:
+  # test-backend:
+  #   image: node:18-alpine
+  #   container_name: test-backend
+  #   working_dir: /app
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - ./:/app
+  #     - vault-tokens:/vault/tokens
+  #   command: sh -c "npm install express && node test-backend.js"
+  #   depends_on:
+  #     vault:
+  #       condition: service_healthy
+  #   environment:
+  #     VAULT_ADDR: 'http://vault:8200'
