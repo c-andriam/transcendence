@@ -1,5 +1,6 @@
 import db from "../utils/db";
 import { NotificationType } from "@transcendence/common";
+import { notifyUser } from "../utils/websocket.util";
 
 export async function createNotification(
     userId: string,
@@ -8,7 +9,7 @@ export async function createNotification(
     message: string,
     data?: any
 ) {
-    return await db.notification.create({
+    const notification = await db.notification.create({
         data: {
             userId,
             type,
@@ -17,6 +18,10 @@ export async function createNotification(
             data
         }
     });
+
+    await notifyUser(userId, 'notification', notification);
+
+    return notification;
 }
 
 export async function getNotifications(userId: string, page: number = 1, limit: number = 20) {

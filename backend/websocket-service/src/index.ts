@@ -1,13 +1,15 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
+import path from 'path';
+
+// Load env vars before anything else
+const envPath = path.resolve(__dirname, "../../.env");
+dotenv.config({ path: envPath });
+
 import fastify from 'fastify';
 import fastifyJwt from '@fastify/jwt';
-import { globalErrorHandler, validateEnv } from '@transcendence/common';
-import path from 'path';
-import dotenv from 'dotenv';
-
-dotenv.config({
-    path: path.resolve(__dirname, "../../.env"),
-});
+import { globalErrorHandler, validateEnv, internalApiKeyMiddleware } from '@transcendence/common';
+import { SocketService } from './services/socket.service';
+import { internalRoutes } from './routes/internal.routes';
 
 const env = validateEnv();
 
@@ -27,7 +29,11 @@ app.get('/health', async () => ({ status: 'ok', service: 'websocket-service', ti
 
 const start = async () => {
     try {
+        await app.register(internalRoutes);
+
         await app.ready();
+        SocketService.initialize(app);
+
         await app.listen({
             port: env.WEBSOCKET_SERVICE_PORT,
             host: '0.0.0.0'
