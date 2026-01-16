@@ -34,7 +34,7 @@ Bienvenue dans le coffre-fort de secrets du projet **ft_transcendence**.
 
 Pour éviter de compromettre des informations sensibles, merci de lire le guide correspondant à votre rôle :
 
-- **Integration de vault pour tout le monde** : [Integration_guide](../../docs/security/vault/GUIDE_Utilisation.md)
+- **Integration de vault pour tout le monde** : [Integration_guide](../../docs/security/vault/Guide_Utilisation.md)
 - **Équipe Backend** :       [Guide d'utilisation et Token (Back)](../../docs/security/vault/Integration_back.md) 
 - **Équipe API** :            [Guide d'utilisation et Token (API)](../../docs/security/vault/Integration_API.md)
 - **Équipe DevOps** :        [Notes d'intégration infra](../../docs/security/vault/devops-notes.md)  
