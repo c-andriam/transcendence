@@ -31,6 +31,7 @@ services:
       - MODSEC_RESPONSE_BODY_ACCESS=Off
     volumes:
        - ./conf/modsecurity-custom.conf:/etc/modsecurity.d/owasp-crs/rules/99-custom.conf
+       #- ./conf/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf:/etc/modsecurity.d/owasp-crs/rules/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf
        - ./certs/cert.pem:/etc/nginx/conf/server.crt:ro
        - ./certs/key.pem:/etc/nginx/conf/server.key:ro
        - ./logs:/var/log/modsec
