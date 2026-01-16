@@ -78,25 +78,27 @@ tail -f logs/nginx/error.log
 ## 📁 Structure
 ```
 waf/
-├── .gitignore                    # Exclusion des logs
-├── README.md                     # Ce fichier
-├── docker-compose.yml            # Orchestration Docker
-├── test_custom_rules.sh          # Tests automatisés des regles personnalise
-├── test_rate_limit.sh            # Tests automatisés du rate limiting
-├── certs/                        # Certificats SSL
+├── .gitignore                                  # Exclusion des logs
+├── README.md                                   # Ce fichier
+├── docker-compose.yml                          # Orchestration Docker
+├── test_custom_rules.sh                        # Tests automatisés des regles personnalise
+├── test_rate_limit.sh                          # Tests automatisés du rate limiting
+├── test_false_positives.sh                     # Test automatisés du faux-positif (si besoin)
+├── certs/                                      # Certificats SSL
 │   ├── cert.pem
 │   └── key.pem
-├── conf/                         # Configuration
-│   ├── modsecurity-custom.conf   # Règles custom 1001-1008
-│   ├── nginx-rate-limit.conf     # Rate limiting (30 req/min)
-│   └── index-mock.html           # Page de test
-└── logs/                         # Logs (ignorés par git)
+├── conf/                                       # Configuration
+│   ├── modsecurity-custom.conf                 # Règles custom 1001-1008
+│   ├── nginx-rate-limit.conf                   # Rate limiting (30 req/min)
+│   └── index-mock.html                         # Page de test
+|   └── RESPONSE-999-EXCLUSION-RULES-AFTER-CRS  # Regles a exclure si false positif trouve
     ├── .gitkeep
-    ├── modsec_audit.log          # Audit ModSecurity (JSON)
+└── logs/                                       # Logs (ignorés par git)
     └── nginx/
+    ├── modsec_audit.log                        # Audit ModSecurity (JSON)
         ├── .gitkeep
-        ├── access.log            # Accès Nginx
-        └── error.log             # Erreurs Nginx
+        └── error.log                           # Erreurs Nginx
+        ├── access.log                          # Accès Nginx
 ```
 
 ## ⚙️ Configuration OWASP CRS
@@ -113,6 +115,12 @@ waf/
 - **Burst**: 15 requêtes
 - **Réponse**: HTTP 429 (Too Many Requests)
 
+## ⏸️ False Positif (CRS Exclusion)
+
+- **Files**: [Configuration](./conf/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf)
+- **Test possible**: [Test legitime + Test illegitime](../waf/test_false_positives.sh)
+- **Methodologie**: [Comment_Savoir_SI_Legitime_ou_PAS](../../docs/security/waf-modsecurity/Methodologie_faux_positifs.md)
+
 ## 🔧 Maintenance
 
 ### Permissions logs
@@ -128,11 +136,13 @@ Toutes les règles ont été testées et validées:
 - ✅ Conteneur démarre sans erreur
 - ✅ Logs ModSecurity fonctionnels
 - ✅ Rate limiting opérationnel
+- ⏸️ Il faut encore tester les faux-positifs au fur et à mesure (ça dépend du besoin du site et des requêtes légitimes ou pas)
 
 ## Reference et test sur le WAF
 
 - [Architecture détaillée du WAF](../../docs/security/waf-modsecurity/waf-architecture.md)
 - [Tests valide pour waf](../../docs/security/waf-modsecurity/WAF_FINAL_STATUS.md)
+- [Methodologie_false_positif](../../docs/security/waf-modsecurity/Methodologie_faux_positifs.md)
 
 ## 📚 Documentation Complémentaire
 
