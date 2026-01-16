@@ -12,7 +12,7 @@ export async function createNotification(
     const notification = await db.notification.create({
         data: {
             userId,
-            type,
+            type: type as any,
             title,
             message,
             data
