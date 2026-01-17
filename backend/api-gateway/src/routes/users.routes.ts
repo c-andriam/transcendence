@@ -203,9 +203,9 @@ export async function usersRoutes(app: FastifyInstance) {
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             body: {
                 type: "object",
-                required: ["currentPassword", "newPassword"],
+                required: ["oldPassword", "newPassword"],
                 properties: {
-                    currentPassword: { type: "string" },
+                    oldPassword: { type: "string" },
                     newPassword: { type: "string", minLength: 8 }
                 }
             },

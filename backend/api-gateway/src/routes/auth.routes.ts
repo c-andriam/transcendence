@@ -142,7 +142,7 @@ export async function authRoutes(app: FastifyInstance) {
             tags: ["Authentication"],
             summary: "Logout user",
             description: "### Overview\nTerminates the current user session.\n\n### Technical Details\n1. Clears the Refresh Token cookie on the client side.\n2. Notifies `auth-service` to invalidate the Refresh Token in the database.\n\n### Side Effects\n- Sets user status to `OFFLINE` via `user-service`.\n\n### Security\n- Requires an active session (valid Refresh Token).",
-            security: [{ apiKeyAuth: [] }],
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
             response: {
                 200: createResponseSchema({
                     type: "object",
