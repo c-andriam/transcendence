@@ -2,7 +2,7 @@ import React from "react";
 import Lottie from "lottie-react";
 
 interface LottieAnimationProps {
-    animationData: string;
+    animationData: any;
     w: number;
     h: number;
 }

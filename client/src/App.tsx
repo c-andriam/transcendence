@@ -6,16 +6,18 @@ import Home from './pages/Home'
 import PostFeed from './components/Feeds/PostFeed'
 import FriendFeed from './components/Feeds/FriendsFeed'
 import OwnRecipeFeed from './components/Feeds/OwnRecipeFeed'
-
+import EmailVerify from './components/Modal/EmailVerify'
+import ForgetPassword from './components/Modal/ForgetPassword'
 import './App.css'
 
 function App() {
-
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/email-verify" element={<EmailVerify />} />
+      <Route path="/forget-password" element={<ForgetPassword />} />
       {/* Routes imbriquées pour Home */}
       <Route path="/home" element={<Home />}>
         {/* Route par défaut : redirige vers /home/feed */}

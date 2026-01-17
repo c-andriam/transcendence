@@ -4,6 +4,8 @@ import Lot1 from "../../public/lotties/Food prep.json"
 import NavigationButton from "../components/NavigationButton";
 import Footer from "../components/Footer";
 import GoogleLogo from "../../public/logo/google-logo-png-29534.png"
+import InputFloating from "../components/UI/InputFloating";
+import { NavLink } from "react-router-dom";
 
 const Login = () => {
     return (
@@ -21,45 +23,16 @@ const Login = () => {
                                     <p className="text-sm text-gray-600 text-center">Cooking, sharing, love!</p>
                                 </div>
                                 <form action="" className="space-y-5">
-                                    <div className="relative">
-                                        <input
-                                            type="email"
-                                            placeholder=" "
-                                            id="email"
-                                            className="peer w-full px-4 pt-6 pb-2 border-2 border-gray-600
-                                            rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
-                                            required
-                                        />
-                                        <label
-                                            htmlFor="email"
-                                            className="absolute left-4 top-4 text-gray-600 transition-all duration-200
-                                            peer-placeholder-shown:top-4 peer-placeholder-shown:text-base
-                                            peer-focus:top-2 peer-focus:text-xs peer-focus:text-orange-500
-                                            text-sm font-medium mb-2
-                                            peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-xs"
+                                    <InputFloating label="Email" type="email" id="email" />
+                                    <div className="flex flex-col gap-2">
+                                        <InputFloating label="Password" type="password" id="password" />
+                                        <NavLink
+                                            to="/forget-password"
+                                            className='text-xs text-orange-400/80 hover:text-orange-500 
+                                        transition-colors cursor-pointer flex justify-end font-medium'
                                         >
-                                            Email
-                                        </label>
-                                    </div>
-                                    <div className="relative">
-                                        <input
-                                            type="password"
-                                            placeholder=" "
-                                            id="password"
-                                            className="peer w-full px-4 pt-6 pb-2 border-2 border-gray-600
-                                            rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
-                                            required
-                                        />
-                                        <label
-                                            htmlFor="password"
-                                            className="absolute left-4 top-4 text-gray-600 transition-all duration-200
-                                            peer-placeholder-shown:top-4 peer-placeholder-shown:text-base
-                                            peer-focus:top-2 peer-focus:text-xs peer-focus:text-orange-500
-                                            text-sm font-medium mb-2
-                                            peer-[:not(:placeholder-shown)]:top-2 peer-[:not(:placeholder-shown)]:text-xs"
-                                        >
-                                            Password
-                                        </label>
+                                            Forget password?
+                                        </NavLink>
                                     </div>
                                     <div className="flex items-center justify-center gap-72">
                                         <label
@@ -112,7 +85,7 @@ const Login = () => {
                         </section>
                     </div>
                 </main>
-                <Footer/>
+                <Footer />
             </div>
         </>
     );

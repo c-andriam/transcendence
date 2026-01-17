@@ -17,7 +17,7 @@ const Title = ({ variant = 'primary', slogan = 'primary', pos = 'justify-center 
     };
     return (
         <div className={`flex flex-col ${pos} gap-1`}>
-            <p className={`${variants[variant]}`}><span className='text-orange-500'>Cook</span>Share</p>
+            <p className={`${variants[variant]}`}><span className='text-orange-500 p-0 m-0'>Cook</span>Share</p>
             <p className={`${slogans[slogan]}`}>Cooking, sharing, love!</p>
         </div>
     );
