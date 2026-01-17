@@ -98,7 +98,14 @@ const start = async () => {
 
 
 
-    await app.register(swaggerUi, { routePrefix: "/documentation" });
+    await app.register(swaggerUi, {
+      routePrefix: "/documentation",
+      staticCSP: true,
+      transformStaticCSP: (header) => header,
+      uiConfig: {
+        validatorUrl: null
+      }
+    });
 
     app.get('/documentation/json-debug', async () => {
       return app.swagger();
