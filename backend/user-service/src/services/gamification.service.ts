@@ -5,8 +5,17 @@ import { NotFoundError } from "@transcendence/common";
 export enum GamificationEvent {
     RECIPE_CREATED = 'RECIPE_CREATED',
     REVIEW_GIVEN = 'REVIEW_GIVEN',
-    FIRST_LOGIN = 'FIRST_LOGIN'
+    FIRST_LOGIN = 'FIRST_LOGIN',
+    FOLLOWER_GAINED = 'FOLLOWER_GAINED'
 }
+
+// Map events to Badge Criteria Types
+const EVENT_TO_CRITERIA: Record<GamificationEvent, string | undefined> = {
+    [GamificationEvent.RECIPE_CREATED]: 'RECIPE_COUNT',
+    [GamificationEvent.REVIEW_GIVEN]: 'REVIEW_COUNT',
+    [GamificationEvent.FIRST_LOGIN]: undefined, // No dynamic badge for login yet
+    [GamificationEvent.FOLLOWER_GAINED]: 'FOLLOWER_COUNT'
+};
 
 export async function awardXp(userId: string, amount: number) {
     const user = await db.user.findUnique({ where: { id: userId } });
@@ -56,36 +65,45 @@ export async function awardBadge(userId: string, badgeSlug: string) {
     return userBadge;
 }
 
-export async function processGamificationEvent(userId: string, event: GamificationEvent, data?: any) {
+export async function processGamificationEvent(userId: string, event: GamificationEvent, data: any = {}) {
     // 1. Award generic XP based on event
     let xpAmount = 0;
     switch (event) {
-        case GamificationEvent.RECIPE_CREATED:
-            xpAmount = 50;
-            break;
-        case GamificationEvent.REVIEW_GIVEN:
-            xpAmount = 10;
-            break;
+        case GamificationEvent.RECIPE_CREATED: xpAmount = 50; break;
+        case GamificationEvent.REVIEW_GIVEN: xpAmount = 10; break;
+        case GamificationEvent.FIRST_LOGIN: xpAmount = 5; break;
+        case GamificationEvent.FOLLOWER_GAINED: xpAmount = 20; break;
     }
 
-    let xpResult = null;
-    if (xpAmount > 0) {
-        xpResult = await awardXp(userId, xpAmount);
-    }
+    const xpResult = await awardXp(userId, xpAmount);
 
-    // 2. Check for Specific Badges
-    const badgeAwards: any[] = [];
+    // 2. Dynamic Badge Awarding
+    const criteriaType = EVENT_TO_CRITERIA[event];
+    let currentValue = 0;
 
-    if (event === GamificationEvent.RECIPE_CREATED) {
-        // Example: If this is the FIRST recipe, award "First Chef"
-        // Note: In a real microservice, we might not know if it's the "first" unless passed in stats
-        // For this MVP, let's assume if it's recipe created, we try to award "First Chef" 
-        // Logic: Checks if user has >= 1 recipe? But user-service doesn't have recipes.
-        // We rely on data.recipeCount if provided, or we accept a dedicated badgeSlug in params?
-        // Let's rely on data.recipeCount
-        if (data?.recipeCount === 1) {
-            const b = await awardBadge(userId, 'first-recipe');
-            if (b) badgeAwards.push('first-recipe');
+    // Determine current value based on event data
+    // The caller (other services) should provide the TOTAL count in `data`.
+    // E.g. data.recipeCount, data.followerCount
+    if (criteriaType === 'RECIPE_COUNT') currentValue = data.recipeCount || 0;
+    else if (criteriaType === 'FOLLOWER_COUNT') currentValue = data.followerCount || 0;
+    else if (criteriaType === 'REVIEW_COUNT') currentValue = data.reviewCount || 0;
+
+    let badgeAwards: string[] = [];
+
+    if (criteriaType && currentValue > 0) {
+        // Find all badges that match the criteria and threshold is met
+        const eligibleBadges = await db.badge.findMany({
+            where: {
+                type: criteriaType,
+                threshold: { lte: currentValue }
+            }
+        });
+
+        for (const badge of eligibleBadges) {
+            const awarded = await awardBadge(userId, badge.slug);
+            if (awarded) {
+                badgeAwards.push(badge.slug);
+            }
         }
     }
 
@@ -95,8 +113,22 @@ export async function processGamificationEvent(userId: string, event: Gamificati
 export async function getUserGamificationProfile(userId: string) {
     const user = await db.user.findUnique({
         where: { id: userId },
-        select: { xp: true, level: true, badges: { include: { badge: true } } }
+        include: {
+            badges: {
+                include: {
+                    badge: true
+                }
+            }
+        }
     });
-    if (!user) throw new NotFoundError("User not found");
-    return user;
+
+    if (!user) return null;
+
+    return {
+        id: user.id,
+        username: user.username,
+        xp: user.xp,
+        level: user.level,
+        badges: user.badges
+    };
 }

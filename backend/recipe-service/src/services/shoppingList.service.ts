@@ -9,7 +9,6 @@ export async function addToShoppingList(userId: string, data: { name: string; qu
             quantity: data.quantity
         }
     });
-    notifyShoppingListUpdate(userId, 'ITEM_ADDED', item);
     return item;
 }
 
@@ -46,20 +45,23 @@ export async function getShoppingList(userId: string) {
 }
 
 export async function updateShoppingListItem(id: string, userId: string, data: { isChecked?: boolean; name?: string; quantity?: string }) {
-    const result = await db.shoppingListItem.updateMany({
-        where: { id, userId },
+    // Ensure item exists and belongs to user
+    const exists = await db.shoppingListItem.findFirst({ where: { id, userId } });
+    if (!exists) throw new Error("Item not found or access denied");
+
+    return db.shoppingListItem.update({
+        where: { id },
         data
     });
-    notifyShoppingListUpdate(userId, 'ITEM_UPDATED', { id, ...data });
-    return result;
 }
 
 export async function deleteShoppingListItem(id: string, userId: string) {
-    const result = await db.shoppingListItem.deleteMany({
-        where: { id, userId }
+    const exists = await db.shoppingListItem.findFirst({ where: { id, userId } });
+    if (!exists) throw new Error("Item not found or access denied");
+
+    return db.shoppingListItem.delete({
+        where: { id }
     });
-    notifyShoppingListUpdate(userId, 'ITEM_DELETED', { id });
-    return result;
 }
 
 export async function clearCheckedItems(userId: string) {

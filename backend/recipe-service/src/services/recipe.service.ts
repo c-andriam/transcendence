@@ -2,6 +2,7 @@ import { FastifyInstance } from "fastify";
 import db from "../utils/db";
 import { slugify, NotFoundError, ForbiddenError, NotificationType } from "@transcendence/common";
 import { notifyUser } from "../utils/notifyUser";
+import { triggerGamificationEvent, GamificationEvent } from "../utils/gamification";
 
 export async function createRecipe(
     data: {
@@ -69,6 +70,10 @@ export async function createRecipe(
             }
         }
     });
+
+    // Award XP and check for badges
+    const recipeCount = await db.recipe.count({ where: { authorId: data.authorId } });
+    triggerGamificationEvent(data.authorId, GamificationEvent.RECIPE_CREATED, { recipeCount });
 
     try {
         const USER_SERVICE_URL = `${process.env.DOMAIN}:${process.env.USER_SERVICE_PORT}`;
@@ -408,6 +413,9 @@ export async function rateRecipe(
         `Someone rated your recipe "${fullRecipe?.title || 'your recipe'}" ${score}/5`,
         { recipeId, score }
     );
+
+    // Award XP for giving a review/rating
+    triggerGamificationEvent(userId, GamificationEvent.REVIEW_GIVEN, {});
 
     return rating;
 }

@@ -81,4 +81,24 @@ export async function shoppingListRoutes(app: FastifyInstance) {
         await clearAllItems(request.user!.id);
         sendDeleted(reply, null, "Shopping list cleared");
     });
+
+    app.post("/internal/shopping-list/items", async (request, reply) => {
+        const { userId, name, quantity } = request.body as any;
+        const item = await addToShoppingList(userId, { name, quantity });
+        sendCreated(reply, item, "Item added to shopping list");
+    });
+
+    app.put("/internal/shopping-list/items/:id", async (request, reply) => {
+        const { id } = request.params as { id: string };
+        const { userId, ...data } = request.body as any;
+        const item = await updateShoppingListItem(id, userId, data);
+        sendSuccess(reply, item, "Shopping list item updated");
+    });
+
+    app.delete("/internal/shopping-list/items/:id", async (request, reply) => {
+        const { id } = request.params as { id: string };
+        const { userId } = request.body as any;
+        await deleteShoppingListItem(id, userId);
+        sendDeleted(reply, null, "Item removed from shopping list");
+    });
 }

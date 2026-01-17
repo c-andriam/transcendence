@@ -28,7 +28,7 @@ app.get('/health', async () => ({ status: 'ok', service: 'websocket-service', ti
 
 const start = async () => {
     try {
-        await app.register(internalRoutes);
+        await app.register(internalRoutes, { prefix: '/api/v1' });
 
         await app.ready();
         SocketService.initialize(app);

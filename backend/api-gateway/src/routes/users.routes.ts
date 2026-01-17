@@ -24,7 +24,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Users"],
             summary: "Get current user profile",
-            description: "### Overview\nRetrieves the private profile information of the currently logged-in user.\n\n### Technical Details\n1. Extracts user ID from the JWT payload.\n2. Proxies request to `user-service`.\n3. Aggregates data from `User` and `Profile` tables.\n\n### Security\n- Requires a valid JWT Bearer Token.\n- Only returns data for the authenticated user.",
+            description: "### Overview\nRetrieves the private, high-fidelity profile information of the authenticated user session.\n\n### Technical Details\n- Aggregates core identity data with extended profile metadata from the `user-service`.\n- Includes real-time online status and internal role permissions.\n\n### Security\n- Strictly isolated to the authenticated subject (JWT sub claim).",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             response: {
                 200: createResponseSchema({
@@ -141,7 +141,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Users"],
             summary: "Get specific user profile",
-            description: "### Overview\nRetrieves the public profile of any user.\n\n### Technical Details\n- Fetches data based on the provided UUID.\n- Includes social stats (follower/following counts) and online status.",
+            description: "### Overview\nExposes the public identity and social footprint of any platform user.\n\n### Technical Details\n- Fetches public attributes: biography, avatar, and join date.\n- Aggregates social reach metrics (follower/following counts).\n\n### Security\n- Filtered to exclude sensitive PII (Personally Identifiable Information) like email or password hashes.",
             security: [{ apiKeyAuth: [] }],
             params: {
                 type: "object",
@@ -331,7 +331,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Follow a user",
-            description: "### Overview\nEstablishes a follow relationship between two users.\n\n### Technical Details\n- Creates a record in the `Follows` table.\n- Prevents users from following themselves.\n\n### Side Effects\n- Sends a real-time notification to the followed user.",
+            description: "### Overview\nEstablishes a social subscription between the authenticated user and a target profile.\n\n### Technical Details\n- Inserts a directional link in the `Follows` relational table.\n- Implements a self-link safety check to prevent users from following their own accounts.\n\n### Side Effects\n- Dispatches a real-time 'new_follower' notification to the target user.\n- Updates the target user's 'Follower' leaderboard position.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -578,7 +578,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Send friend request",
-            description: "### Overview\nSends a request to another user to become friends.\n\n### Technical Details\n- Creates a pending friend request record.\n- Checks for existing requests or friendships to prevent duplicates.\n\n### Side Effects\n- Sends a real-time notification to the receiver.",
+            description: "### Overview\nInitiates a formal friendship request to another user, requiring explicit approval.\n\n### Technical Details\n- Creates a high-priority `FriendRequest` record with `PENDING` status.\n- Performs an exhaustive check for existing friendships or blocked relationships.\n\n### Validation & Constraints\n- **Target**: Must be a valid, active user ID.\n\n### Side Effects\n- Triggers a system-level 'friend_request' notification and WebSocket event.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             body: {
                 type: "object",
@@ -615,7 +615,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Accept friend request",
-            description: "### Overview\nApproves a pending friend request, establishing a mutual friendship.\n\n### Technical Details\n- Updates the request status to `ACCEPTED`.\n- Creates a bidirectional friendship link in the `Friends` table.\n\n### Side Effects\n- Notifies the sender that their request was accepted.",
+            description: "### Overview\nApproves a pending friend request, establishing a mutual, bidirectional friendship.\n\n### Technical Details\n- Updates the `FriendRequest` status to `ACCEPTED`.\n- Synchronously creates bidirectional links in the `Friends` table for both parties.\n\n### Side Effects\n- Dispatches a real-time 'friendship_accepted' notification to the request initiator.\n- Unlocks direct messaging capabilities between the two users.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -789,7 +789,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Social"],
             summary: "Block a user",
-            description: "### Overview\nPrevents another user from interacting with you.\n\n### Technical Details\n- Creates a record in the `Blocks` table.\n- Automatically unfollows and removes as friend (if applicable).\n\n### Side Effects\n- The blocked user can no longer send messages or see your private profile.",
+            description: "### Overview\nTerminates all social interaction possibilities between the authenticated user and a target.\n\n### Technical Details\n- Inserts an entry in the `Blocks` table.\n- Performs an atomic cleanup: removes existing follows and friendships between the users.\n\n### Side Effects\n- Immediately hides the user from search results and feeds for the blocker.\n- Invalidate active peer-to-peer WebSocket rooms.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -947,7 +947,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["GDPR"],
             summary: "Export user data",
-            description: "### Overview\nExports all user data in JSON format for GDPR compliance.\n\n### Technical Details\n- Collects data from all services (profile, recipes, messages, notifications).\n- Returns a downloadable JSON file.\n\n### Security\n- Users can only export their own data.",
+            description: "### Overview\nComplies with GDPR 'Right of Access' by generating a portable, machine-readable archive of all user-associated data.\n\n### Technical Details\n- Aggregates structured data from Auth, User, Recipe, Chat, and Notification microservices.\n- Sanitizes and package metadata into a secure JSON download.\n\n### Security\n- Strictly limited to the authenticated subject profile.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -1017,7 +1017,7 @@ export async function usersRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Users"],
             summary: "Get user gamification profile",
-            description: "### Overview\nRetrieves the user's XP, level, and earned badges.\n\n### Technical Details\n- Returns the current level calculated from XP.\n- Lists all awarded badges with their metadata.",
+            description: "### Overview\nExposes the user's progression metrics, including experience points (XP), levels, and earned accolades.\n\n### Technical Details\n- Performs dynamic level calculation based on the current XP threshold algorithm.\n- Aggregates hard-earned badges with their corresponding metadata and iconography.\n\n### Side Effects\n- Used to determine eligibility for restricted community features or tiers.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",

@@ -24,7 +24,7 @@ export async function notificationsRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Notifications"],
             summary: "Get all notifications",
-            description: "### Overview\nRetrieves a list of notifications for the authenticated user.\n\n### Technical Details\n- Fetches data from the `notification-service`.\n- Supports pagination (default: page 1, limit 20).\n- Includes metadata (data field) for deep-linking in the frontend.\n\n### Security\n- Requires a valid JWT Bearer Token.\n- Only returns notifications belonging to the authenticated user.",
+            description: "### Overview\nRetrieves a paginated list of system and social notifications for the authenticated user.\n\n### Technical Details\n- Fetches heterogeneous notification types (follows, comments, mentions) from the `notification-service`.\n- Maps relational metadata (e.g., `recipeId`, `senderId`) into the `data` payload for frontend hydration.\n\n### Validation & Constraints\n- **Pagination**: Clips `limit` to a maximum of 100 to protect service availability.\n\n### Side Effects\n- May trigger a background 'seen' update for delivery tracking.\n\n### Security\n- Strictly scoped to the authenticated user ID extracted from the JWT.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             querystring: {
                 type: "object",
@@ -82,7 +82,7 @@ export async function notificationsRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Notifications"],
             summary: "Mark notification as read",
-            description: "### Overview\nUpdates the status of a specific notification to 'read'.\n\n### Technical Details\n- Updates the `isRead` flag in the `notification-service` database.\n- Validates that the notification belongs to the requester.\n\n### Side Effects\n- Decrements the unread notification count in the frontend (via WebSocket or polling).",
+            description: "### Overview\nTransitions a specific notification's state to 'read' to acknowledge receipt.\n\n### Technical Details\n- Performs an atomic update on the `isRead` boolean field in the `notification-service` database.\n- Validates resource ownership before state transition.\n\n### Side Effects\n- Immediately updates the user's synchronous unread notification count.\n- May trigger a WebSocket update to other active client sessions for the user.\n\n### Security\n- Requires active Bearer token with appropriate user scope.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -113,7 +113,7 @@ export async function notificationsRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Notifications"],
             summary: "Mark all notifications as read",
-            description: "### Overview\nBulk updates all unread notifications for the user to 'read'.\n\n### Technical Details\n- Performs a batch update in the `notification-service`.\n\n### Side Effects\n- Resets the unread notification count to zero.",
+            description: "### Overview\nExecutes a bulk update to mark all unread notifications for the user as 'read'.\n\n### Technical Details\n- Executes a high-performance `updateMany` operation in the `notification-service` database.\n- Optimizes the process by targeting only records where `isRead: false` and `userId` matches the requester.\n\n### Side Effects\n- Resets the global unread badge counter for the user across all interfaces.\n- Potentially broadcasts a system-level status update via WebSocket.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             response: {
                 200: createResponseSchema({
@@ -137,7 +137,7 @@ export async function notificationsRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Notifications"],
             summary: "Delete notification",
-            description: "### Overview\nPermanently removes a notification.\n\n### Technical Details\n- Deletes the record from the `notification-service` database.\n\n### Security\n- Requires ownership of the notification.",
+            description: "### Overview\nPermanently removes a notification from the user's history.\n\n### Technical Details\n- Performs a hard-delete record removal from the primary notification store.\n- Validates that the record exists and belongs to the requester before execution.\n\n### Side Effects\n- Decrements total notification counts (if cached).",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",

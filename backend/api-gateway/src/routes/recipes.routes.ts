@@ -40,7 +40,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Recipes"],
             summary: "Get recipe by ID",
-            description: "### Overview\nRetrieves the complete details of a specific recipe.\n\n### Technical Details\n- Fetches full data including ingredients, instructions, and dietary tags.\n- Increments the `viewCount` for the recipe.\n\n### Validation & Constraints\n- **id**: Must be a valid UUID.",
+            description: "### Overview\nRetrieves the comprehensive details of a recipe using its unique ID.\n\n### Technical Details\n- Performs a multi-table join to aggregate ingredients, instructions, and media.\n- Executes a dynamic author hydration process through the API Gateway.\n\n### Side Effects\n- Atomically increments the recipe's `viewCount` for popularity metrics.\n\n### Security\n- Publicly accessible; returns extended metadata for the recipe owner.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -63,7 +63,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Recipes"],
             summary: "Create a new recipe",
-            description: "### Overview\nPublishes a new recipe to the platform.\n\n### Technical Details\n1. Validates input data (ingredients, instructions, times).\n2. Associates the recipe with the authenticated user (author).\n3. Automatically generates a unique slug based on the title.\n\n### Validation & Constraints\n- **title**: 3-200 characters.\n- **ingredients**: At least 1 required.\n- **instructions**: At least 1 required.\n\n### Side Effects\n- Creates records in `Recipe`, `Ingredient`, and `Instruction` tables.\n- Triggers a notification to followers of the author.",
+            description: "### Overview\nAuthors a new culinary recipe with structured ingredients, instructions, and metadata.\n\n### Technical Details\n- Generates a unique, URL-friendly `slug` based on the title using a collision-resistant algorithm.\n- Persists core recipe data in the `recipe-service` with relational links to categories and dietary tags.\n- Initializes default ratings and view counters.\n\n### Validation & Constraints\n- **Title**: Mandatory, 3-200 characters.\n- **PreparationTime**: Non-negative integer representing minutes.\n\n### Side Effects\n- Triggers a real-time 'new_recipe' event for followers of the author.\n- Hydrates author metadata via internal API Gateway lookups for the response payload.\n\n### Security\n- Requires synchronous Gateway API Key and JWT Bearer authentication.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             body: {
                 type: "object",
@@ -118,7 +118,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Recipes"],
             summary: "Update recipe",
-            description: "### Overview\nModifies an existing recipe.\n\n### Technical Details\n- Supports partial updates.\n- Recalculates the slug if the title changes.\n\n### Security\n- Only the original author or an administrator can update the recipe.",
+            description: "### Overview\nUpdates an existing recipe's content or metadata.\n\n### Technical Details\n- Employs partial update logic (PATCH behavior).\n- Recalculates the SEO `slug` if the title is modified.\n- Updates associated category and tag relations.\n\n### Security\n- Strictly restricted to the original author or system administrators.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -508,7 +508,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Recipes"],
             summary: "Search recipes",
-            description: "### Overview\nAdvanced search engine for recipes.\n\n### Technical Details\n- Supports filtering by category, difficulty, time, and dietary tags.\n- Uses full-text search on title and description.\n- Returns paginated results with metadata.\n\n### Validation & Constraints\n- **page**: Default 1.\n- **limit**: Default 10, max 100.",
+            description: "### Overview\nProvides a high-performance search and filtering interface for the recipe repository.\n\n### Technical Details\n- Implements full-text search indexing on `title` and `description`.\n- Supports multi-dimensional filtering across categories, difficulty levels, and dietary requirements.\n- Employs cursor-based or offset-based pagination for large data sets.\n\n### Side Effects\n- Updates global search trending metrics in the analytics store.\n\n### Security\n- Accessible via Gateway API Key for anonymous discovery; enriched with personalized status for authenticated users.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             querystring: {
                 type: "object",
@@ -990,7 +990,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Images"],
             summary: "Upload recipe image",
-            description: "### Overview\nUploads a new image for a recipe.\n\n### Technical Details\n- Processes multipart/form-data.\n- Uploads the file to Cloudinary.\n- Stores the resulting URL and metadata in the database.\n\n### Validation & Constraints\n- **file**: Must be a valid image (JPEG, PNG, WebP).",
+            description: "### Overview\nUploads a new culinary asset (image) and associates it with the targeted recipe.\n\n### Technical Details\n- Processes multipart binary data streams.\n- Delegates asset persistence to Cloudinary with automated optimization (compression, WebP conversion).\n- Records the high-res URL and cryptographic public ID in the `Images` table.\n\n### Validation & Constraints\n- **File**: Restricted to MIME types `image/jpeg`, `image/png`, and `image/webp`. Max size: 5MB.\n\n### Side Effects\n- May update the recipe's primary thumbnail if no other images exist.\n\n### Security\n- Requires synchronous Gateway API Key and Bearer token with author or admin privileges.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             consumes: ['multipart/form-data'],
             params: {
@@ -1288,7 +1288,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Dietary Tags"],
             summary: "Get all dietary tags",
-            description: "### Overview\nLists all available dietary tags for recipe classification.\n\n### Technical Details\n- Returns tag names, slugs, descriptions, and icon names.",
+            description: "### Overview\nRetrieves the complete catalog of dietary classifications (e.g., Keto, Paleo, Halal) supported by the platform.\n\n### Technical Details\n- Returns a normalized list of tags with associated iconography identifiers.\n- Optimized for cold-start performance via edge caching in the API Gateway.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             response: {
                 200: createResponseSchema({
@@ -1418,7 +1418,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Collections"],
             summary: "Create collection",
-            description: "### Overview\nCreates a custom folder/collection to organize recipes.\n\n### Technical Details\n- Collections can be public or private.\n- Users can add multiple recipes to a single collection.",
+            description: "### Overview\nInitializes a new personal or shared collection to organize curated recipes.\n\n### Technical Details\n- Supports privacy toggles (`isPublic`) for community sharing.\n- Generates a unique collection identifier.\n\n### Side Effects\n- Dispatched to the `recipe-service` for relational storage.\n\n### Security\n- Bound to the authenticated user identity.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             body: {
                 type: "object",
@@ -1460,7 +1460,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Collections"],
             summary: "Get collection details",
-            description: "### Overview\nRetrieves the full details of a collection, including all recipes contained within it.\n\n### Technical Details\n- Joins the `Collection` and `Recipe` tables via the `CollectionRecipe` link.",
+            description: "### Overview\nRetrieves the comprehensive inventory of a specific collection, including nested recipe summaries.\n\n### Technical Details\n- Executes a JOIN operation across `Collection` and `Recipe` entities.\n- Hydrates recipe images and basic metadata for streamlined UI rendering.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
@@ -1649,7 +1649,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Shopping List"],
             summary: "Get my shopping list",
-            description: "### Overview\nRetrieves all items currently in the user's shopping list.\n\n### Technical Details\n- Returns item names, quantities, and checked status.",
+            description: "### Overview\nRetrieves the exhaustive, real-time inventory of items in the authenticated user's shopping list.\n\n### Technical Details\n- Aggregates manually added items and ingredients imported from specific recipes.\n- Returns a schema optimized for low-latency frontend synchronization.\n\n### Side Effects\n- Validates the current state of items against the recipe-service availability.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             response: {
                 200: createResponseSchema({
@@ -1675,7 +1675,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Shopping List"],
             summary: "Add item manually to list",
-            description: "### Overview\nAllows users to add custom items to their shopping list.\n\n### Technical Details\n- Creates a new record in the `ShoppingListItem` table.",
+            description: "### Overview\nRetrieves the authenticated user's current shopping list context.\n\n### Technical Details\n- Aggregates ingredients marked for purchase across multiple recipes.\n- Returns a normalized list of items with unit and quantity metadata.\n\n### Side Effects\n- May sync with the `user-service` for inventory management.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             body: {
                 type: "object",
@@ -1830,7 +1830,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         schema: {
             tags: ["Meal Plans"],
             summary: "Plan a meal",
-            description: "### Overview\nSchedules a recipe for a specific date and meal type (e.g., Breakfast, Lunch).\n\n### Technical Details\n- Creates a record in the `MealPlan` table.\n- Used for generating weekly meal calendars.",
+            description: "### Overview\nIntegrates a recipe into the user's personalized culinary calendar for a specific date and time slot.\n\n### Technical Details\n- Persists the scheduling relation in the `MealPlans` store.\n- Supports multi-slot planning (Breakfast, Lunch, Dinner, Snack).\n\n### Side Effects\n- Automatically populates suggested ingredients in the user's weekly shopping preview.",
             security: [{ apiKeyAuth: [], bearerAuth: [] }],
             body: {
                 type: "object",

@@ -20,7 +20,7 @@ export async function gdprRoutes(app: FastifyInstance) {
         schema: {
             tags: ["GDPR"],
             summary: "Confirm account deletion (Public)",
-            description: "### Overview\nConfirms and executes the account deletion via a link sent by email.\n\n### Technical Details\n- Validates the deletion token sent in the request body.\n- Permanently deletes all user data across all services.\n- This action is IRREVERSIBLE.",
+            description: "### Overview\nFinalizes the user's 'Right to be Forgotten' request by executing a permanent and irreversible account deletion.\n\n### Technical Details\n- Validates the high-security deletion token dispatched via email.\n- Orchestrates a cross-service purge: deletes credentials in `auth-service`, profile in `user-service`, and cascades to all user-generated content (recipes, comments, etc.).\n\n### Side Effects\n- Permanent loss of all account rankings, social connections, and history.\n- Immediate invalidation of all active session tokens and cookies.\n\n### Security\n- Token-based verification; no active Bearer token required for this specific public recovery action.\n- WARNING: This operation is non-recoverable.",
             body: {
                 type: "object",
                 required: ["token"],

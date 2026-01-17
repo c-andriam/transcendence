@@ -158,6 +158,8 @@ model Badge {
   description String
   iconUrl     String
   condition   String?
+  type        String // e.g., 'RECIPE_COUNT', 'FOLLOWER_COUNT'
+  threshold   Int // e.g., 1, 10, 50
   users       UserBadge[]
 }
 

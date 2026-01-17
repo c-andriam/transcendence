@@ -8,6 +8,7 @@ import swagger from "@fastify/swagger";
 import swaggerUi from "@fastify/swagger-ui";
 import { authRoutes } from "./routes/auth.routes";
 import { notificationsRoutes } from "./routes/notifications.routes";
+import { healthRoutes } from "./routes/health.routes";
 import { globalErrorHandler, validateEnv } from "@transcendence/common";
 import cookie from "@fastify/cookie";
 import cors from "@fastify/cors";
@@ -63,7 +64,6 @@ const start = async () => {
     await app.register(cors, {
       origin: true
     });
-    // Register SWAGGER and basic tools first
     await app.register(swagger, {
       openapi:
       {
@@ -104,13 +104,10 @@ const start = async () => {
       return app.swagger();
     });
 
-    // Register all routes under /api/v1
     await app.register(async (api) => {
-      // Public routes
       await api.register(authRoutes);
       await api.register(gdprRoutes);
-
-      // Private routes (hook is scoped to this block and its children)
+      await api.register(healthRoutes);
       await api.register(async (privateApi) => {
         privateApi.addHook("preHandler", authMiddleware);
         await privateApi.register(recipesRoutes);

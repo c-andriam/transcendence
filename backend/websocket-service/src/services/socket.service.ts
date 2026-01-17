@@ -49,6 +49,10 @@ export class SocketService {
             }
             this.userSockets.get(userId)?.push(socketId);
 
+            // Auto-join shopping list room
+            const roomName = `shopping_list_${userId}`;
+            await socket.join(roomName);
+
             app.log.info(`User connected: ${userId} (Socket: ${socketId})`);
 
             socket.on('typing_start', ({ receiverId }: { receiverId: string }) => {
@@ -73,12 +77,82 @@ export class SocketService {
                 socket.join(`recipe_${recipeId}`);
             });
 
-            socket.on('join_shopping_list', () => {
-                // User joins their own shopping list room
-                if (socket.userId) {
-                    const roomName = `shopping_list_${socket.userId}`;
-                    socket.join(roomName);
-                    // app.log.info(`User ${socket.userId} joined ${roomName}`);
+
+
+            socket.on('shopping_list:add_item', async (data: { name: string, quantity?: string }) => {
+                if (!socket.userId) return;
+                try {
+                    const response = await fetch(`http://localhost:${env.RECIPE_SERVICE_PORT}/api/v1/internal/shopping-list/items`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-internal-api-key': env.INTERNAL_API_KEY
+                        },
+                        body: JSON.stringify({ userId: socket.userId, ...data })
+                    });
+                    if (response.ok) {
+                        const result = await response.json() as any;
+                        this.emitToRoom(`shopping_list_${socket.userId}`, 'shopping_list_update', {
+                            action: 'ITEM_ADDED',
+                            item: result.data
+                        });
+                    } else {
+                        socket.emit('error', { message: 'Failed to add item' });
+                    }
+                } catch (err) {
+                    app.log.error(err);
+                    socket.emit('error', { message: 'Internal server error' });
+                }
+            });
+
+            socket.on('shopping_list:update_item', async (data: { id: string, name?: string, quantity?: string, isChecked?: boolean }) => {
+                if (!socket.userId) return;
+                try {
+                    const response = await fetch(`http://localhost:${env.RECIPE_SERVICE_PORT}/api/v1/internal/shopping-list/items/${data.id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-internal-api-key': env.INTERNAL_API_KEY
+                        },
+                        body: JSON.stringify({ userId: socket.userId, ...data })
+                    });
+                    if (response.ok) {
+                        const result = await response.json() as any;
+                        this.emitToRoom(`shopping_list_${socket.userId}`, 'shopping_list_update', {
+                            action: 'ITEM_UPDATED',
+                            item: result.data
+                        });
+                    } else {
+                        socket.emit('error', { message: 'Failed to update item' });
+                    }
+                } catch (err) {
+                    app.log.error(err);
+                    socket.emit('error', { message: 'Internal server error' });
+                }
+            });
+
+            socket.on('shopping_list:delete_item', async (data: { id: string }) => {
+                if (!socket.userId) return;
+                try {
+                    const response = await fetch(`http://localhost:${env.RECIPE_SERVICE_PORT}/api/v1/internal/shopping-list/items/${data.id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'x-internal-api-key': env.INTERNAL_API_KEY
+                        },
+                        body: JSON.stringify({ userId: socket.userId })
+                    });
+                    if (response.ok) {
+                        this.emitToRoom(`shopping_list_${socket.userId}`, 'shopping_list_update', {
+                            action: 'ITEM_DELETED',
+                            itemId: data.id
+                        });
+                    } else {
+                        socket.emit('error', { message: 'Failed to delete item' });
+                    }
+                } catch (err) {
+                    app.log.error(err);
+                    socket.emit('error', { message: 'Internal server error' });
                 }
             });
 
@@ -115,7 +189,36 @@ export class SocketService {
             });
         });
 
+        setInterval(() => this.checkAndBroadcastHealth(), 15000);
+
         app.log.info('Socket.io initialized');
+    }
+
+    private static async checkAndBroadcastHealth() {
+        const services = [
+            { name: "auth-service", port: env.AUTH_SERVICE_PORT },
+            { name: "recipe-service", port: env.RECIPE_SERVICE_PORT },
+            { name: "user-service", port: env.USER_SERVICE_PORT },
+            { name: "chat-service", port: env.CHAT_SERVICE_PORT },
+            { name: "notification-service", port: env.NOTIFICATION_SERVICE_PORT },
+            { name: "websocket-service", port: env.WEBSOCKET_SERVICE_PORT },
+        ];
+
+        const healthResults = await Promise.all(services.map(async (service) => {
+            const url = `http://localhost:${service.port}/health`;
+            try {
+                const response = await fetch(url);
+                return { name: service.name, status: response.ok ? "UP" : "DOWN" };
+            } catch {
+                return { name: service.name, status: "DOWN" };
+            }
+        }));
+
+        this.io.to('system:health').emit('health_update', {
+            status: healthResults.every(r => r.status === "UP") ? "HEALTHY" : "DEGRADED",
+            services: healthResults,
+            timestamp: new Date().toISOString()
+        });
     }
 
     private static async updateUserStatus(userId: string, isOnline: boolean) {
