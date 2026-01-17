@@ -3,9 +3,12 @@ import fastify from 'fastify';
 import fastifyJwt from '@fastify/jwt';
 import fastifyMultipart from '@fastify/multipart';
 import db from './utils/dbPlugin';
+import { gamificationRoutes } from './routes/gamification.routes';
 import { userRoutes } from './routes/user.routes';
 import { globalErrorHandler, internalApiKeyMiddleware, validateEnv } from '@transcendence/common';
 import path from "path";
+
+
 
 dotenv.config({
     path: path.resolve(__dirname, "../../.env"),
@@ -40,6 +43,7 @@ const start = async () => {
         await app.register(async (api) => {
             api.addHook('preHandler', internalApiKeyMiddleware);
             await api.register(userRoutes, { prefix: '/api/v1' });
+            await api.register(gamificationRoutes, { prefix: '/api/v1' });
         });
 
         await app.ready();

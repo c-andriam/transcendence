@@ -1013,4 +1013,59 @@ export async function usersRoutes(app: FastifyInstance) {
             return sendError(reply, "User service is unavailable", HttpStatus.SERVICE_UNAVAILABLE);
         }
     });
+    app.get("/users/:id/gamification", {
+        schema: {
+            tags: ["Users"],
+            summary: "Get user gamification profile",
+            description: "### Overview\nRetrieves the user's XP, level, and earned badges.\n\n### Technical Details\n- Returns the current level calculated from XP.\n- Lists all awarded badges with their metadata.",
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "User ID" }
+                }
+            },
+            response: {
+                200: createResponseSchema({
+                    type: "object",
+                    properties: {
+                        id: { type: "string", format: "uuid" },
+                        username: { type: "string" },
+                        xp: { type: "integer", description: "Total Experience Points" },
+                        level: { type: "integer", description: "Current Level" },
+                        badges: {
+                            type: "array",
+                            items: {
+                                type: "object",
+                                properties: {
+                                    awardedAt: { type: "string", format: "date-time" },
+                                    badge: {
+                                        type: "object",
+                                        properties: {
+                                            id: { type: "string", format: "uuid" },
+                                            slug: { type: "string" },
+                                            name: { type: "string" },
+                                            description: { type: "string" },
+                                            iconUrl: { type: "string" }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }),
+                ...commonResponses
+            }
+        }
+    }, async (request, reply) => {
+        try {
+            const { id } = request.params as { id: string };
+            const { statusCode, body } = await proxyRequest(request, reply, `/api/v1/users/${id}/gamification`, USER_SERVICE_URL);
+            return reply.status(statusCode as any).send(body);
+        } catch (error) {
+            app.log.error(error);
+            return sendError(reply, "User service is unavailable", HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    });
 }

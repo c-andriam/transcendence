@@ -1,13 +1,16 @@
 import db from "../utils/db";
+import { notifyShoppingListUpdate } from "../utils/notifyWebsocket";
 
 export async function addToShoppingList(userId: string, data: { name: string; quantity?: string }) {
-    return db.shoppingListItem.create({
+    const item = await db.shoppingListItem.create({
         data: {
             userId,
             name: data.name,
             quantity: data.quantity
         }
     });
+    notifyShoppingListUpdate(userId, 'ITEM_ADDED', item);
+    return item;
 }
 
 export async function addRecipeToShoppingList(userId: string, recipeId: string) {
@@ -28,9 +31,11 @@ export async function addRecipeToShoppingList(userId: string, recipeId: string) 
         recipeTitle: recipe.title
     }));
 
-    return db.shoppingListItem.createMany({
+    const result = await db.shoppingListItem.createMany({
         data: items
     });
+    notifyShoppingListUpdate(userId, 'RECIPE_ADDED', { recipeId, count: items.length });
+    return result;
 }
 
 export async function getShoppingList(userId: string) {
@@ -41,26 +46,34 @@ export async function getShoppingList(userId: string) {
 }
 
 export async function updateShoppingListItem(id: string, userId: string, data: { isChecked?: boolean; name?: string; quantity?: string }) {
-    return db.shoppingListItem.updateMany({
+    const result = await db.shoppingListItem.updateMany({
         where: { id, userId },
         data
     });
+    notifyShoppingListUpdate(userId, 'ITEM_UPDATED', { id, ...data });
+    return result;
 }
 
 export async function deleteShoppingListItem(id: string, userId: string) {
-    return db.shoppingListItem.deleteMany({
+    const result = await db.shoppingListItem.deleteMany({
         where: { id, userId }
     });
+    notifyShoppingListUpdate(userId, 'ITEM_DELETED', { id });
+    return result;
 }
 
 export async function clearCheckedItems(userId: string) {
-    return db.shoppingListItem.deleteMany({
+    const result = await db.shoppingListItem.deleteMany({
         where: { userId, isChecked: true }
     });
+    notifyShoppingListUpdate(userId, 'CHECKED_ITEMS_CLEARED', {});
+    return result;
 }
 
 export async function clearAllItems(userId: string) {
-    return db.shoppingListItem.deleteMany({
+    const result = await db.shoppingListItem.deleteMany({
         where: { userId }
     });
+    notifyShoppingListUpdate(userId, 'ALL_ITEMS_CLEARED', {});
+    return result;
 }

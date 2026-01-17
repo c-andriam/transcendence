@@ -73,6 +73,15 @@ export class SocketService {
                 socket.join(`recipe_${recipeId}`);
             });
 
+            socket.on('join_shopping_list', () => {
+                // User joins their own shopping list room
+                if (socket.userId) {
+                    const roomName = `shopping_list_${socket.userId}`;
+                    socket.join(roomName);
+                    // app.log.info(`User ${socket.userId} joined ${roomName}`);
+                }
+            });
+
             socket.on('leave_recipe', ({ recipeId }: { recipeId: string }) => {
                 socket.leave(`recipe_${recipeId}`);
             });
@@ -138,5 +147,9 @@ export class SocketService {
                 this.io.to(socketId).emit(event, data);
             });
         }
+    }
+
+    public static emitToRoom(room: string, event: string, data: any) {
+        this.io.to(room).emit(event, data);
     }
 }
