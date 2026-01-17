@@ -1,108 +1,108 @@
 import React from 'react';
-import FriendUI from '../FriendUI';
+import FollowingUI from '../UI/FollowingUI';
 
-const FriendsFeed = () => {
+const FollowingFeed = () => {
     return (
         <div className='grid grid-cols-5 gap-4 p-4'>
-            <FriendUI
+            <FollowingUI
                 friendName="Chef Thomas R."
                 friendPictureURL="/images/users/Tom.png"
                 following={100}
                 follower={100}
                 recipesCount={5}
             />
-            <FriendUI
+            <FollowingUI
                 friendName="Chef Thomas R."
                 friendPictureURL="/images/users/Tom.png"
                 following={100}
                 follower={100}
                 recipesCount={5}
             />
-            <FriendUI
+            <FollowingUI
                 friendName="Chef Thomas R."
                 friendPictureURL="/images/users/Tom.png"
                 following={100}
                 follower={100}
                 recipesCount={5}
             />
-            <FriendUI
+            <FollowingUI
                 friendName="Chef Thomas R."
                 friendPictureURL="/images/users/Tom.png"
                 following={100}
                 follower={100}
                 recipesCount={5}
             />
-            <FriendUI
+            <FollowingUI
                 friendName="Chef Thomas R."
                 friendPictureURL="/images/users/Tom.png"
                 following={100}
                 follower={100}
                 recipesCount={5}
             />
-            <FriendUI
+            <FollowingUI
                 friendName="Chef Thomas R."
                 friendPictureURL="/images/users/Tom.png"
                 following={100}
                 follower={100}
                 recipesCount={5}
             />
-            <FriendUI
+            <FollowingUI
                 friendName="Chef Thomas R."
                 friendPictureURL="/images/users/Tom.png"
                 following={100}
                 follower={100}
                 recipesCount={5}
             />
-            <FriendUI
+            <FollowingUI
                 friendName="Chef Thomas R."
                 friendPictureURL="/images/users/Tom.png"
                 following={100}
                 follower={100}
                 recipesCount={5}
             />
-            <FriendUI
+            <FollowingUI
                 friendName="Chef Thomas R."
                 friendPictureURL="/images/users/Tom.png"
                 following={100}
                 follower={100}
                 recipesCount={5}
             />
-            <FriendUI
+            <FollowingUI
                 friendName="Chef Thomas R."
                 friendPictureURL="/images/users/Tom.png"
                 following={100}
                 follower={100}
                 recipesCount={5}
             />
-            <FriendUI
+            <FollowingUI
                 friendName="Chef Thomas R."
                 friendPictureURL="/images/users/Tom.png"
                 following={100}
                 follower={100}
                 recipesCount={5}
             />
-            <FriendUI
+            <FollowingUI
                 friendName="Chef Thomas R."
                 friendPictureURL="/images/users/Tom.png"
                 following={100}
                 follower={100}
                 recipesCount={5}
             />
-            <FriendUI
+            <FollowingUI
                 friendName="Chef Thomas R."
                 friendPictureURL="/images/users/Tom.png"
                 following={100}
                 follower={100}
                 recipesCount={5}
             />
-            <FriendUI
+            <FollowingUI
                 friendName="Chef Thomas R."
                 friendPictureURL="/images/users/Tom.png"
                 following={100}
                 follower={100}
                 recipesCount={5}
             />
-            <FriendUI
+            <FollowingUI
                 friendName="Chef Thomas R."
                 friendPictureURL="/images/users/Tom.png"
                 following={100}
@@ -113,4 +113,4 @@ const FriendsFeed = () => {
     );
 }
 
-export default FriendsFeed;
+export default FollowingFeed;

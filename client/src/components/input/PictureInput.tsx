@@ -2,7 +2,6 @@ import { useState } from "react";
 import { RiImageAddLine } from "react-icons/ri";
 import { IoMdClose } from "react-icons/io";
 import { useRef } from "react";
-import { ChangeEvent } from "react";
 
 const PictureInput = () => {
     const [image, setImage] = useState<string>("");
@@ -12,7 +11,7 @@ const PictureInput = () => {
         fileInputRef.current?.click();
     }
 
-    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
             const reader = new FileReader();

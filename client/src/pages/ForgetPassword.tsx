@@ -1,7 +1,7 @@
 import React from 'react';
-import Title from '../Title';
-import Footer from '../Footer';
-import InputFloating from '../UI/InputFloating';
+import Title from '../components/Title';
+import Footer from '../components/Footer';
+import InputFloating from '../components/UI/InputFloating';
 
 interface user {
     email: string;
@@ -37,7 +37,7 @@ const ForgetPassword = () => {
                                     <img src={user.picture} alt={user.username} className="w-10 h-10 rounded-full border-2 border-orange-500/20" />
                                     <div className="flex flex-col">
                                         <span className="text-[10px] uppercase tracking-wider text-white/30">Resetting for</span>
-                                        <p className='text-white/70 text-sm font-medium'>{user.email}</p>
+                                        <p className='text-white/70 text-sm font-medium'>{user.username}</p>
                                     </div>
                                 </div>
                                 <div className='relative'>
@@ -78,7 +78,7 @@ const ForgetPassword = () => {
                                 <button
                                     type='submit'
                                     className='w-full bg-gray-800 text-gray-500 py-4 rounded-xl
-                                font-bold cursor-pointer hover:bg-orange-400 hover:text-white transition duration-200 uppercase tracking-widest text-xs border border-white/5'
+                                font-bold cursor-pointer hover:bg-orange-500 hover:text-white transition duration-200 uppercase tracking-widest text-xs border border-white/5'
                                 >
                                     Reset Password
                                 </button>

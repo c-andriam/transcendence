@@ -1,7 +1,7 @@
 import React from 'react';
-import Title from '../Title';
-import Footer from '../Footer';
-import InputFloating from '../UI/InputFloating';
+import Title from '../components/Title';
+import Footer from '../components/Footer';
+import InputFloating from '../components/UI/InputFloating';
 
 const EmailVerify = () => {
     return (

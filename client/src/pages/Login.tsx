@@ -19,7 +19,7 @@ const Login = () => {
                         <section className="w-full md:w-7/12 p-8 md:p-12 flex items-center justify-center">
                             <div className="w-full max-w-md">
                                 <div className="p-4 mb-6">
-                                    <p className="text-2xl font-bold">Welcome Back to CookShare</p>
+                                    <p className="text-2xl font-bold">Welcome Back to <span className="text-orange-400">Cook</span>Share</p>
                                     <p className="text-sm text-gray-600 text-center">Cooking, sharing, love!</p>
                                 </div>
                                 <form action="" className="space-y-5">
@@ -29,9 +29,9 @@ const Login = () => {
                                         <NavLink
                                             to="/forget-password"
                                             className='text-xs text-orange-400/80 hover:text-orange-500 
-                                        transition-colors cursor-pointer flex justify-end font-medium'
+                                        transition-colors cursor-pointer flex justify-end font-medium hover:underline'
                                         >
-                                            Forget password?
+                                            Forget password ?
                                         </NavLink>
                                     </div>
                                     <div className="flex items-center justify-center gap-72">
