@@ -2105,7 +2105,7 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Admin"],
             summary: "Get all reports",
             description: "### Overview\nRetrieves a comprehensive list of all reports submitted by users.\n\n### Technical Details\n- Supports filtering by status (PENDING, RESOLVED, etc.) and target type.\n- Returns paginated results.\n\n### Security\n- Restricted to administrators (Bearer Token required).",
-            security: [{ bearerAuth: [] }]
+            security: [{ apiKeyAuth: [], bearerAuth: [] }]
         }
     }, async (request, reply) => {
         return proxyHydrate(app, request, reply, "/api/v1/admin/reports", RECIPE_SERVICE_URL);
@@ -2117,7 +2117,7 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Admin"],
             summary: "Get reports statistics",
             description: "### Overview\nProvides a high-level summary of moderation activity.\n\n### Technical Details\n- Returns counts of reports grouped by status and priority.\n\n### Security\n- Restricted to administrators.",
-            security: [{ bearerAuth: [] }]
+            security: [{ apiKeyAuth: [], bearerAuth: [] }]
         }
     }, async (request, reply) => {
         return proxyHydrate(app, request, reply, "/api/v1/admin/reports/stats", RECIPE_SERVICE_URL);
@@ -2129,7 +2129,7 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Admin"],
             summary: "Get report by ID",
             description: "### Overview\nRetrieves the full details of a specific report for investigation.\n\n### Technical Details\n- Includes reporter details and the target content (recipe or comment).\n\n### Security\n- Restricted to administrators.",
-            security: [{ bearerAuth: [] }],
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
                 required: ["id"],
@@ -2149,7 +2149,7 @@ export async function recipesRoutes(app: FastifyInstance) {
             tags: ["Admin"],
             summary: "Update report status",
             description: "### Overview\nUpdates the moderation status of a report.\n\n### Technical Details\n- Allows changing status to `REVIEWED`, `RESOLVED`, or `DISMISSED`.\n- Records the moderator ID and timestamp.\n\n### Security\n- Restricted to administrators.",
-            security: [{ bearerAuth: [] }],
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
             params: {
                 type: "object",
                 required: ["id"],

@@ -411,4 +411,48 @@ export async function userRoutes(app: FastifyInstance) {
 
         sendSuccess(reply, { isBlockedBy, hasBlocked }, 'Block status retrieved');
     });
+
+    const { exportUserData, requestAccountDeletion, confirmAccountDeletion } = await import("../services/gdpr.service");
+
+    app.get("/users/:id/export-data", {
+        preHandler: authMiddleware
+    }, async (request, reply) => {
+        const { id } = request.params as { id: string };
+        const requestingUserId = (request as any).user?.id;
+
+        if (id !== requestingUserId) {
+            throw new ForbiddenError("You can only export your own data");
+        }
+
+        const data = await exportUserData(id);
+        reply.header('Content-Type', 'application/json');
+        reply.header('Content-Disposition', `attachment; filename="user-data-export-${new Date().toISOString().split('T')[0]}.json"`);
+        sendSuccess(reply, data, 'User data exported successfully');
+    });
+
+    app.post("/users/:id/request-deletion", {
+        preHandler: authMiddleware
+    }, async (request, reply) => {
+        const { id } = request.params as { id: string };
+        const requestingUserId = (request as any).user?.id;
+
+        if (id !== requestingUserId) {
+            throw new ForbiddenError("You can only request deletion of your own account");
+        }
+
+        const result = await requestAccountDeletion(id);
+
+        sendSuccess(reply, {
+            message: 'Account deletion requested. Please check your email to confirm.',
+            _devToken: result.token
+        }, 'Deletion request created');
+    });
+
+    app.delete("/gdpr/confirm-deletion", {
+        preHandler: bodyValidator(tokenSchema)
+    }, async (request, reply) => {
+        const { token } = request.body as { token: string };
+        const result = await confirmAccountDeletion(token);
+        sendDeleted(reply, { email: result.email }, 'Account and all associated data have been permanently deleted');
+    });
 }

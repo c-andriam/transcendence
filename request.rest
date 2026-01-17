@@ -1222,3 +1222,26 @@ Authorization: Bearer {{loginUser.response.body.data.accessToken}}
     "name": "User Category",
     "sortOrder": 2
 }
+
+### ============================================
+### GDPR ROUTES
+### ============================================
+
+### Request Account Deletion (Sends confirmation email)
+POST {{baseUrl}}/api/v1/users/{{authorId}}/request-deletion
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}
+
+### Confirm Account Deletion (Token in body - new format)
+DELETE {{baseUrl}}/api/v1/gdpr/confirm-deletion
+Content-Type: application/json
+x-gateway-api-key: {{gatewayKey}}
+
+{
+    "token": "YOUR_DELETION_TOKEN_HERE"
+}
+
+### Export User Data
+GET {{baseUrl}}/api/v1/users/{{authorId}}/export-data
+x-gateway-api-key: {{gatewayKey}}
+Authorization: Bearer {{jwtToken}}

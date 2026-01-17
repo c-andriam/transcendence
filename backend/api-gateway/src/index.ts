@@ -14,6 +14,7 @@ import cors from "@fastify/cors";
 import multipart from "@fastify/multipart";
 import path from "path";
 import { chatRoutes } from "./routes/chat.routes";
+import { gdprRoutes } from "./routes/gdpr.routes";
 
 dotenv.config({
   path: path.resolve(__dirname, "../../.env"),
@@ -24,6 +25,9 @@ const env = validateEnv();
 export const app = fastify({
   logger: {
     level: env.LOG_LEVEL
+  },
+  routerOptions: {
+    maxParamLength: 256
   },
   ajv: {
     customOptions: {
@@ -59,6 +63,7 @@ const start = async () => {
     await app.register(cors, {
       origin: true
     });
+    // Register SWAGGER and basic tools first
     await app.register(swagger, {
       openapi:
       {
@@ -66,7 +71,7 @@ const start = async () => {
         info: {
           title: "Transcendence API Gateway",
           version: "1.0.0",
-          description: "Central entry point for the Transcendence microservices architecture. This gateway handles authentication, rate limiting, and request routing to specialized services (Auth, User, Recipe, Notification, etc.)."
+          description: "Central entry point for the Transcendence microservices architecture."
         },
         servers: [
           {
@@ -87,29 +92,33 @@ const start = async () => {
               bearerFormat: "JWT"
             }
           }
-        },
-        security: [
-          {
-            apiKeyAuth: []
-          }
-        ]
+        }
       }
     });
+
+
+
     await app.register(swaggerUi, { routePrefix: "/documentation" });
 
     app.get('/documentation/json-debug', async () => {
       return app.swagger();
     });
 
-    await app.register(authRoutes, { prefix: '/api/v1' });
-
+    // Register all routes under /api/v1
     await app.register(async (api) => {
-      api.addHook("preHandler", authMiddleware);
-      await api.register(recipesRoutes, { prefix: '/api/v1' });
-      await api.register(usersRoutes, { prefix: '/api/v1' });
-      await api.register(notificationsRoutes, { prefix: '/api/v1' });
-      await api.register(chatRoutes, { prefix: '/api/v1' });
-    });
+      // Public routes
+      await api.register(authRoutes);
+      await api.register(gdprRoutes);
+
+      // Private routes (hook is scoped to this block and its children)
+      await api.register(async (privateApi) => {
+        privateApi.addHook("preHandler", authMiddleware);
+        await privateApi.register(recipesRoutes);
+        await privateApi.register(usersRoutes);
+        await privateApi.register(notificationsRoutes);
+        await privateApi.register(chatRoutes);
+      });
+    }, { prefix: '/api/v1' });
 
     await app.ready();
     await app.listen({ port: env.API_GATEWAY_PORT, host: "0.0.0.0" });

@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { sendResetPasswordEmail, sendVerificationEmail } from "../services/email.service";
+import { sendResetPasswordEmail, sendVerificationEmail, sendDeletionConfirmationEmail } from "../services/email.service";
 import {
     createNotification,
     deleteNotification,
@@ -18,6 +18,12 @@ const resetEmailSchema = z.object({
 const verifyEmailSchema = z.object({
     email: z.string().email(),
     verificationToken: z.string().min(1)
+});
+
+const deletionEmailSchema = z.object({
+    email: z.string().email(),
+    deletionToken: z.string().min(1),
+    username: z.string().min(1)
 });
 
 const createNotificationSchema = z.object({
@@ -43,6 +49,14 @@ export async function notificationRoutes(app: FastifyInstance) {
         const { email, verificationToken } = request.body as z.infer<typeof verifyEmailSchema>;
         await sendVerificationEmail(email, verificationToken);
         sendSuccess(reply, {}, 'Verification email sent');
+    });
+
+    app.post("/internal/send-deletion-email", {
+        preHandler: bodyValidator(deletionEmailSchema)
+    }, async (request, reply) => {
+        const { email, deletionToken, username } = request.body as z.infer<typeof deletionEmailSchema>;
+        await sendDeletionConfirmationEmail(email, deletionToken, username);
+        sendSuccess(reply, {}, 'Deletion confirmation email sent');
     });
 
     app.get("/notifications", { preHandler: authMiddleware }, async (request, reply) => {

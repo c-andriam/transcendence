@@ -62,6 +62,7 @@ export async function usersRoutes(app: FastifyInstance) {
             tags: ["Users"],
             summary: "Get all users",
             description: "### Overview\nLists all registered users in the system.\n\n### Technical Details\n- Fetches basic profile data (username, avatar, role).\n- Supports pagination (default: page 1, limit 10).\n\n### Security\n- Publicly accessible, but sensitive fields (email, password) are excluded.",
+            security: [{ apiKeyAuth: [] }],
             response: {
                 200: createResponseSchema({
                     type: "array",
@@ -101,6 +102,7 @@ export async function usersRoutes(app: FastifyInstance) {
             tags: ["Users"],
             summary: "Search users",
             description: "### Overview\nFinds users based on a search query.\n\n### Technical Details\n- Performs a case-insensitive partial match on `username` and `email`.\n- Uses full-text search indexing in the `user-service` database.\n\n### Validation & Constraints\n- **q**: Minimum 1 character required.",
+            security: [{ apiKeyAuth: [] }],
             querystring: {
                 type: "object",
                 properties: {
@@ -140,6 +142,7 @@ export async function usersRoutes(app: FastifyInstance) {
             tags: ["Users"],
             summary: "Get specific user profile",
             description: "### Overview\nRetrieves the public profile of any user.\n\n### Technical Details\n- Fetches data based on the provided UUID.\n- Includes social stats (follower/following counts) and online status.",
+            security: [{ apiKeyAuth: [] }],
             params: {
                 type: "object",
                 properties: {
@@ -465,6 +468,7 @@ export async function usersRoutes(app: FastifyInstance) {
             tags: ["Social"],
             summary: "Get user's followers",
             description: "### Overview\nLists all users following a specific user profile.\n\n### Technical Details\n- Publicly accessible endpoint.\n- Returns basic profile summaries.",
+            security: [{ apiKeyAuth: [] }],
             params: {
                 type: "object",
                 properties: {
@@ -503,6 +507,7 @@ export async function usersRoutes(app: FastifyInstance) {
             tags: ["Social"],
             summary: "Get users followed by user",
             description: "### Overview\nLists all users that a specific user is currently following.",
+            security: [{ apiKeyAuth: [] }],
             params: {
                 type: "object",
                 properties: {
@@ -936,5 +941,76 @@ export async function usersRoutes(app: FastifyInstance) {
     }, async (request, reply) => {
         const { proxyMultipart } = await import("../utils/proxy");
         return proxyMultipart(request, reply, "/api/v1/users/me/avatar", USER_SERVICE_URL);
+    });
+
+    app.get("/users/:id/export-data", {
+        schema: {
+            tags: ["GDPR"],
+            summary: "Export user data",
+            description: "### Overview\nExports all user data in JSON format for GDPR compliance.\n\n### Technical Details\n- Collects data from all services (profile, recipes, messages, notifications).\n- Returns a downloadable JSON file.\n\n### Security\n- Users can only export their own data.",
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "User ID" }
+                }
+            },
+            response: {
+                200: createResponseSchema({
+                    type: "object",
+                    properties: {
+                        exportDate: { type: "string" },
+                        profile: { type: "object" },
+                        social: { type: "object" },
+                        content: { type: "object" }
+                    }
+                }),
+                ...commonResponses
+            }
+        }
+    }, async (request, reply) => {
+        try {
+            const { id } = request.params as { id: string };
+            const { statusCode, body } = await proxyRequest(request, reply, `/api/v1/users/${id}/export-data`, USER_SERVICE_URL);
+            return reply.status(statusCode as any).send(body);
+        } catch (error) {
+            app.log.error(error);
+            return sendError(reply, "User service is unavailable", HttpStatus.SERVICE_UNAVAILABLE);
+        }
+    });
+
+    app.post("/users/:id/request-deletion", {
+        schema: {
+            tags: ["GDPR"],
+            summary: "Request account deletion",
+            description: "### Overview\nInitiates the account deletion process.\n\n### Technical Details\n- Creates a secure deletion token.\n- Sends a confirmation email to the user.\n- Token expires after 24 hours.\n\n### Security\n- Users can only request deletion of their own account.\n- Deletion requires email confirmation.",
+            security: [{ apiKeyAuth: [], bearerAuth: [] }],
+            params: {
+                type: "object",
+                required: ["id"],
+                properties: {
+                    id: { type: "string", format: "uuid", description: "User ID" }
+                }
+            },
+            response: {
+                200: createResponseSchema({
+                    type: "object",
+                    properties: {
+                        message: { type: "string" }
+                    }
+                }),
+                ...commonResponses
+            }
+        }
+    }, async (request, reply) => {
+        try {
+            const { id } = request.params as { id: string };
+            const { statusCode, body } = await proxyRequest(request, reply, `/api/v1/users/${id}/request-deletion`, USER_SERVICE_URL);
+            return reply.status(statusCode as any).send(body);
+        } catch (error) {
+            app.log.error(error);
+            return sendError(reply, "User service is unavailable", HttpStatus.SERVICE_UNAVAILABLE);
+        }
     });
 }

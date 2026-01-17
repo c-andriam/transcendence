@@ -39,6 +39,7 @@ model User {
   friendRequestsReceived  FriendRequest[]          @relation("FriendRequestReceived")
   blocksSent              Block[]                  @relation("BlocksSent")
   blocksReceived          Block[]                  @relation("BlocksReceived")
+  accountDeletionTokens   AccountDeletionToken[]
 
   @@index([email])
   @@index([username])
@@ -129,4 +130,18 @@ model Block {
   @@unique([blockerId, blockedId])
   @@index([blockerId])
   @@index([blockedId])
+}
+
+// ==================== ACCOUNT DELETION TOKENS (GDPR) ====================
+model AccountDeletionToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([token])
 }
