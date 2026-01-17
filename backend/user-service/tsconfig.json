@@ -10,6 +10,8 @@
     },
     "exclude": [
         "prisma.config.ts",
+        "prisma",
+        "test_gamification.ts",
         "scripts"
     ]
 }
